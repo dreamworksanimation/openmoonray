@@ -1,0 +1,475 @@
+#!/bin/env python
+
+# Copyright 2023 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# This script is run during the build process
+# to generate intermediate files
+#
+# The shader writer is expected to author:
+#   dsoName.json
+#   dsoName.ispc
+#   dsoName.cc
+#
+# From dsoName.json, we produce the intermediate targets
+#   attributes.cc - expected to be included by dsoName.cc
+#   attributesISPC.cc - built as dso source
+#   attributes.isph - expected to be included by dsoName.ispc
+#   labels.h
+#   labels.isph
+# and then pass this source to build the rdl dso and proxy dso
+#
+# dsoName.json can contain "include directives" for other json files. These
+# are resolved relative to an include directory.
+#
+# ispc_dso_generate <path-to-JSON-file> -o <output-dir> -i <include-dir>
+from __future__ import print_function
+
+import argparse
+import json
+import sys
+import os.path
+from collections import OrderedDict
+
+def parseArgs():
+    parser = argparse.ArgumentParser(description='Generate files for moonray dsos')
+    parser.add_argument('source',
+                        help="JSON input file")
+    parser.add_argument('-o','--output_dir',
+                        help='directory to place generated files')
+    parser.add_argument('-i','--include_dir', action='append',
+                        help='base directory to search for included files')
+
+    return parser.parse_args()
+
+def mergeJson(source, destination):
+    for key, value in source.items():
+        if isinstance(value, dict):
+            node = destination.setdefault(key, OrderedDict())
+            mergeJson(value, node)
+        else:
+            destination[key] = value
+
+def findInclude(included,baseDirs):
+    for base in baseDirs:
+        f = os.path.join(base,included)
+        if os.path.exists(f):
+            return f
+    return None
+
+def expandIncludes(shader,includeDirs):
+    # Include other json files from a directives 
+    # block which looks like the following:
+    # {
+    #    "directives": {
+    #        "include": [
+    #            "lib/shaders/dwabase/json/specular.json",
+    #            "lib/shaders/dwabase/json/metallic.json"
+    #        ]
+    #    }
+    # }
+    if 'directives' in shader.keys():
+        for attr, data in shader['directives'].items():
+            if attr == 'include' and type(data) == list:
+                for includeFile in data:
+                    includeFile = findInclude(includeFile,includeDirs)
+                    if includeFile:
+                        try:
+                            with open(includeFile) as f:
+                                includeJson = json.load(f, object_pairs_hook=OrderedDict)
+                            mergeJson(includeJson, shader)
+                        except ValueError as err:
+                            print('Error with included file: %s' % includeFile,file=sys.stderr)
+                            print('Error: %s' % err,file=sys.stderr)
+                    else:
+                        print('Included file not found: %s' % includeFile,file=sys.stderr)
+        shader.pop('directives')
+
+def processGroups(shader):
+    # Process group ordering block which looks like this:
+    # {
+    #    "groups": {
+    #    "order": [
+    #        "Specular",
+    #        "Diffuse",
+    #        "Clearcoat",
+    #        "Iridescence",
+    #        "Transmission",
+    #        "Emission",
+    #        "Normal",
+    #        "Common"
+    #    ]
+    #   }
+    # }
+    if 'groups' in shader.keys():
+        for groupsAttr, groupsData in shader['groups'].items():
+            if groupsAttr == 'order' and type(groupsData) == list:
+                attributesSorted = OrderedDict()
+                for group in groupsData:
+                    for attr, attrData in list(shader['attributes'].items()):
+                        if attrData['group'] == group:
+                            attributesSorted[attr] = shader['attributes'].pop(attr)
+                for attr, attrData in list(shader['attributes'].items()):
+                    attributesSorted[attr] = shader['attributes'].pop(attr)
+                shader['attributes'] = attributesSorted
+        shader.pop('groups')
+
+def declareAttribute(data, attr, ns, dataKeywords, aliases, name=''):
+    # attribute declarations in 'attributes.cc'
+    if not name == '':
+        text = ('%s::%s = sceneClass.declareAttribute<%s>("%s"' %
+                 (ns, attr, data['type'], name))
+    else:
+        text = ('%s::%s = sceneClass.declareAttribute<%s>("%s"' %
+                 (ns, attr, data['type'], data['name']))
+    if 'default' in data:
+        text += ', %s' % data['default']
+
+    flags = 'FLAGS_NONE'
+    if 'flags' in data:
+        flags = data['flags']
+    interface = 'INTERFACE_GENERIC'
+    if 'interface' in data:
+        interface = data['interface']
+    aliasStr = '{' + ', '.join('"' + x + '"' for x in aliases) + '}'
+    text += ', %s, %s, %s' % (flags, interface, aliasStr)
+    text += ');\n'
+
+    if 'group' in data:
+        text += ('sceneClass.setGroup("%s", %s::%s);\n' %
+                 (data['group'], ns, attr))
+    if 'enum' in data:
+        for enum, value in data['enum'].items():
+            text += ('sceneClass.setEnumValue(%s::%s, %s, "%s");\n' %
+                     (ns, attr, value, enum))
+    if 'metadata' in data:
+        for metaKey, metaStr in data['metadata'].items():
+            text += ('sceneClass.setMetadata(%s::%s, "%s", "%s");\n' %
+                     (ns, attr, metaKey, metaStr))
+
+    # Add rest as metadata, including "comment"
+    for metaKey, metaStr in data.items():
+        if not metaKey in dataKeywords :
+            text += ('sceneClass.setMetadata(%s::%s, "%s", "%s");\n' %
+                     (ns, attr, metaKey, metaStr))
+    return text
+
+def gen_attributes_cc(shader,ns):
+    # generate "attributes.cc" output file
+
+    text  = '#include <scene_rdl2/scene/rdl2/rdl2.h>\n'
+    text += 'using namespace scene_rdl2::rdl2;\n'
+    text += 'RDL2_DSO_ATTR_DECLARE_NS(' + ns + ')\n'
+    for attr, data in shader['attributes'].items():
+        if 'multi' in data:
+            for i in range(int(data['multi'])):
+                multiAttr = attr + str(i)
+                text += 'AttributeKey<%s> %s;\n' % (data['type'], multiAttr)
+        else:
+            text += 'AttributeKey<%s> %s;\n' % (data['type'], attr)
+    text += 'RDL2_DSO_ATTR_DEFINE(%s)\n' % (shader['type'])
+    
+    # Establish set of attribute keywords that have specific meaning.
+    # Any data whose key is not in this list will be added as metadata
+    # Obviously, if 'metadata' exists it will also be added as metadata
+    dataKeywords = ['type', 'name', 'default', 'flags', 'interface', 'aliases',
+                    'group', 'enum', 'multi', 'metadata']
+    for attr, data in shader['attributes'].items():
+
+        # attributes can have aliases
+        aliases = list()
+        if 'aliases' in data:
+            aliases = list(data['aliases'])
+
+        if 'multi' in data:
+            for i in range(int(data['multi'])):
+                name = data['name'] + str(i)
+                attrName = attr + str(i)
+                attrAliases = aliases
+                for j in range(len(attrAliases)):
+                    attrAliases[j] = attrAliases[j] + str(i)
+                text += declareAttribute(data, attrName, ns, dataKeywords, attrAliases, name)
+            continue;
+        else:
+            text += declareAttribute(data, attr, ns, dataKeywords, aliases)
+
+    if 'labels' in shader:
+        text += 'static const char *labels[] = {\n'
+        for variable, label in shader['labels'].items():
+            text += '    "%s",\n' % label
+        text += '    nullptr\n};\n'
+        text += 'sceneClass.declareDataPtr("labels", labels);\n'
+
+    if 'interface_flags' in shader:
+        text += 'rdl2_dso_interface |= %s;\n' % shader['interface_flags']
+            
+    text += 'RDL2_DSO_ATTR_END\n'
+    text += 'using namespace ' + ns + ';\n'
+    
+    return text
+
+def declareISPCAttributeKey(data, attr, ns):
+    # if the keytype is unknown, then very likely this attribute is
+    # not supported in ispc and exists only for c++ code
+    keyType = IspcKeyType(data['type'])
+    if keyType != 'UNKNOWN_ATTR_TYPE':
+        text = ('namespace ' + ns + ' { extern AttributeKey<%s> %s;' %
+                 (data['type'], attr) + ' }\n')
+        text += ('%s *%s = (%s *) &%s::%s;\n' %
+                 (keyType, attr, keyType, ns, attr))
+    else:
+        text = ''
+    return text
+
+def IspcKeyType(rdl2Type):
+    '''
+    From the rdl2::Type, determine the corresponding ISPC key type.
+    Not all rdl2 attributes types are supported in ISPC code.
+    '''
+    dataType = ''
+    if rdl2Type == 'Bool':
+        dataType += 'BoolAttrKeyISPC'
+    elif rdl2Type == 'Int':
+        dataType += 'IntAttrKeyISPC'
+    elif rdl2Type == 'Float':
+        dataType += 'FloatAttrKeyISPC'
+    elif rdl2Type == 'Vec2f':
+        dataType += 'Float2AttrKeyISPC'
+    elif rdl2Type == 'Vec3f' or rdl2Type == 'Rgb':
+        dataType += 'Float3AttrKeyISPC'
+    elif rdl2Type == 'Vec4f' or rdl2Type == 'Rgba':
+        dataType += 'Float4AttrKeyISPC'
+    else:
+        dataType += 'UNKNOWN_ATTR_TYPE'
+    return dataType
+
+def IspcType(rdl2Type):
+    '''
+    From the rdl2::Type, determine the corresponding ISPC shader type.
+    Not all rdl2 attributes types are supported in ISPC shader code.
+    '''
+    shaderType = ''
+    if rdl2Type == 'Bool':
+        shaderType += 'bool'
+    elif rdl2Type == 'Int':
+        shaderType += 'int'
+    elif rdl2Type == 'Float':
+        shaderType += 'float'
+    elif rdl2Type == 'Vec2f':
+        shaderType += 'Vec2f'
+    elif rdl2Type == 'Vec3f':
+        shaderType += 'Vec3f'
+    elif rdl2Type == 'Rgb':
+        shaderType = 'Color'
+    return shaderType
+
+def cap(name):
+    return name[0].upper() + name[1:]
+
+def getAttrFn(name):
+    return 'get' + cap(name)
+
+def evalAttrFn(name):
+    return 'eval' + cap(name)
+
+def evalAttrBoundFn(name):
+    return 'eval' + cap(name) + 'Bound'
+
+def evalAttrUnBoundFn(name):
+    return 'eval' + cap(name) + 'UnBound'
+
+def evalCompFn(name):
+    return 'evalComp' + cap(name)
+
+def evalNormalFn(name):
+    return 'evalNormal' + cap(name)
+
+def evalNormalBoundFn(name):
+    return 'evalNormal' + cap(name) + 'Bound'
+
+def evalNormalUnBoundFn(name):
+    return 'evalNormal' + cap(name) + 'UnBound'
+
+def defineGetAttrFn(shaderType, retType, attrName):
+    text = ('inline uniform ' + retType +
+            '\n' + getAttrFn(attrName) + 
+            '(const uniform ' + shaderType + ' * uniform obj) {\n' +
+            '    return ' + getAttrFn(retType) + '(obj, ' + attrName + ');\n}\n')
+    return text
+
+def defineEvalAttrFn(shaderType, retType, attrName):
+    # evalAttrName(obj, tls, state);
+    text = ('inline varying ' + retType +
+            '\n' + evalAttrFn(attrName) +
+            '(const uniform ' + shaderType + ' * uniform obj, ' +
+            'uniform ShadingTLState *uniform tls, ' +
+            'const varying State &state) {\n' +
+            '    return ' + evalAttrFn(retType) +
+            '(obj, tls, state, ' + attrName + ');\n}\n')
+
+    return text
+
+def defineEvalCompFn(shaderType, compName, attrColor, attrFactor, attrShow):
+    # evalCompName
+    text = 'inline varying Color\n'
+    text +=(evalCompFn(compName) +
+            '(const uniform ' + shaderType + ' * uniform obj, ' +
+            'uniform ShadingTLState *uniform tls, ' +
+            'const varying State &state)\n')
+    text += '{\n'
+    text += '    Color result = Color_ctor(0.f);\n'
+    text += '    if (' + getAttrFn(attrShow) + '(obj)) {\n'
+    text += '        const uniform float factor = ' + getAttrFn(attrFactor) + '(obj);\n'
+    text += '        if (!isZero(factor)) {\n'
+    text += '            result = ' + evalAttrFn(attrColor) + '(obj, tls, state) * factor;\n'
+    text += '        }\n'
+    text += '    }\n'
+    text += '    return result;\n'
+    text += '}\n'
+
+    return text
+
+def defineEvalNormalFn(shaderType, normal, attrNameNormal, attrNameBlend, attrNameSpace):
+    # evalNormalAttrName
+    text = 'inline Vec3f\n'
+    text +=(evalNormalFn(normal) + '(const uniform ' + shaderType +
+            ' * uniform obj, uniform ShadingTLState *uniform tls, ' + 
+            'const varying State &state)\n')
+    text += '{\n'
+    text +=('    return evalNormal(obj, tls, state, ' + attrNameNormal +
+            ', ' + attrNameBlend + ', ' + attrNameSpace + ');\n')
+    text += '}\n'
+
+    return text
+
+def declareISPCAttributeFunctions(data, attr, shader):
+    # if the keytype is unknown, then very likely this attribute is
+    # not supported in ispc and exists only for c++ code
+    keyType = IspcKeyType(data['type'])
+    if keyType != 'UNKNOWN_ATTR_TYPE':
+        text = '//-------------------------------------------------\n'
+        text += '// ' + attr + '\n'
+        text += '//-------------------------------------------------\n'
+        text += 'extern uniform ' + keyType + ' * uniform ' + attr + ';\n'
+        ispcType = IspcType(data['type'])
+        shaderType = shader['type']
+        needsEval = False
+        if ispcType == 'Color' or ispcType == 'float' or ispcType == 'Vec2f' or ispcType == 'Vec3f':
+            if 'flags' in data and 'FLAGS_BINDABLE' in data['flags']:
+                needsEval = True
+        text += defineGetAttrFn(shaderType, ispcType, attr)
+        if needsEval:
+            text += defineEvalAttrFn(shaderType, ispcType, attr)
+    else:
+        text = ''
+    return text
+
+def gen_attributes_isph(shader):
+    # generate attributes.isph output file
+    # extern uniform <Type>AttrKeyISPC * uniform attrKey;
+    text = '#pragma once\n'
+    text += '#include <rendering/shading/ispc/Shading.isph>\n'
+    text += '#include <scene_rdl2/scene/rdl2/rdl2.isph>\n'
+    text += '#include <scene_rdl2/scene/rdl2/ISPCSupport.h>\n'
+    for attr, data in shader['attributes'].items():
+        if 'multi' in data:
+            for i in range(int(data['multi'])):
+                attrName = attr + str(i)
+                text += declareISPCAttributeFunctions(data, attrName, shader)
+            continue;
+        else:
+            text += declareISPCAttributeFunctions(data, attr, shader)
+
+    if 'components' in shader:
+        for comp, data in shader['components'].items():
+            shaderType = shader['type']
+            text += '//-------------------------------------------------\n'
+            text += '// Component ' + comp + '\n'
+            text += '//-------------------------------------------------\n'
+            text += defineEvalCompFn(shaderType, comp, data['color'],
+                                     data['factor'], data['show'])
+    if 'normals' in shader:
+        for normal, data in shader['normals'].items():
+            text += '//-----------------------------------------------------\n'
+            text += '// Normal ' + normal + '\n'
+            text += '//-----------------------------------------------------\n'
+            shaderType = shader['type']
+            text += defineEvalNormalFn(shaderType, normal, data['value'], data['dial'], data['space'])
+    
+    return text
+
+def generate(jsonFile,outputDir,includeDirs):
+    with open(jsonFile) as f:
+        shader = json.load(f, object_pairs_hook=OrderedDict)
+    expandIncludes(shader,includeDirs)
+    processGroups(shader)
+
+    # unlike standard rdl2 dsos, we place the shader attributes into
+    # a non-anonymous namespace so we can set the (global) ispc
+    # attribute keys to the same names.  at the end of attributes.cc
+    # we set 'using namespace ns' which should have a similar effect
+    # to using an anonymous namespace.
+    ns = shader['name'] + '_attr'
+
+    # attributes.cc : included by dsoName.cc
+    attributes_cc = os.path.join(outputDir,'attributes.cc')
+    text = gen_attributes_cc(shader,ns)
+    f = open(attributes_cc, "w")
+    f.write(text)
+    f.close()
+
+    # attributesISPC.cc : creates the global ispc attribute keys
+    # this file creates the global ispc attribute keys
+    # namespace ns { extern AttributeKey<Type> attrName; }
+    # TypeAttrKeyISPC *attrName = (TypeAttrKeyISPC *) &ns::attrName;
+    attributesISPC_cc = os.path.join(outputDir,'attributesISPC.cc')
+    text  = '#include <scene_rdl2/scene/rdl2/rdl2.h>\n'
+    text += '#include <scene_rdl2/scene/rdl2/ISPCSupport.h>\n'
+    text += 'using namespace scene_rdl2::rdl2;\n'
+    for attr, data in shader['attributes'].items():
+        if 'multi' in data:
+            for i in range(int(data['multi'])):
+                attrName = attr + str(i)
+                text += declareISPCAttributeKey(data, attrName, ns)
+            continue;
+        else:
+            text += declareISPCAttributeKey(data, attr, ns)
+    f = open(attributesISPC_cc, "w")
+    f.write(text)
+    f.close()
+
+    # attributes.isph : included by dsoName.ispc
+    attributes_isph = os.path.join(outputDir,'attributes.isph')
+    text = gen_attributes_isph(shader)
+    f = open(attributes_isph, "w")
+    f.write(text)
+    f.close()
+
+    # labels.h : optionally included by shaders that assign labels to lobes
+    labels_h = os.path.join(outputDir,'labels.h')
+    text = '#pragma once\n'
+    if 'labels' in shader:
+        val = 1
+        for variable, label in shader['labels'].items():
+            text += 'static const int %s = %d;\n' % (variable, val)
+            val = val + 1
+    f = open(labels_h, "w")
+    f.write(text)
+    f.close()
+
+    # labels.isph : optionally included by shaders that assign labels to lobes
+    labels_isph = os.path.join(outputDir,'labels.isph')
+    text = '#pragma once\n'
+    if 'labels' in shader:
+        val = 1
+        for variable, label in shader['labels'].items():
+            text += 'static const uniform int %s = %d;\n' % (variable, val)
+            val = val + 1
+    f = open(labels_isph, "w")
+    f.write(text)
+    f.close()
+
+#--------------------------------------------------------------------------------
+
+args = parseArgs()
+generate(args.source, args.output_dir, args.include_dir)

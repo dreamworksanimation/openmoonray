@@ -1,0 +1,31 @@
+SceneVariables {
+    ["image width"] = 512,
+    ["image height"] = 512,
+}
+
+Camera("camera") {
+    ["node xform"] = Mat4(0.99652, -0.0442804, -0.0706272, 0, 0.00547228, 0.880173, -0.474621, 0, 0.0831806, 0.472583, 0.877352, 0, 0.158858, 2.00373, 3.23255, 1),
+}
+
+sphere = SphereGeometry("sphere") {
+    ["radius"] = 1,
+}
+
+GeometrySet("geometryset") {
+    sphere,
+}
+
+mat = BaseMaterial("mat") {
+    ["diffuse color"] = Rgb(1, 1, 0),
+}
+
+env = EnvLight("env") {
+}
+
+lightSet = LightSet("lightSet") {
+    env,
+}
+
+Layer("layer") {
+    {sphere, "", mat, lightSet, undef(), undef(), undef(), undef()},
+}

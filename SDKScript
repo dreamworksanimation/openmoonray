@@ -1,0 +1,25 @@
+##-*-python-*-
+
+Import('env')
+
+folio_dir = env.Dir('.').srcnode()
+
+env.Tool('scene_rdl2_utils', toolpath=[folio_dir.Dir('bart')])
+env.DefaultToAVX()
+env.Tool('rdl2_dso', toolpath=[folio_dir.Dir('bart')])
+env.Tool('ispc_dso', toolpath=[env.Dir('bart').srcnode()])
+
+env.GatherProxies()
+
+ccflags = []
+cppdefines = []
+
+if 'gcc' in env['CC']:
+    ccflags.append('-fabi-version=6')
+    cppdefines.append(('__cdecl', '""'))
+    cppdefines.append(('"__pragma(p)"', '""'))
+elif 'clang' in env['CC']:
+    cppdefines.append(('__cdecl', '""'))
+    cppdefines.append(('"__pragma(p)"', '""'))
+
+env.AppendUnique(CPPDEFINES=cppdefines, CCFLAGS=ccflags)

@@ -1,0 +1,150 @@
+{
+    "version": 4,
+    "configurePresets": [
+        {
+            "name": "dwa-environment",
+            "hidden": true,
+            "environment": {
+                "CPPUNIT_ROOT"                  : "/rel/rez/dwa/cppunit/1.15.1.x.1.0.0.0/os-CentOS-7/cpp_std-17",
+                "ISPC"                          : "/rel/third_party/intelispc/1.14.1/bin/ispc",
+                "JPEG_ROOT"                     : "/rel/rez/dwa/libjpeg_turbo/1.5.3.x.2.0.1.0/os-CentOS-7/cpp_std-17",
+                "CUDA_ROOT"                     : "/rel/rez/dwa/cuda/11.3.0.x.1.0.0.1",
+                "JSONCPP_ROOT"                  : "/rel/rez/third_party/jsoncpp/0.6.0.2",
+                "LIBCURL_ROOT"                  : "/rel/rez/third_party/curl_no_ldap/7.49.1.2",
+                "LIBUNWIND_ROOT"                : "/rel/rez/third_party/unwind/1.0.x.1.0.0.0",
+                "LOG4CPLUS_ROOT"                : "/rel/rez/dwa/log4cplus/1.1.2.x.2.0.0.2/os-CentOS-7/cpp_std-17",
+                "LUA_DIR"                       : "/rel/rez/third_party/lua/5.3.5.x.1.0.0.0",
+                "MKL_ROOT"                      : "/rel/rez/third_party/mkl/2020.3.279.x.1.0.0.0",
+                "OPENSUBDIV_ROOT"               : "/rel/rez/dwa/opensubdiv/3.4.3.x.2.0.0.0/os-CentOS-7/cpp_std-17",
+                "OPENVDB_ROOT"                  : "/rel/rez/dwa/openvdb/8.2.0.4/os-CentOS-7/opt_level-optdebug/refplat-vfx2021.0/gcc-9.3.x/python-3.7",
+                "OPTIX_ROOT"                    : "/rel/rez/third_party/optix/7.3.0.x.1.0.0.0",
+                "Python_ROOT_DIR"               : "/rel/rez/dwa/python/3.7.7.x.1.2.0.1",
+                "PXR_USD_LOCATION"              : "/rel/rez/dwa/usd_core/0.22.5.x.3.0.0.1/opt_level-optdebug/refplat-vfx2021.0/gcc-9.3.x/python-3.7",
+                "REZ_USD_CORE_ROOT"             : "/rel/rez/dwa/usd_core/0.22.5.x.3.0.0.1/opt_level-optdebug/refplat-vfx2021.0/gcc-9.3.x/python-3.7",
+                "REZ_USD_IMAGING_ROOT"          : "/rel/rez/dwa/usd_imaging/0.22.5.x.3.0.0.1/opt_level-optdebug/refplat-vfx2021.0/gcc-9.3.x/python-3.7",
+                "PXR_INCLUDE_DIRS"              : "$env{REZ_USD_CORE_ROOT}/include:$env{REZ_USD_IMAGING_ROOT}/include",
+                "RANDOM123_ROOT"                : "/rel/rez/third_party/random123/1.08.3",
+                "ZLIB_ROOT"                     : "/rel/rez/dwa/zlib/1.2.8.x.2.0.0.0/cpp_std-17.0",
+                "DWA_PREFIX_BOOST"              : "/rel/rez/dwa/boost/1.73.0.x.2.1.0.0/cpp_std-17.0/python-3.7.7.x.1/zlib-1.2.8.x.2",
+                "DWA_PREFIX_CUDA"               : "/rel/rez/third_party/cuda/11.3.0.x.1.0.0.1",
+                "DWA_PREFIX_EMBREE"             : "/rel/rez/dwa/embree/3.12.1.x.16.0.0.0/refplat-vfx2021.0/opt_level-optdebug/gcc",
+                "DWA_PREFIX_OPENCOLORIO"        : "/rel/rez/dwa/opencolorio/2.0.2.x.0.0.1.0/cpp_std-17/boost-1.73.0.x.2/python-3.7.7.x.1",
+                "DWA_PREFIX_OPENEXR"            : "/rel/test/CM-17351/openexr/2.5.7.x.0.0.1.9999/os-CentOS-7/cpp_std-17/python-3.7.7.x.1/zlib-1.2.8.x.2/boost-1.73.0.x.2",
+                "DWA_PREFIX_OPENIMAGEDENOISE"   : "/rel/rez/dwa/openimagedenoise/1.4.3.x.1.0.0.0/refplat-vfx2021.0/opt_level-optdebug",
+                "DWA_PREFIX_OPENIMAGEIO"        : "/rel/rez/dwa/openimageio/2.3.20.0.x.0.1.0.1/os-CentOS-7/cpp_std-17.0/boost-1.73.0.x.2/openexr-2.5.7.x.0/python-3.7.7.x/zlib-1.2.8.x.2/qt-5.15.2.x.2/opencolorio-2.0.2.x.0",
+                "DWA_PREFIX_MICROHTTP"          : "/rel/rez/third_party/libmicrohttpd/0.9.37.x.0.0.0.0",
+                "DWA_PREFIX_QT"                 : "/rel/rez/dwa/qt/5.12.6.x.2.1.0.0/opt_level-optdebug/gcc-6.3",
+                "DWA_PREFIX_TBB"                : "/rel/rez/dwa/tbb/2020.2.0.x.1.0.0.0/os-CentOS-7/cpp_std-17",
+                "DWA_PREFIX_PXR"                : "$env{REZ_USD_IMAGING_ROOT}"
+            },
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "$env{DWA_PREFIX_PXR};$env{DWA_PREFIX_BOOST};$env{DWA_PREFIX_CUDA};$env{DWA_PREFIX_EMBREE};$env{DWA_PREFIX_OPENEXR};$env{DWA_PREFIX_OPENIMAGEDENOISE};$env{DWA_PREFIX_OPENIMAGEIO};$env{DWA_PREFIX_MICROHTTP};$env{DWA_PREFIX_QT};$env{DWA_PREFIX_TBB};$env{DWA_PREFIX_OPENCOLORIO}",
+                "MOONRAY_ENABLE_ATHENA_LOGGING": "YES",
+                "MOONRAY_EXEC_MODE_DEFAULT": "AUTO",
+                "CUDAToolkit_ROOT": "$env{CUDA_ROOT}"
+            }
+        },
+        {
+            "name": "container-environment",
+            "hidden": true,
+            "environment": {
+                "DEPS_ROOT"                     : "/installs",
+                "BUILD_DIR"                     : "/build",
+                "CPPUNIT_ROOT"                  : "$env{DEPS_ROOT}",
+                "ISPC"                          : "$env{DEPS_ROOT}/bin/ispc",
+                "JSONCPP_ROOT"                  : "$env{DEPS_ROOT}",
+                "LIBCURL_ROOT"                  : "/usr/local",
+                "LIBUNWIND_ROOT"                : "/usr/local",
+                "LOG4CPLUS_ROOT"                : "$env{DEPS_ROOT}",
+                "LUA_DIR"                       : "$env{DEPS_ROOT}",
+                "OPENSUBDIV_ROOT"               : "$env{DEPS_ROOT}",
+                "OPENVDB_ROOT"                  : "$env{DEPS_ROOT}",
+                "OPTIX_ROOT"                    : "$env{DEPS_ROOT}/optix",
+                "PXR_USD_LOCATION"              : "$env{DEPS_ROOT}",
+                "PXR_INCLUDE_DIRS"              : "$env{DEPS_ROOT}/include",
+                "RANDOM123_ROOT"                : "$env{DEPS_ROOT}",
+                "ZLIB_ROOT"                     : "/usr/local"
+            },
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "$env{DEPS_ROOT}"
+            }
+        },
+        {
+            "name": "container-debug",
+            "displayName": "Container Debug",
+            "inherits": "container-environment",
+            "binaryDir": "$env{BUILD_DIR}",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" },
+            "generator": "Unix Makefiles"
+        },
+        {
+            "name": "container-release",
+            "displayName": "Container Release",
+            "inherits": "container-environment",
+            "binaryDir": "$env{BUILD_DIR}",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" },
+            "generator": "Unix Makefiles"
+        },
+        {
+            "name": "dwa-debug",
+            "displayName": "DWA Debug",
+            "inherits": "dwa-environment",
+            "binaryDir": "${sourceParentDir}/build-debug/${sourceDirName}",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" },
+            "generator": "Unix Makefiles"
+        },
+        {
+            "name": "dwa-release",
+            "displayName": "DWA Release",
+            "inherits": "dwa-environment",
+            "binaryDir": "${sourceParentDir}/build-release/${sourceDirName}",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" },
+            "generator": "Unix Makefiles"
+        },
+        {
+            "name": "dwa-debug-unit",
+            "inherits": "dwa-debug",
+            "cacheVariables": { "SCENERDL2_BUILD_UNITTESTS": "YES" }
+        },
+        {
+            "name": "dwa-relwithdebinfo",
+            "displayName": "DWA RelWithDebInfo",
+            "inherits": "dwa-environment",
+            "binaryDir": "${sourceParentDir}/build-relwithdebinfo/${sourceDirName}",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" },
+            "generator": "Unix Makefiles"
+        },
+        {
+            "name": "dwa-release-unit",
+            "inherits": "dwa-release",
+            "cacheVariables": { "SCENERDL2_BUILD_UNITTESTS": "YES" }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "container-debug",
+            "displayName": "Container Debug",
+            "configurePreset": "container-debug"
+        },
+        {
+            "name": "container-release",
+            "displayName": "Container Release",
+            "configurePreset": "container-release"
+        },
+        {
+            "name": "dwa-debug",
+            "displayName": "DWA Debug",
+            "configurePreset": "dwa-debug"
+        },
+        {
+            "name": "dwa-relwithdebinfo",
+            "displayName": "DWA RelWithDebInfo",
+            "configurePreset": "dwa-relwithdebinfo"
+        },
+        {
+            "name": "dwa-release",
+            "displayName": "DWA Release",
+            "configurePreset": "dwa-release"
+        }
+    ]
+}

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+SOURCEDIR="$( dirname -- "${BASH_SOURCE[0]:-$0}";)"
+cd ${SOURCEDIR}/../python/minicoord
+rez-env tornado-5.1.1 requests -c "python -i run.py"

@@ -1,0 +1,60 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Ignore Eclipse/IDE files
+*.pydevproject
+*.project
+*.cproject
+*.settings
+
+# Ignore vim tmp files
+.*.swp
+
+
+# Ignore Gedit tmp files
+*~
+
+# ignore build/install/build_env dirs
+build
+building/docker
+build_env
+install
+release
+html
+latex
+Doxyfile
+
+# CMake temp files
+CMakeCache.txt
+CMakeFiles
+Testing
+
+# SCons symlinks
+bamboo_tools
+SConstruct
+site_scons
+boot
+
+#src_project related files
+.src_project*
+.config.xml
+.metadata_src_project

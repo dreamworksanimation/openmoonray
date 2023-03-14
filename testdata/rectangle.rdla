@@ -1,0 +1,49 @@
+SceneVariables {
+    ["camera"] = PerspectiveCamera("camera"),
+    ["image_width"] = 512,
+    ["image_height"] = 512,
+}
+
+AttributeMap("displayColor") {
+    ["default_value"] = bind(undef(), Rgb(0.5, 0.5, 0.5)),
+    ["primitive_attribute_name"] = "displayColor",
+    ["primitive_attribute_type"] = "vec3f",
+}
+
+RdlMeshGeometry("rectangle") {
+    ["vertices_by_index"] = {0, 1, 2, 0, 2, 3},
+    ["vertex_list_0"] = {Vec3(-1, 0, 0), Vec3(1, 0, 0), Vec3(1, 1, 0), Vec3(-1, 1, 0)},
+    ["face_vertex_count"] = {3, 3},
+    ["is_subd"] = false,
+    ["primitive_attributes"] = {UserData("rectangle/displayColor")},
+}
+
+GeometrySet("geometrySet") {
+    RdlMeshGeometry("rectangle"),
+}
+
+Layer("defaultLayer") {
+    {RdlMeshGeometry("rectangle"), "", BaseMaterial("material"), LightSet("lightSet"), undef(), undef(), undef(), undef()},
+}
+
+BaseMaterial("material") {
+    ["diffuse_color"] = bind(AttributeMap("displayColor")),
+}
+
+EnvLight("light") {
+}
+
+LightSet("lightSet") {
+    EnvLight("light"),
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = blur(Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0.5, 2.2805116054325731, 1), Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0.5, 2.2805116054325731, 1)),
+    ["far"] = 2000000,
+    ["focal"] = blur(15.1530247, 15.1530247),
+}
+
+UserData("rectangle/displayColor") {
+    ["vec3f_key"] = "displayColor",
+    ["vec3f_values_0"] = {Vec3(1, 0, 0), Vec3(0, 1, 0)},
+}

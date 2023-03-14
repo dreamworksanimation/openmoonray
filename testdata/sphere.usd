@@ -1,0 +1,43 @@
+#usda 1.0
+
+def Camera "shot_cam"
+{
+    matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0.5, 10, 1) )
+    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+    string focalLength = "test"
+}
+
+def DistantLight "d_light"
+{
+    matrix4d xformOp:transform = ( (0, 0, 1, 0), (0, 1, 0, 0), (-1, 0, 0, 0), (-10, 0, 0, 1) )
+    uniform token[] xformOpOrder = ["xformOp:transform"]
+    float intensity = 1
+    bool normalize = true
+}
+
+def Sphere "sphere"
+{
+    rel material:binding = </checkerboard>
+}
+
+def Material "checkerboard"
+{
+        color4f outputs:moonray:surface.connect = <baseMtl.outputs:surface>
+
+        def Shader "baseMtl"
+        {
+                uniform token info:id = "BaseMaterial"
+                color4f outputs:surface
+                color3f inputs:diffuse_color.connect = <../checkerboardMap.outputs:out>
+        }
+        def Shader "checkerboardMap"
+        {
+                uniform token info:id = "CheckerboardMap"
+                color3f inputs:color_A = (0,1,0)
+                color3f inputs:color_B = (0,0,1)
+                int inputs:num_u_tiles = 24
+                int inputs:num_v_tiles = 24
+                color3f outputs:out
+        }
+}
