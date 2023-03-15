@@ -83,6 +83,7 @@ ExternalProject_Add(OpenEXR
     GIT_TAG 8bc3741131db146ad08a5b83af9e6e48f0e94a03 # v2.5.7
     INSTALL_DIR ${installDir}
     CMAKE_ARGS
+        -DBoost_ROOT=<INSTALL_DIR>
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
         -DBUILD_SHARED_LIBS=OFF
     DEPENDS OpenSubdiv
