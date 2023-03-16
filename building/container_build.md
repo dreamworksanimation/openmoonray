@@ -12,7 +12,7 @@ Substitute */source/openmoonray* and */optix* for the actual locations wherever 
 ## Step 1. Base requirements
 ---
 
-The base image for building MoonRay in a container is constructed using *Dockerfile* in the *building* directory of the MoonRay source. It contains a number of MoonRay dependencies that are installed using *yum*, the Centos-7 package manager. It also intalls CMake, needed for Step 2.
+The base image for building MoonRay in a container is constructed using *Dockerfile* in the *building* directory of the MoonRay source. It contains a number of MoonRay dependencies that are installed using *yum*, the Centos-7 package manager. It also installs CMake, needed for Step 2.
 
 You can remove the Qt5 packages from the Dockerfile if you do not intend to build the MoonRay GUI programs.
 
