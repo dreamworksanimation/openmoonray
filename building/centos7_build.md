@@ -48,7 +48,7 @@ export PATH=/installs/cmake-3.23.1-linux-x86_64/bin:${PATH}
 ```bash
 mkdir /source
 cd /source
-git clone --recurse-submodules https://github.anim.dreamworks.com/OpenMoonRay/openmoonray.git
+git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git
 cd /
 ln -s source/openmoonray/building .
 ```
