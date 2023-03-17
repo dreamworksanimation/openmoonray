@@ -13,7 +13,7 @@ Portions of the library SceneRdl2::common_math were co-developed by Intel Corpor
 
 FindTBB.cmake derived and modified from Embree.  
 Original source: https://github.com/embree/embree/blob/master/common/cmake/FindTBB.cmake  
-Modifed line 407 : make imported component target GLOBAL, otherwise the target TBB can be found where the component targets TBB:comp are out of scope, causing an error at line 222
+Modified line 407 : make imported component target GLOBAL, otherwise the target TBB can be found where the component targets TBB:comp are out of scope, causing an error at line 222
 
 LICENSE:
 ```
