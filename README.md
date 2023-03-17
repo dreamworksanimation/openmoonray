@@ -20,8 +20,8 @@ To clone this repository along with the submodules:
 git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git
 ```
 
-[Source Structure](https://dreamworksanimation.github.io/openmoonray-docs/developers-guide/source-structure/)  
-[Building MoonRay](https://dreamworksanimation.github.io/openmoonray-docs/getting-started/installation/building-moonray/)  
-[Documentation](https://dreamworksanimation.github.io/openmoonray-docs/)  
+[Source Structure](https://docs.openmoonray.org/developer-reference/source-structure/)  
+[Building MoonRay](https://docs.openmoonray.org/getting-started/installation/building-moonray/)  
+[Documentation](https://docs.openmoonray.org/)  
 [Website](https://openmoonray.org/)  
 
