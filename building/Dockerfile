@@ -2,7 +2,7 @@
 # on top of this image, use CMake to install the 
 # additional moonray dependencies.
 
-FROM nvidia/cuda:11.4.0-base-centos7
+FROM nvidia/cuda:11.4.0-devel-centos7
 
 RUN yum install -y epel-release centos-release-scl.noarch
 RUN yum install -y devtoolset-9 devtoolset-9-gcc \
