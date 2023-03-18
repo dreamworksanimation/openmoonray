@@ -36,7 +36,7 @@ ExternalProject_Add(Boost
 
 ExternalProject_Add(JsonCpp
     GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp.git
-    GIT_TAG 15949af09856076b584c7b432f065386ccd267a9 # 0.7.0
+    GIT_TAG 7c186e549fba358ac0541ed75f5a524b393954b3 # 0.11.0
     INSTALL_DIR ${installDir}
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
