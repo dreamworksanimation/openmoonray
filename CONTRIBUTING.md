@@ -22,8 +22,9 @@ license.
 
 #### Contributor License Agreements
 
-Developers who wish to contribute code to be considered for inclusion
-in MoonRay must first complete a **Contributor License Agreement**.
+Developers who wish to contribute code to be considered for inclusion in MoonRay must first complete
+a **Contributor License Agreement**, and email it to MoonRay@dreamworks.com and be sure to include
+your GitHub username(s).
 
 * If you are an individual writing the code on your own time and
   you're SURE you are the sole owner of any intellectual property you
