@@ -1,0 +1,63 @@
+Bootstrap: docker
+From: rockylinux/rockylinux:9
+
+%post
+dnf install -y epel-release
+dnf config-manager --enable crb devel
+dnf install -y procps-ng which findutils mlocate the_silver_searcher htop nvtop
+
+dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo
+dnf install -y cuda-runtime-11-8 cuda-toolkit-11-8
+
+dnf install -y clang clang-devel
+
+dnf install -y \
+  bison flex wget git python3 python3-devel \
+  patch giflib-devel libmng libtiff-devel libjpeg-devel \
+  libatomic libuuid-devel openssl-devel curl-devel
+
+#libcgroup-devel
+wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-0.42.2-5.el9.x86_64.rpm
+wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-devel-0.42.2-5.el9.x86_64.rpm
+dnf install libcgroup-0.42.2-5.el9.x86_64.rpm -y
+dnf install libcgroup-devel-0.42.2-5.el9.x86_64.rpm -y
+
+mkdir -p /installs/{bin,lib,include}
+cd /installs
+wget https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-linux-x86_64.tar.gz
+tar xzf cmake-3.23.1-linux-x86_64.tar.gz
+
+dnf install -y blosc blosc-devel \
+    boost boost-* \
+    lua lua-libs lua-devel \
+    openvdb openvdb-libs openvdb-devel \
+    tbb tbb-devel python3-tbb \
+    log4cplus log4cplus-devel \
+    cppunit cppunit-devel \
+    doxygen graphviz python3-docutils glfw glfw-devel \
+    compat-libpthread-nonshared \
+    python3-jinja2 python3-pygments \
+    glew glew-devel libGLEW \
+    freeglut freeglut-devel \
+    expat expat-devel lua-expat \
+    yaml-cpp yaml-cpp-devel \
+    pystring pystring-devel \
+    lcms2 lcms2-utils lcms2-devel \
+    pybind11-devel python3-pybind11 \
+    onednn onednn-devel \
+    zlib zlib-devel \
+    redhat-lsb-core \
+    perl-English \
+    unzip \
+    PackageKit-gtk3-module
+
+%post
+mkdir /source
+cd /source
+git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git
+
+%environment
+export PATH=/usr/local/bin:$PATH
+export PATH=/installs/cmake-3.23.1-linux-x86_64/bin:${PATH}
+export PATH=/usr/local/cuda/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
