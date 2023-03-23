@@ -3,115 +3,52 @@
 You will need Docker and a copy of the MoonRay source. The instructions assume that the source is in */source/openmoonray*
 
 NVIDIA Optix headers need to be downloaded manually from [here](https://developer.nvidia.com/designworks/optix/downloads/legacy), since they require a EULA.
-Be sure to download version 7.3, as MoonRay is not yet compatible with their more recent releases.
-The instructions assume that these are in */optix/include*. 
-
-Substitute */source/openmoonray* and */optix* for the actual locations wherever they appear in the instructions.
+Be sure to download version 7.3, as MoonRay is not yet compatible with their more recent releases.  The Optix installer must be renamed `optix.sh` and placed in the top level of the checkout.
 
 ---
-## Step 1. Base requirements
+## Step 1. build docker
 ---
 
-The base image for building MoonRay in a container is constructed using *Dockerfile* in the *building* directory of the MoonRay source. It contains a number of MoonRay dependencies that are installed using *yum*, the Centos-7 package manager. It also intalls CMake, needed for Step 2.
-
-You can remove the Qt5 packages from the Dockerfile if you do not intend to build the MoonRay GUI programs.
+Build using the `Dockerfile` in the top level of the MoonRay source.  The build requires `optix.sh` to be present, and the correct version.  Download the installer from the link above, and rename it to `optix.sh`.  By default, the build uses 64 compile jobs, this may be adjusted using `--build-arg BUILD_JOBS=8`.
 
 ```bash
-> cd /source/openmoonray/building
-> docker build -t openmoonray_base . --file Dockerfile
+docker build --tag openmoonray/moonray .
+# docker build --build-arg BUILD_JOBS=8 --tag openmoonray/moonray .
+```
+
+If using [podman](https://podman.io/), the `--format docker` flag is required
+
+```bash
+docker build --format docker --tag openmoonray/moonray .
+```
+
+To execute `moonray` on an input file, the host filesystem must be mounted in the Docker image using `/project` as the default.  `openmoonray` is the entrypoint in the Docker image.  To render `testdata/rectangle.rdla`, mount the top level of the MoonRay source to `/project` with relative arguments.  The `testdata/rectangle.rdla` will be mapped to `/project/testdata/rectangle.rdla` within the Docker container.  Because the working directory is `/project` the same relative paths will be used.
+
+```bash
+docker run --rm -v $(pwd):/project openmoonray/moonray -info -in testdata/rectangle.rdla -out testdata/rectangle.exr 
 ```
 
 ---
-## Step 2. Build the remaining dependencies
+## Step 2. build gui docker
 ---
 
-Apart from Optix, the remaining MoonRay dependencies can be built from source and installed using CMake. *CMakeLists.txt* in the *building* directory contains a series of targets that download the sources and build each dependency. 
-
-
-Start the base container from step 1.
+The `gui` directory contains a `Dockerfile` for building on the `openmoonray/moonray` image in the previous step.  It uses [`noVNC`](https://github.com/novnc/noVNC) and [`easy-novnc`](https://github.com/pgaskin/easy-novnc) to host the gui in a web browser.  If building under `podman`, the `SHELL` command warning may be ignored, or suppressed using the `--format docker` flag.
 
 ```bash
-> docker run -v /source/openmoonray/building:/building:shared  -v /optix:/optix:shared --network=host --rm -it openmoonray_base
+docker build --tag openmoonray/moonray-gui ./gui
 ```
 
-Run the CMake external projects build. The targets are set up to build one at a time. The build takes about 20 minutes on my machine.
+To run the `moonray_gui` launch the docker, then open `http://localhost:8080` to interact with the desktop.  The VNC password is `moonray`.
 
 ```bash
-> cd /build
-> cmake ../building
-> cmake --build . -- -j 64
+docker run -it --rm -v $(pwd):/project -p 8080:8080 openmoonray/moonray-gui
 ```
 
-Clean up the build residue, and copy the Optix headers into */installs*
+Click "Use default config" when the  `xfce` window manager asks for the initial setup, and the "XFCE PolicyKit Agent" error can be ignored. Click the terminal icon in the bottom tray to open a terminal then run the `moonray_gui` application.
 
 ```bash
-> rm -rf /build/*
-> mkdir /installs/optix
-> cp -r /optix/include /installs/optix
+# in GUI terminal window
+moonray_gui -in testdata/rectangle.rdla
 ```
 
-The dependencies required to build openmoonray are now installed into the container.
-
-To avoid re-running this step, commit the image as **openmoonray_build**. In another shell:
-
-```bash
-> docker ps
-
-CONTAINER ID        IMAGE               ...
-c3a90b08a53a        openmoonray_base    ...
-
-> docker commit c3a90b08a53a openmoonray_build
-```
-
-You can then exit the container.
-
----
-## Step 3. Build MoonRay
----
-
-The entire OpenMoonRay code base is built by running CMake at the top level of the source tree. The locations of dependencies are provided to the build system using a CMake preset defined in *CMakePresets.json*. The source tree already contains a preset for building in a container created following the process described here, called **container-release**.
-
-To continue the container build process, run the **openmoonray_build** container with the OpenMoonRay source mounted. 
-
-```bash
-> docker run -v /source/openmoonray:/openmoonray:shared -v /tmp:/tmp:shared --network=host --rm -it openmoonray_build
-```
-
-cd to the root of the source and build openmoonray:
-
-```bash
-> cd /openmoonray
-> cmake --preset container-release 
-> cmake --build --preset container-release -- -j 64
-> mkdir /installs/openmoonray
-> cmake --install ../build --prefix /installs/openmoonray
-```
-The configure step will report failure to find Mkl (unless you happen to have it installed). This does not cause a problem : Mkl is only linked into the commands if it was found.
-
-If you are building without Qt, add the argument ***-DBUILD_QT_APPS=NO*** to the first cmake command. 
-
-Set up the install and test moonray
-
-```bash
-> source /installs/openmoonray/scripts/setup.sh
-> moonray -in /openmoonray/testdata/rectangle.rdla -out /tmp/rectangle.exr
-```
-
-To commit **openmoonray_run**, follow the same procedure as step 2.
-
----
-
-## 4. Running moonray_gui 
----
-
-To run **moonray_gui**, you need to set up X in the container. The steps required may vary depending on the host setup, but generally you will need to set the environment variables ***DISPLAY*** and ***XAUTHORITY***, and make sure the directory that *XAUTHORITY* points to is mounted in the container. 
-
-You may also need to install additional packages. On my machine, the hotkeys in moonray_gui do not function if package *libxkbcommon-x11* is not installed.
-
-```bash
-> docker run -v /source/openmoonray:/openmoonray:shared -v /tmp:/tmp:shared -e DISPLAY=$DISPLAY -e XAUTHORITY=${XAUTHORITY} -v "${XAUTHORITY}:${XAUTHORITY}:z" --network=host --rm -it openmoonray_run
-
-> yum install -y libxkbcommon-x11
-> source /installs/openmoonray/scripts/setup.sh
-> moonray_gui -in /openmoonray/testdata/rectangle.rdla -out /tmp/rectangle.exr
-```
+![screenshot](moonray_gui_screenshot.png)
