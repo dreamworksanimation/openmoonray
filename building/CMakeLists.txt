@@ -11,14 +11,14 @@ project(openmoonray_third_party)
 
 include(ExternalProject)
 
-set(installDir /installs)
+set(installDir /installs CACHE PATH "install directory")
 
 ExternalProject_Add(Blosc
     GIT_REPOSITORY https://github.com/Blosc/c-blosc
     GIT_TAG a44e961498cdca2eb893fa897cd15dd007fad496 # 1.20.1
     INSTALL_DIR ${installDir}
     CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
 )
 
 set(PYTHON_VER 3.6)
@@ -27,7 +27,7 @@ ExternalProject_Add(Boost
     URL https://sourceforge.net/projects/boost/files/boost/1.73.0/boost_1_73_0.tar.gz
     UPDATE_COMMAND ./bootstrap.sh --prefix=${installDir}
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND ./b2 install -j64 --user-config=/building/python-config.jam --with_python variant=release toolset=gcc link=shared threading=multi                  
+    BUILD_COMMAND ./b2 install -j 4 --user-config=${CMAKE_HOME_DIRECTORY}/python-config.jam variant=release link=shared threading=multi
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND ""
     DEPENDS Blosc
@@ -39,8 +39,9 @@ ExternalProject_Add(JsonCpp
     GIT_TAG 15949af09856076b584c7b432f065386ccd267a9 # 0.7.0
     INSTALL_DIR ${installDir}
     CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
         -DJSONCPP_LIB_BUILD_SHARED:BOOL=ON
+        -DJSONCPP_WITH_TESTS:BOOL=OFF
     DEPENDS Boost
 )
 
@@ -71,7 +72,7 @@ ExternalProject_Add(OpenSubdiv
     GIT_TAG 82ab1b9f54c87fdd7e989a3470d53e137b8ca270 # v3_4_3
     INSTALL_DIR ${installDir}
     CMAKE_ARGS
-      -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+      -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
       -DCMAKE_BUILD_TYPE=Release
       -DNO_PTEX=1 -DNO_OMP=1 -DNO_TBB=1 -DNO_CUDA=1 -DNO_GLFW_X11=1
       -DNO_OPENCL=1 -DNO_CLEW=1 -DNO_REGRESSION=1 -DNO_EXAMPLES=1 -DNO_TUTORIALS=1
@@ -83,7 +84,7 @@ ExternalProject_Add(OpenEXR
     GIT_TAG 8bc3741131db146ad08a5b83af9e6e48f0e94a03 # v2.5.7
     INSTALL_DIR ${installDir}
     CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
         -DBUILD_SHARED_LIBS=OFF
     DEPENDS OpenSubdiv
 )
@@ -102,9 +103,10 @@ ExternalProject_Add(OpenVDB
     GIT_REPOSITORY https://github.com/AcademySoftwareFoundation/openvdb
     GIT_TAG 88ae51a34ca70a23442dc60bba83894f35f7f728 # v8.2.0
     INSTALL_DIR ${installDir}
-    CMAKE_ARGS 
-        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
-        -DBLOSC_ROOT=/usr
+    CMAKE_ARGS
+        -DTBB_ROOT:PATH=${installDir}
+        -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
+        -DBLOSC_ROOT:PATH=${installDir}
     DEPENDS TBB
 )
 
@@ -113,7 +115,7 @@ ExternalProject_Add(Log4CPlus
     GIT_TAG bd2dfe9ef0817277a7d41fadecd84addaf943fe3 # REL_1_1_2
     INSTALL_DIR ${installDir}
     CMAKE_ARGS 
-        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
     DEPENDS OpenVDB
 )
 
@@ -148,12 +150,12 @@ ExternalProject_Add(ISPC
 ExternalProject_Add(embree
     GIT_REPOSITORY https://github.com/embree/embree
     GIT_TAG 69bd4c272f1ed608494f233ecfff3feec516880b # v3.12.1
-    PATCH_COMMAND patch -p1 < /building/embree_missing_type.patch
+    PATCH_COMMAND patch -N -p1 < ${CMAKE_HOME_DIRECTORY}/embree_missing_type.patch
     INSTALL_DIR ${installDir}
     CMAKE_ARGS 
-        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
-        -DEMBREE_ISPC_EXECUTABLE=<INSTALL_DIR>/bin/ispc
-        -DEMBREE_TBB_ROOT=<INSTALL_DIR>
+        -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
+        -DEMBREE_ISPC_EXECUTABLE=${installDir}/bin/ispc
+        -DEMBREE_TBB_ROOT=${installDir}
         -DEMBREE_IGNORE_INVALID_RAYS=ON
         -DEMBREE_RAY_MASK=ON
         -DEMBREE_MAX_ISA=AVX
@@ -167,7 +169,7 @@ ExternalProject_Add(OpenColorIO
     GIT_TAG 056b7b0cb0d087961e9dba75104820e44faf52a1 # v2.0.2
     INSTALL_DIR ${installDir}
     CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
         -DBUILD_SHARED_LIBS=ON
         -DOCIO_BUILD_STATIC=OFF
         -DCMAKE_CXX_STANDARD=17
@@ -179,8 +181,8 @@ ExternalProject_Add(OpenImageIO
     GIT_TAG 55ebad1f77f06527b23b4fe9d0da81fe8d0ecdc8 # 2.2.15.1
     INSTALL_DIR ${installDir}
     CMAKE_ARGS
-        -DOpenEXR_ROOT=<INSTALL_DIR>
-        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DOpenEXR_ROOT=${installDir}
+        -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
         -DUSE_QT=0
         -DUSE_PYTHON=0
     DEPENDS OpenColorIO
@@ -192,9 +194,9 @@ ExternalProject_Add(OpenImageDenoise
     # GIT_TAG d959bac5b7130b31c41095811ddfbe58c4cf03f4 # 1.4.3
     INSTALL_DIR ${installDir}
     CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
-        -DISPC_EXECUTABLE=<INSTALL_DIR>/bin/ispc
-        -DTBB_ROOT=<INSTALL_DIR>
+        -DCMAKE_INSTALL_PREFIX:PATH=${installDir}
+        -DISPC_EXECUTABLE=${installDir}/bin/ispc
+        -DTBB_ROOT=${installDir}
         -DOIDN_APPS=OFF
     DEPENDS OpenImageIO
 )
@@ -205,7 +207,7 @@ ExternalProject_Add(USD
     GIT_TAG 3b097e3ba8fabf1777a1256e241ea15df83f3065 # v22.05
     INSTALL_DIR ${installDir}
     CMAKE_ARGS
-        -DCMAKE_PREFIX_PATH=<INSTALL_DIR>
+        -DCMAKE_PREFIX_PATH=${installDir}
         -DPXR_ENABLE_PYTHON_SUPPORT=ON
         -DPXR_USE_PYTHON_3=ON
         -DTBB_USE_DEBUG_BUILD=OFF

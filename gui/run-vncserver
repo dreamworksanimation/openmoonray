@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+
+# start vnc viewer
+vncserver > /dev/null 2>&1
+
+# start the novnc server
+/root/go/bin/easy-novnc --port 5901 --host localhost
