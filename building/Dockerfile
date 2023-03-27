@@ -2,7 +2,9 @@
 # on top of this image, use CMake to install the 
 # additional moonray dependencies.
 
-FROM nvidia/cuda:11.4.0-base-centos7
+# Use Rocky9 instead of Centos7, since Centos7
+# will be discontinued soon
+FROM arm64v8/rockylinux:9
 
 RUN yum install -y epel-release centos-release-scl.noarch
 RUN yum install -y devtoolset-9 devtoolset-9-gcc \
