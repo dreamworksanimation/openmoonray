@@ -17,7 +17,6 @@ RUN yum install -y bison flex  wget git python3 python3-devel \
 # Not required when using cuda:11.4.0-base-centos7
 # RUN yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-rhel7.repo
 RUN yum install -y mesa-libGL
-RUN yum install -y cuda-toolkit-11-4
 
 # Not needed if you skip building the GUI apps (CMake -DBUILD_QT_APPS=NO)
 RUN yum install -y qt5-qtbase-devel qt5-qtscript-devel
