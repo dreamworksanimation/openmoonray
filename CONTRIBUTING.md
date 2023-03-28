@@ -10,7 +10,7 @@ The contributor role is the starting role for anyone participating in the projec
 
 ### Process for becoming a contributor
 
-* Review the [coding standards](https://docs.openmoonray.org/developer-guide/coding-standards/) to ensure your contribution is in line with the project's coding and styling guidelines.
+* Review the [coding standards](https://docs.openmoonray.org/developer-reference/coding-standards/) to ensure your contribution is in line with the project's coding and styling guidelines.
 * Have a signed CLA on file ( see [below](#contributor-license-agreements) )
 * Have your submission approved by the [committer(s)](#committer) and merged into the codebase.
 
