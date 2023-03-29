@@ -27,18 +27,19 @@ cd /installs
 wget https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-linux-x86_64.tar.gz
 tar xzf cmake-3.23.1-linux-x86_64.tar.gz
 
-dnf install -y blosc blosc-devel \
-    boost boost-* \
-    lua lua-libs lua-devel \
-    openvdb openvdb-libs openvdb-devel \
-    tbb tbb-devel python3-tbb \
-    log4cplus log4cplus-devel \
-    cppunit cppunit-devel \
-    doxygen graphviz python3-docutils glfw glfw-devel \
-    compat-libpthread-nonshared \
-    python3-jinja2 python3-pygments \
+dnf install -y blosc blosc-devel #1.21.2
+dnf install -y boost boost-* #1.75.0
+dnf install -y lua lua-libs lua-devel #5.4.4
+dnf install -y openvdb openvdb-libs openvdb-devel #9.1.0
+dnf install -y tbb tbb-devel python3-tbb #2020.3
+dnf install -y log4cplus log4cplus-devel #2.0.5
+dnf install -y cppunit cppunit-devel #1.15.1
+dnf install -y doxygen graphviz python3-docutils \
+    glfw glfw-devel \
     glew glew-devel libGLEW \
     freeglut freeglut-devel \
+    compat-libpthread-nonshared \
+    python3-jinja2 python3-pygments \
     expat expat-devel lua-expat \
     yaml-cpp yaml-cpp-devel \
     pystring pystring-devel \
@@ -51,10 +52,10 @@ dnf install -y blosc blosc-devel \
     unzip \
     PackageKit-gtk3-module
 
+dnf install -y qt5-qtbase-devel qt5-qtscript-devel
+
 %post
-mkdir /source
-cd /source
-git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git
+mkdir -p /source/openmoonray
 
 %environment
 export PATH=/usr/local/bin:$PATH

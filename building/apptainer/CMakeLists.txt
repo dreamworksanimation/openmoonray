@@ -1,0 +1,163 @@
+# Copyright 2023 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# These ExternalProject targets can be used to download, build and
+# install many of the Moonray dependencies.
+# The targets are chained using dependencies so that they run
+# serially.
+
+cmake_minimum_required (VERSION 3.23.1)
+project(openmoonray_third_party)
+
+include(ExternalProject)
+
+set(installDir /installs)
+
+ExternalProject_Add(JsonCpp
+    GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp.git
+    GIT_TAG ba3fd412929ec4822788b401298e8d9e4950cbab # 0.10.7
+    INSTALL_DIR ${installDir}
+    CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DJSONCPP_LIB_BUILD_SHARED:BOOL=ON
+        -DBUILD_SHARED_LIBS:BOOL=ON
+        -DPYTHON_EXECUTABLE=/usr/bin/python3
+)
+
+ExternalProject_Add(MicroHttpd
+    URL https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.37.tar.gz
+    BUILD_IN_SOURCE 1
+    CONFIGURE_COMMAND ./configure --prefix ${installDir}
+    BUILD_COMMAND ${MAKE}
+    INSTALL_COMMAND make install
+)
+
+ExternalProject_Add(OpenSubdiv
+    GIT_REPOSITORY https://github.com/PixarAnimationStudios/OpenSubdiv
+    GIT_TAG 82ab1b9f54c87fdd7e989a3470d53e137b8ca270 # v3_4_3
+    INSTALL_DIR ${installDir}
+    CMAKE_ARGS
+      -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+      -DCMAKE_BUILD_TYPE=Release
+      -DNO_PTEX=1 -DNO_OMP=1 -DNO_TBB=1 -DNO_CUDA=1 -DNO_GLFW_X11=1
+      -DNO_OPENCL=1 -DNO_CLEW=1 -DNO_REGRESSION=1 -DNO_EXAMPLES=1 -DNO_TUTORIALS=1
+      -DNO_DOC=1 -DNO_GLTESTS=1 -DNO_MACOS_FRAMEWORK=1
+      -DNO_METAL=1 -DNO_TESTS=1 -DPYTHON_EXECUTABLE=/usr/bin/python3
+    DEPENDS MicroHttpd
+)
+
+ExternalProject_Add(OpenEXR
+    GIT_REPOSITORY https://github.com/AcademySoftwareFoundation/openexr
+    GIT_TAG 8bc3741131db146ad08a5b83af9e6e48f0e94a03 # v2.5.7
+    INSTALL_DIR ${installDir}
+    CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DBUILD_SHARED_LIBS=OFF
+    DEPENDS OpenSubdiv
+)
+
+
+ExternalProject_Add(Random123
+    GIT_REPOSITORY https://github.com/DEShawResearch/random123
+    GIT_TAG 726a093cd9a73f3ec3c8d7a70ff10ed8efec8d13 # v1.14.0
+    BUILD_IN_SOURCE 1
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND make install-include prefix=${installDir}
+)
+
+ExternalProject_Add(ISPC
+    URL https://github.com/ispc/ispc/releases/download/v1.14.1/ispc-v1.14.1-linux.tar.gz
+    BUILD_IN_SOURCE 1
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND cp bin/ispc ${installDir}/bin
+    DEPENDS Random123
+)
+
+ExternalProject_Add(embree
+    GIT_REPOSITORY https://github.com/embree/embree
+    GIT_TAG 69bd4c272f1ed608494f233ecfff3feec516880b # v3.12.1
+    PATCH_COMMAND patch -p1 < /building/embree_missing_type.patch
+    INSTALL_DIR ${installDir}
+    CMAKE_ARGS 
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DEMBREE_ISPC_EXECUTABLE=<INSTALL_DIR>/bin/ispc
+        -DEMBREE_TBB_ROOT=/usr
+        -DEMBREE_IGNORE_INVALID_RAYS=ON
+        -DEMBREE_RAY_MASK=ON
+        -DEMBREE_MAX_ISA=AVX
+        -DEMBREE_TUTORIALS=OFF
+        -DBUILD_SHARED_LIBS=ON
+    DEPENDS ISPC
+)
+
+ExternalProject_Add(OpenColorIO
+    GIT_REPOSITORY https://github.com/AcademySoftwareFoundation/OpenColorIO
+    GIT_TAG 66b7b7d58f2ca587ae45fc71aa8bb2157145ac35 #v2.1.5
+    PATCH_COMMAND git apply /building/apptainer/OpenColorIO.patch
+    INSTALL_DIR ${installDir}
+    CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DBUILD_SHARED_LIBS=ON
+        -DOCIO_BUILD_STATIC=OFF
+        -DCMAKE_CXX_STANDARD=17
+    DEPENDS embree
+)
+
+ExternalProject_Add(OpenImageIO
+    GIT_REPOSITORY https://github.com/OpenImageIO/oiio
+    GIT_TAG 55ebad1f77f06527b23b4fe9d0da81fe8d0ecdc8 # 2.2.15.1
+    INSTALL_DIR ${installDir}
+    CMAKE_ARGS
+        -DCMAKE_CXX_STANDARD=14
+        -DOpenEXR_ROOT=<INSTALL_DIR>
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DUSE_QT=0
+        -DUSE_PYTHON=0
+    DEPENDS OpenColorIO
+)
+
+ExternalProject_Add(OpenImageDenoise
+    URL https://github.com/OpenImageDenoise/oidn/releases/download/v1.4.3/oidn-1.4.3.src.tar.gz
+    # GIT_REPOSITORY https://github.com/OpenImageDenoise/oidn
+    # GIT_TAG d959bac5b7130b31c41095811ddfbe58c4cf03f4 # 1.4.3
+    INSTALL_DIR ${installDir}
+    CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DISPC_EXECUTABLE=<INSTALL_DIR>/bin/ispc
+        -DTBB_ROOT=/usr
+        -DOIDN_APPS=OFF
+    DEPENDS OpenImageIO
+)
+
+ExternalProject_Add(USD
+    GIT_REPOSITORY https://github.com/PixarAnimationStudios/USD
+    # GIT_TAG 7a5f8c4311fed3ef2271d5e4b51025fb0f513730 # v21.08
+    # GIT_TAG 3b097e3ba8fabf1777a1256e241ea15df83f3065 # v22.05
+    GIT_TAG 0c7b9a95f155c221ff7df9270a39a52e3b23af8b # v22.11
+    INSTALL_DIR ${installDir}
+    CMAKE_ARGS
+        -DCMAKE_PREFIX_PATH=<INSTALL_DIR>
+        -DPXR_ENABLE_PYTHON_SUPPORT=ON
+        -DPXR_USE_PYTHON_3=ON
+        -DTBB_USE_DEBUG_BUILD=OFF
+        -DPXR_BUILD_TESTS=OFF
+        -DPXR_BUILD_EXAMPLES=OFF
+        -DPXR_BUILD_TUTORIALS=OFF
+        -DPXR_BUILD_USD_TOOLS=OFF
+        -DPXR_ENABLE_PTEX_SUPPORT=OFF
+        -DPXR_ENABLE_OPENVDB_SUPPORT=OFF
+        -DPXR_BUILD_USDVIEW=OFF
+        -DBoost_NO_BOOST_CMAKE=ON 
+        -DBoost_NO_SYSTEM_PATHS=ON
+        -DBoost_LIBRARY_DIR=/usr/lib64
+        -DBoost_INCLUDE_DIR=/usr/include
+        -DPYTHON_LIBRARIES=/usr/lib64
+        -DPYTHON_INCLUDE_DIRS=/usr/include
+        -DTBB_ROOT_DIR=/usr
+        -DTBB_LIBRARIES=/usr/lib64
+        -DTBB_INCLUDE_DIRS=/usr/include
+    DEPENDS OpenImageDenoise
+)
+

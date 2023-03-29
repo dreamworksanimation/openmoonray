@@ -1,0 +1,26 @@
+Bootstrap: localimage
+From: moonray-rocky9-depbuild.sif
+
+%post
+ln -s /source/openmoonray /openmoonray
+mkdir -p /installs/openmoonray
+rm -rf /build/*
+cd /openmoonray
+
+bash /openmoonray/building/apptainer/rocky9.sh
+
+#############
+# Build MoonRay
+#############
+CC=clang CXX=clang++ CMAKE_PREFIX_DIR=/installs cmake -DCMAKE_INSTALL_PREFIX:PATH=/installs/openmoonray -DOpenEXR_DIR=/installs/lib64/cmake/OpenEXR -DOpenImageIO_DIR=/installs/lib64/cmake/OpenImageIO -DBoost_HEADERS_LIBRARY_RELEASE=/usr/include -DBoost_INCLUDE_DIR=/usr/include -DOptiX_INCLUDE_DIRS=/installs/optix/include -DTBB_INCLUDE_DIR=/usr/include -DQt5_DIR=/installs/Qt-5.15/lib/cmake/Qt5 --preset container-release
+
+cd /build
+make -j$(nproc)
+make install
+
+%environment
+export PS1="MoonRay> "
+export LC_ALL=C; unset LANGUAGE
+export PYTHONPATH=/usr/local/lib/python
+ulimit -n 8192
+source /installs/openmoonray/scripts/setup.sh

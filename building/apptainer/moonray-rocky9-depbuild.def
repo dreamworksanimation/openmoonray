@@ -1,0 +1,26 @@
+Bootstrap: localimage
+From: moonray-rocky9-base.sif
+
+%files
+NVIDIA-OptiX-SDK-7.3.0-linux64-x86_64.sh /opt/optix.sh
+
+%post
+ln -s /source/openmoonray/building /
+
+bash /building/apptainer/qt5.sh
+
+mkdir /build
+cd /build
+CC=clang CXX=clang++ cmake ../building/apptainer
+cmake --build . -- -j$(nproc)
+
+#################
+# optix
+#################
+mkdir -p /installs/optix
+bash /opt/optix.sh --prefix=/installs/optix --skip-license
+rm /opt/optix.sh
+
+%environment
+export PATH=/installs/bin:$PATH
+export LD_LIBRARY_PATH=/installs/lib64:/installs/lib:$LD_LIBRARY_PATH

@@ -1,12 +1,4 @@
-Bootstrap: localimage
-From: moonray-rocky9-depbuild.sif
-
-%post
-ln -s /source/openmoonray /openmoonray
-mkdir -p /installs/openmoonray
-rm -rf /build/*
-cd /openmoonray
-
+#!/bin/bash
 sed -i 's@rel_root=${sourcedir}/..@rel_root=/installs/openmoonray@' scripts/setup.sh
 sed -i 's@${rel_root}/shader_json@/tmp/shader_json@' scripts/setup.sh
 
@@ -34,20 +26,3 @@ sed -i '/#include <float.h>/a #include <limits>' moonray/moonray/lib/rendering/r
 sed -i '/#pragma once/a #include <shared_mutex>' moonray/scene_rdl2/include/scene_rdl2/render/util/ReaderWriterMutex.h
 sed -i '/#include <shared_mutex>/a #include <mutex>' moonray/scene_rdl2/include/scene_rdl2/render/util/ReaderWriterMutex.h
 sed -i '/#pragma once/a #include <functional>' moonray/moonray_arras/mcrt_computation/lib/engine/mcrt/McrtUpdate.h
-
-#############
-# with GUI
-#############
-CC=clang CXX=clang++ CMAKE_PREFIX_DIR=/installs cmake -DCMAKE_INSTALL_PREFIX:PATH=/installs/openmoonray -DOpenEXR_DIR=/installs/lib64/cmake/OpenEXR -DOpenImageIO_DIR=/installs/lib64/cmake/OpenImageIO -DBoost_HEADERS_LIBRARY_RELEASE=/usr/include -DBoost_INCLUDE_DIR=/usr/include -DOptiX_INCLUDE_DIRS=/installs/optix/include -DTBB_INCLUDE_DIR=/usr/include -DQt5_DIR=/installs/Qt-5.15/lib/cmake/Qt5 --preset container-release
-
-cd /build
-make -j 60
-make install
-
-%environment
-export PS1="MoonRay> "
-export LC_ALL=C; unset LANGUAGE
-unset XDG_RUNTIME_DIR
-export PYTHONPATH=/usr/local/lib/python
-ulimit -n 8192
-source /installs/openmoonray/scripts/setup.sh
