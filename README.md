@@ -5,8 +5,7 @@ MoonRay is DreamWorks’ open-source, award-winning, state-of-the-art production
 * [The Croods: A New Age](https://www.dreamworks.com/movies/the-croods-2)
 * [Trolls World Tour](https://www.dreamworks.com/movies/trolls-world-tour) 
 * [The Bad Guys](https://www.dreamworks.com/movies/the-bad-guys)
-* [The Boss Baby: Family Business](https://www.dreamworks.com/movies/the-boss-baby-2)  
-* [The Bad Guys](https://www.dreamworks.com/movies/the-bad-guys)
+* [The Boss Baby: Family Business](https://www.dreamworks.com/movies/the-boss-baby-2)
 * [Puss In Boots: The Last Wish](https://www.dreamworks.com/movies/puss-in-boots-the-last-wish)
 
 MoonRay was developed at DreamWorks and is in continuous active development and includes an extensive
