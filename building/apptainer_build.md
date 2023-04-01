@@ -39,33 +39,79 @@ The instructions assume `NVIDIA-OptiX-SDK-7.3.0-linux64-x86_64.sh` is located un
 
 * Build MoonRay using Apptainer via helper script called `moonray.sh`
 
+This helper script will build base image, dependencies and MoonRay.
+
 ```bash
 > export WORKDIR=$(pwd)
 > bash ./openmoonray/building/apptainer/moonray.sh
 ```
 
----
-## 2. Running MoonRay
----
+* MoonRay Container called `moonray-rocky9.sif` as single executable file
 
-* Test moonray
+Execute container to get MoonRay shell. All the necessary environment variables are already set in this shell.
 
 ```bash
-> cd $WORKDIR/openmoonray/building/apptainer
-> apptainer shell moonray-rocky9.sif
-MoonRay> moonray -in $WORKDIR/openmoonray/testdata/rectangle.rdla -out /tmp/rectangle.exr
+> ./openmoonray/building/apptainer/moonray-rocky9.sif
+> MoonRay> 
 ```
 
-* Test moonray_gui
+Exit from MoonRay shell to conituning rest of the procedures.
 
 ```bash
-> cd $WORKDIR/openmoonray/building/apptainer
-> apptainer shell moonray-rocky9.sif
-MoonRay> moonray_gui -in $WORKDIR/openmoonray/testdata/rectangle.rdla -out /tmp/rectangle.exr
+> MoonRay> exit
 ```
 
 ---
-## 3. Portability of Apptainer (formerly Singularity) container
+## 2. Deploy MoonRay Container
+---
+
+Move MoonRay container to your host `$PATH` for better usability.
+
+For Rocky Linux 8 and Rocky Linux9
+
+```bash
+> cd ./openmoonray/building/apptainer
+> mv moonray-rocky9.sif ~/bin/moonray-rocky9.sif
+> moonray-rocky9.sif
+> MoonRay>
+```
+
+For Ubuntu Ubuntu 20.04 and 22.04
+
+```bash
+> mkdir ~/bin
+> cd ./openmoonray/building/apptainer
+> mv moonray-rocky9.sif ~/bin/moonray-rocky9.sif
+> echo 'export PATH=~/bin:$PATH' >> ~/.bashrc
+> source ~/.bashrc
+> moonray-rocky9.sif
+> MoonRay>
+```
+
+---
+## 3. Running MoonRay
+---
+
+Test data is in `$WORKDIR/openmoonray/testdata` directory on host filesystem. MoonRay Apptainer container is automatically mount your home directory (`$HOME`) inside container. (If `$WORKDIR` is located outside your `$HOME` directory, copy test data under your home directory.)
+
+* moonray
+
+```bash
+> moonray-rocky9.sif
+MoonRay> cd $WORKDIR/openmoonray/testdata
+MoonRay> moonray -in rectangle.rdla -out /tmp/rectangle.exr
+```
+
+* moonray_gui
+
+```bash
+> moonray-rocky9.sif
+MoonRay> cd $WORKDIR/openmoonray/testdata
+MoonRay> moonray_gui -in rectangle.rdla -out /tmp/rectangle.exr
+```
+
+---
+## 4. Portability of Apptainer (formerly Singularity) container
 ---
 
 Once successfully built `moonray-rocky9.sif`, just copy this file to other Apptainer installed system (ex. Rocky Linux 8/9, Ubuntu 20.04/22.04, Windows10/11 WSL2 Ubuntu) normally works.
