@@ -11,7 +11,7 @@ echo "Setting up release in ${rel_root}"
 export PATH=${rel_root}/bin:${PATH}
 
 # tell moonray where to find dsos
-export RDL2_DSO_PATH=${rel_root}/rdl2dso:${rel_root}/rdl2dso.proxy
+export RDL2_DSO_PATH=${rel_root}/rdl2dso
 
 # tell moonray where to find shaders file for XPU mode.
 # it will look for ${REZ_MOONRAY_ROOT}/shaders/GPUShaders.ptx
