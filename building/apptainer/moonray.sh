@@ -25,9 +25,12 @@ echo "[INFO] Build Base Image"
 apptainer build moonray-rocky9-base.sif moonray-rocky9-base.def
 echo "[INFO] Build Dependencies" 
 apptainer build --bind $MOONRAY_SRC_ROOT:/source/openmoonray moonray-rocky9-depbuild.sif moonray-rocky9-depbuild.def
+rm -f moonray-rocky9-base.sif
 echo "[INFO] Build MoonRay"
 apptainer build --bind $MOONRAY_SRC_ROOT:/source/openmoonray moonray-rocky9.sif moonray-rocky9.def
+rm -f moonray-rocky9-depbuild.sif
 echo "[INFO] Build END"
+apptainer build minicoord.sif minicoord.def
 
 # Clean up
 rm -rf $CACHEDIR
