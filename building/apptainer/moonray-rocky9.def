@@ -1,6 +1,9 @@
 Bootstrap: localimage
 From: moonray-rocky9-depbuild.sif
 
+%files
+rocky9.sh /source/openmoonray/building/apptainer/rocky9.sh
+
 %post
 ln -s /source/openmoonray /openmoonray
 mkdir -p /installs/openmoonray

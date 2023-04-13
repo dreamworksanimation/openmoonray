@@ -3,16 +3,140 @@ From: moonray-rocky9-base.sif
 
 %files
 NVIDIA-OptiX-SDK-7.3.0-linux64-x86_64.sh /opt/optix.sh
+qt5.sh /opt/qt5.sh
 
 %post
 ln -s /source/openmoonray/building /
 
-bash /building/apptainer/qt5.sh
-
 mkdir /build
+
+#################
+# JsonCpp
+#################
 cd /build
-CC=clang CXX=clang++ cmake ../building/apptainer
-cmake --build . -- -j$(nproc)
+git clone https://github.com/open-source-parsers/jsoncpp.git
+cd jsoncpp
+git checkout 0.10.7
+mkdir build && cd build
+CC=clang CXX=clang++ cmake -DCMAKE_INSTALL_PREFIX:PATH=/installs -DBUILD_SHARED_LIBS=1 -DJSONCPP_LIB_BUILD_SHARED=1 -DPYTHON_EXECUTABLE=/usr/bin/python3 ..
+make -j 60
+make install
+
+#################
+# MicroHttpd
+#################
+cd /build
+wget https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.37.tar.gz
+tar zxvf libmicrohttpd-0.9.37.tar.gz
+cd libmicrohttpd-0.9.37
+CC=clang CXX=clang++ ./configure --prefix=/installs
+make -j 60
+make install
+
+#################
+# OpenSubdiv
+#################
+cd /build
+git clone https://github.com/PixarAnimationStudios/OpenSubdiv
+cd OpenSubdiv
+git checkout 82ab1b9f54c87fdd7e989a3470d53e137b8ca270
+mkdir build && cd build
+CC=clang CXX=clang++ cmake -DCMAKE_INSTALL_PREFIX:PATH=/installs -DCMAKE_BUILD_TYPE=Release -DNO_PTEX=1 -DNO_OMP=1 -DNO_TBB=1 -DNO_CUDA=1 -DNO_GLFW_X11=1 -DNO_OPENCL=1 -DNO_CLEW=1 -DNO_REGRESSION=1 -DNO_EXAMPLES=1 -DNO_TUTORIALS=1 -DNO_DOC=1 -DNO_GLTESTS=1 -DNO_MACOS_FRAMEWORK=1 -DNO_METAL=1 -DNO_TESTS=1 -DPYTHON_EXECUTABLE=/usr/bin/python3 ..
+make -j 60
+make install
+
+#################
+# Random123
+#################
+cd /build
+git clone https://github.com/DEShawResearch/random123
+cd random123
+git checkout 726a093cd9a73f3ec3c8d7a70ff10ed8efec8d13
+make install-include prefix=/installs
+
+#################
+# ISPC
+#################
+cd /build
+wget https://github.com/ispc/ispc/releases/download/v1.14.1/ispc-v1.14.1-linux.tar.gz
+tar zxvf ispc-v1.14.1-linux.tar.gz
+cd ispc-v1.14.1-linux
+cp bin/ispc /installs/bin
+
+####################
+# OpenEXR
+####################
+cd /build
+git clone https://github.com/AcademySoftwareFoundation/openexr
+cd openexr
+git checkout 8bc3741131db146ad08a5b83af9e6e48f0e94a03 #v2.5.7
+mkdir build && cd build
+CC=clang CXX=clang++ cmake -DCMAKE_INSTALL_PREFIX:PATH=/installs -DBUILD_SHARED_LIBS=OFF ..
+make -j 60
+make install
+
+#################
+# embree
+#################
+cd /build
+git clone https://github.com/embree/embree.git
+cd embree
+git checkout 69bd4c272f1ed608494f233ecfff3feec516880b
+patch -p1 < /building/embree_missing_type.patch
+mkdir build && cd build
+CC=clang CXX=clang++ cmake -DCMAKE_INSTALL_PREFIX:PATH=/installs -DEMBREE_ISPC_EXECUTABLE=/installs/bin/ispc -DEMBREE_TBB_ROOT=/usr -DEMBREE_IGNORE_INVALID_RAYS=ON -DEMBREE_RAY_MASK=ON -DEMBREE_MAX_ISA=AVX -DEMBREE_TUTORIALS=OFF -DBUILD_SHARED_LIBS=ON ..
+make -j 60
+make install
+
+####################
+# OpenColorIO
+###################
+cd /build
+git clone https://github.com/AcademySoftwareFoundation/OpenColorIO.git
+cd OpenColorIO
+git checkout 66b7b7d58f2ca587ae45fc71aa8bb2157145ac35 #v2.1.5
+sed -i '/#include <sstream>/a #include <cstring>' /build/OpenColorIO/src/OpenColorIO/FileRules.cpp
+sed -i 's/strlen(globPattern)/std::strlen(globPattern)/' /build/OpenColorIO/src/OpenColorIO/FileRules.cpp
+mkdir build && cd build
+CC=clang CXX=clang++ cmake -DCMAKE_INSTALL_PREFIX:PATH=/installs -DBUILD_SHARED_LIBS=ON -DOCIO_BUILD_STATIC=OFF -DCMAKE_CXX_STANDARD=17 -DGLEW_DIR=/usr/lib64 -DOCIO_BUILD_GPU_TESTS=0 -DOCIO_BUILD_TESTS=0 ..
+make -j 60
+make install
+
+#################
+# OpneImageIO v2.15.1
+#################
+cd /build
+git clone https://github.com/OpenImageIO/oiio
+cd oiio
+git checkout 55ebad1f77f06527b23b4fe9d0da81fe8d0ecdc8 # 2.2.15.1
+mkdir build && cd build
+CC=clang CXX=clang++ cmake -DCMAKE_CXX_STANDARD=14 -DOpenEXR_ROOT=/installs -DCMAKE_INSTALL_PREFIX:PATH=/installs -DUSE_QT=0 -DUSE_PYTHON=0 ..
+make -j 60
+make install
+
+#################
+# OpneImageDenoise
+#################
+cd /build
+wget https://github.com/OpenImageDenoise/oidn/releases/download/v1.4.3/oidn-1.4.3.src.tar.gz
+tar zxvf oidn-1.4.3.src.tar.gz
+cd oidn-1.4.3
+mkdir build && cd build
+CC=clang CXX=clang++ cmake -DCMAKE_INSTALL_PREFIX:PATH=/installs -DISPC_EXECUTABLE=/installs/bin/ispc -DTBB_ROOT=/usr -DOIDN_APPS=OFF ..
+make -j 60
+make install
+
+#################
+# USD
+#################
+cd /build
+git clone https://github.com/PixarAnimationStudios/USD
+cd USD
+git checkout 0c7b9a95f155c221ff7df9270a39a52e3b23af8b
+mkdir build && cd build
+CC=clang CXX=clang++ CMAKE_PREFIX_PATH=/installs:/usr/lib64/boost cmake -DPXR_ENABLE_PYTHON_SUPPORT=ON -DPXR_USE_PYTHON_3=ON -DTBB_USE_DEBUG_BUILD=OFF -DPXR_BUILD_TESTS=OFF -DPXR_BUILD_EXAMPLES=OFF -DPXR_BUILD_TUTORIALS=OFF -DPXR_BUILD_USD_TOOLS=OFF -DPXR_ENABLE_PTEX_SUPPORT=OFF -DPXR_ENABLE_OPENVDB_SUPPORT=OFF -DPXR_BUILD_USDVIEW=OFF -DBoost_NO_BOOST_CMAKE=ON -DBoost_NO_SYSTEM_PATHS=ON -DBoost_LIBRARY_DIR=/usr/lib64 -DBoost_INCLUDE_DIR=/usr/include -DPYTHON_LIBRARIES=/usr/lib64 -DPYTHON_INCLUDE_DIRS=/usr/include -DTBB_ROOT_DIR=/usr -DTBB_LIBRARIES=/usr/lib64 -DTBB_INCLUDE_DIRS=/usr/include ..
+make -j 60
+make install
 
 #################
 # optix
@@ -21,6 +145,10 @@ mkdir -p /installs/optix
 bash /opt/optix.sh --prefix=/installs/optix --skip-license
 rm /opt/optix.sh
 
-%environment
-export PATH=/installs/bin:$PATH
-export LD_LIBRARY_PATH=/installs/lib64:/installs/lib:$LD_LIBRARY_PATH
+#################
+# Qt 5.15.6: qtbase, qtscript
+#################
+bash /opt/qt5.sh
+# moonray_gui build error with Qt 5.15.3
+# fix needs moc from Qt5.15.6
+# https://bugreports.qt.io/browse/QTBUG-80990

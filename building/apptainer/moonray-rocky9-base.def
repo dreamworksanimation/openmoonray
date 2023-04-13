@@ -55,7 +55,9 @@ dnf install -y doxygen graphviz python3-docutils \
 dnf install -y qt5-qtbase-devel qt5-qtscript-devel
 
 %post
-mkdir -p /source/openmoonray
+mkdir -p /source
+cd /source
+git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git
 
 %environment
 export PATH=/usr/local/bin:$PATH

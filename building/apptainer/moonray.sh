@@ -3,7 +3,8 @@
 #    Usage
 # ===========
 #
-# WORKDIR=$(pwd) ./openmoonray/building/apptainer/moonray.sh
+# export WORKDIR=$(pwd)
+# bash ./openmoonray/building/apptainer/moonray.sh
 # 
 
 # Apptainer build settings
@@ -24,10 +25,10 @@ cd $MOONRAY_BUILD_ROOT
 echo "[INFO] Build Base Image"
 apptainer build moonray-rocky9-base.sif moonray-rocky9-base.def
 echo "[INFO] Build Dependencies" 
-apptainer build --bind $MOONRAY_SRC_ROOT:/source/openmoonray moonray-rocky9-depbuild.sif moonray-rocky9-depbuild.def
+apptainer build moonray-rocky9-depbuild.sif moonray-rocky9-depbuild.def
 rm -f moonray-rocky9-base.sif
 echo "[INFO] Build MoonRay"
-apptainer build --bind $MOONRAY_SRC_ROOT:/source/openmoonray moonray-rocky9.sif moonray-rocky9.def
+apptainer build moonray-rocky9.sif moonray-rocky9.def
 rm -f moonray-rocky9-depbuild.sif
 echo "[INFO] Build END"
 apptainer build minicoord.sif minicoord.def
@@ -39,5 +40,5 @@ rm -rf $TMPDIR
 echo "[INFO] Current Directory: $(pwd)"
 echo "[INFO] Quick Test"
 echo "cd $MOONRAY_BUILD_ROOT"
-echo "apptainer shell moonray-rocky9.sif"
-echo "MoonRay> moonray_gui -in $MOONRAY_SRC_ROOT/testdata/rectangle.rdla -out /tmp/rectangle.exr"
+echo "apptainer shell --nv moonray-rocky9.sif"
+echo "MoonRay> moonray_gui -in /openmoonray/testdata/rectangle.rdla -out /tmp/rectangle.exr"
