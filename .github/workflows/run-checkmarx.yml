@@ -1,0 +1,21 @@
+name: Checkmarx Scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - release
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - 'flowpipeline.yaml'
+      - 'LICENSE'
+      - 'tsc/**'
+
+jobs:
+  scan:
+    runs-on: [self-hosted, rez]
+    steps:
+      - name: Checkmarx Trigger
+        uses: CM/cm-actions/checkmarx_trigger@main
