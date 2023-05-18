@@ -63,7 +63,6 @@ requires = [
 
 private_build_requires = [
     'cmake',
-    'cmake_modules',
     'cppunit-1.15.1.x',
     'ispc-1.14.1.x',
     'python-2.7|3.7|3.9'
