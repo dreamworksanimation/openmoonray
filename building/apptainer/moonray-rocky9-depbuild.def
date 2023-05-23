@@ -7,6 +7,7 @@ qt5.sh /opt/qt5.sh
 
 %post
 ln -s /source/openmoonray/building /
+sed -i 's/3.6/3.9/' /source/openmoonray/building/python-config.jam
 
 mkdir /build
 
@@ -71,7 +72,7 @@ git clone https://github.com/AcademySoftwareFoundation/openexr
 cd openexr
 git checkout 8bc3741131db146ad08a5b83af9e6e48f0e94a03 #v2.5.7
 mkdir build && cd build
-CC=clang CXX=clang++ cmake -DCMAKE_INSTALL_PREFIX:PATH=/installs -DBUILD_SHARED_LIBS=OFF ..
+CC=clang CXX=clang++ cmake -DBoost_LIBRARY_DIR=/usr/lib64 -DBoost_INCLUDE_DIR=/usr/include -DCMAKE_INSTALL_PREFIX:PATH=/installs -DBUILD_SHARED_LIBS=OFF ..
 make -j 60
 make install
 
