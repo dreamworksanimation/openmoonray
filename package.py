@@ -68,6 +68,14 @@ private_build_requires = [
     'python-2.7|3.7|3.9'
 ]
 
+# Create dictionary of tests for the rez-test command
+commandstr = lambda i: "cd build/"+os.path.join(*variants[i])+"; ctest -j $(nproc) -L 'unit'"
+testentry = lambda i: ("variant%d" % i,
+                       { "command": commandstr(i),
+                         "requires": ["cmake-3.23"] + variants[i] } )
+testlist = [testentry(i) for i in range(len(variants))]
+tests = dict(testlist)
+
 def commands():
     prependenv('ARRAS_SESSION_PATH', '{root}/sessions')
     prependenv('CMAKE_PREFIX_PATH', '{root}')
