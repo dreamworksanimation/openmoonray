@@ -25,9 +25,20 @@ endif()
 include(CTest)
 include(GNUInstallDirs)
 
-option(BUILD_QT_APPS             "Whether or not to build apps that require Qt" YES)
-option(MOONRAY_USE_CUDA          "Whether to use CUDA (and Optix) - Enables XPU mode and Optix denoising" YES)
+# ================================================
+# Options
+# ================================================
+option(BUILD_QT_APPS                "Whether or not to build apps that require Qt" YES)
+option(MOONRAY_USE_CUDA             "Whether to use CUDA (and Optix) - Enables XPU mode and Optix denoising" YES)
 
+option(ABI_SET_VERSION              "Enable the abi-version option" ON)
+if(ABI_SET_VERSION)
+    set(ABI_VERSION "6" CACHE STRING "If ABI_SET_VERSION is on, which version to set")
+endif()
+
+# ================================================
+# Build Type
+# ================================================
 # if OPT_LEVEL is set use its value to override the CMAKE_BUILD_TYPE because the
 # rez cmake plugin does not have an easy way to set the build_target.
 set(opt_level $ENV{OPT_LEVEL})
@@ -44,6 +55,9 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# ================================================
+# Subdirectories
+# ================================================
 add_subdirectory(arras)
 add_subdirectory(moonray)
 add_subdirectory(scripts)
@@ -54,3 +68,4 @@ if(GLD STREQUAL "$ENV{STUDIO}")
         DESTINATION
         .)
 endif()
+
