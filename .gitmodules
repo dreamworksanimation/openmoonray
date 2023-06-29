@@ -1,72 +1,72 @@
 [submodule "arras/distributed/minicoord"]
 	path = arras/distributed/minicoord
 	url = ../minicoord
-	branch = release
+	branch = main
 [submodule "arras/arras4_core"]
 	path = arras/arras4_core
 	url = ../arras4_core
-	branch = release
+	branch = main
 [submodule "moonray/scene_rdl2"]
 	path = moonray/scene_rdl2
 	url = ../scene_rdl2
-	branch = release
+	branch = main
 [submodule "moonray/mcrt_denoise"]
 	path = moonray/mcrt_denoise
 	url = ../mcrt_denoise
-	branch = release
+	branch = main
 [submodule "moonray/moonray"]
 	path = moonray/moonray
 	url = ../moonray
-	branch = release
+	branch = main
 [submodule "moonray/moonshine"]
 	path = moonray/moonshine
 	url = ../moonshine
-	branch = release
+	branch = main
 [submodule "moonray/moonshine_usd"]
 	path = moonray/moonshine_usd
 	url = ../moonshine_usd
-	branch = release
+	branch = main
 [submodule "moonray/moonray_arras/mcrt_dataio"]
 	path = moonray/moonray_arras/mcrt_dataio
 	url = ../mcrt_dataio
-	branch = release
+	branch = main
 [submodule "moonray/moonray_arras/mcrt_computation"]
 	path = moonray/moonray_arras/mcrt_computation
 	url = ../mcrt_computation
-	branch = release
+	branch = main
 [submodule "moonray/moonray_arras/mcrt_messages"]
 	path = moonray/moonray_arras/mcrt_messages
 	url = ../mcrt_messages
-	branch = release
+	branch = main
 [submodule "moonray/moonray_gui"]
 	path = moonray/moonray_gui
 	url = ../moonray_gui
-	branch = release
+	branch = main
 [submodule "moonray/hydra/hdMoonray"]
 	path = moonray/hydra/hdMoonray
 	url = ../hdMoonray
-	branch = release
+	branch = main
 [submodule "arras/arras_render"]
 	path = arras/arras_render
 	url = ../arras_render
-	branch = release
+	branch = cmake_linux
 [submodule "arras/distributed/arras4_node"]
 	path = arras/distributed/arras4_node
 	url = ../arras4_node
-	branch = release
+	branch = cmake_linux
 [submodule "cmake_modules"]
 	path = cmake_modules
 	url = ../cmake_modules
-	branch = release
+	branch = main
 [submodule "moonray/hydra/moonray_sdr_plugins"]
 	path = moonray/hydra/moonray_sdr_plugins
 	url = ../moonray_sdr_plugins
-	branch = release
+	branch = main
 [submodule "moonray/moonray_dcc_plugins"]
 	path = moonray/moonray_dcc_plugins
 	url = ../moonray_dcc_plugins
-	branch = release
+	branch = main
 [submodule "moonray/render_profile_viewer"]
 	path = moonray/render_profile_viewer
 	url = ../render_profile_viewer.git
-	branch = release
+	branch = main
