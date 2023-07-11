@@ -58,7 +58,7 @@ ExternalProject_Add(Lua
 )
 
 ExternalProject_Add(MicroHttpd
-    URL https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.37.tar.gz
+    URL https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.71.tar.gz
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ./configure --prefix ${installDir}
     BUILD_COMMAND ${MAKE}
@@ -138,7 +138,8 @@ ExternalProject_Add(Random123
 )
 
 ExternalProject_Add(ISPC
-    URL https://github.com/ispc/ispc/releases/download/v1.14.1/ispc-v1.14.1-linux.tar.gz
+    # URL https://github.com/ispc/ispc/releases/download/v1.14.1/ispc-v1.14.1-linux.tar.gz
+    URL https://github.com/ispc/ispc/releases/download/v1.20.0/ispc-v1.20.0-linux.tar.gz
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
@@ -148,7 +149,8 @@ ExternalProject_Add(ISPC
 
 ExternalProject_Add(embree
     GIT_REPOSITORY https://github.com/embree/embree
-    GIT_TAG 69bd4c272f1ed608494f233ecfff3feec516880b # v3.12.1
+#    GIT_TAG 69bd4c272f1ed608494f233ecfff3feec516880b # v3.12.1
+    GIT_TAG 698442324ccddd11725fb8875275dc1384f7fb40 # v3.13.5
     PATCH_COMMAND patch -p1 < /building/embree_missing_type.patch
     INSTALL_DIR ${installDir}
     CMAKE_ARGS 

@@ -36,6 +36,10 @@ if(ABI_SET_VERSION)
     set(ABI_VERSION "6" CACHE STRING "If ABI_SET_VERSION is on, which version to set")
 endif()
 
+# additional settings:
+# BOOST_PYTHON_COMPONENT_NAME "Name of Boost python component" default "python"
+# PYTHON_EXECUTABLE "Name of Python executable" default "python"
+
 # ================================================
 # Build Type
 # ================================================
