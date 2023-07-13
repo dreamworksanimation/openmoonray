@@ -7,9 +7,6 @@ project(Arras
         VERSION 4.9.0
         LANGUAGES CXX)
 
-set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/../release)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
 set(Building_ArrasCore TRUE)
 
 add_subdirectory(arras4_core)

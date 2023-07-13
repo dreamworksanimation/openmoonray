@@ -7,7 +7,9 @@ project(ArrasDistributed
         VERSION 4.9.0
         LANGUAGES CXX)
 
-set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/../../release)
+if (NOT Building_ArrasCore)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/../../release)
+endif()
 # set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake)
 
 # ================================================
@@ -26,7 +28,7 @@ find_package(Boost REQUIRED
 
 # if we aren't building ArrasCore, get it from the release
 if (NOT Building_ArrasCore)
-    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_INSTALL_PREFIX}/cmake")
+    list(PREPEND CMAKE_MODULE_PATH "${CMAKE_INSTALL_PREFIX}/cmake")
     find_package(ArrasCore REQUIRED)
 endif()
 
