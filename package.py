@@ -42,17 +42,17 @@ variants = [
 requires = [
     'amorphous',
     'boost',
-    'cuda-11.3.0.x',
+    'cuda-12.1.0.x',
     'curl_no_ldap-7.49.1.x',
-    'embree-3.12.1.x.16',
-    'jsoncpp-0.6.0',
+    'embree-3.13.5.x',
+    'jsoncpp-1.9.5',
     'libmicrohttpd-0.9.71.x.1',
     'log4cplus-1.1.2.x',
     'lua',
     'mkl',
     'openexr',
     'openimagedenoise',
-    'openimageio-2.3.20.0.x.0',
+    'openimageio-2.3.20.0.x',
     'opensubdiv-3.5.0.x.0',
     'openvdb',
     'optix-7.3.0.x',
@@ -67,7 +67,7 @@ requires = [
 private_build_requires = [
     'cmake-3.23',
     'cppunit',
-    'ispc-1.14.1.x',
+    'ispc-1.20.0.x',
     'python-2.7|3.7|3.9'
 ]
 
