@@ -1,0 +1,12 @@
+diff -Naur '--exclude=.git' embree_stock/include/embree3/rtcore_common.isph embree/include/embree3/rtcore_common.isph
+--- embree_stock/include/embree3/rtcore_common.isph	2023-07-11 10:31:50.416763753 -0700
++++ embree/include/embree3/rtcore_common.isph	2023-07-11 10:33:45.998954467 -0700
+@@ -175,7 +175,7 @@
+ /* Initializes an intersection context. */
+ RTC_FORCEINLINE void rtcInitIntersectContext(uniform RTCIntersectContext* uniform context)
+ {
+-  uniform unsigned l = 0;
++  uniform unsigned int l = 0;
+   context->flags = RTC_INTERSECT_CONTEXT_FLAG_INCOHERENT;
+   context->filter = NULL;
+   

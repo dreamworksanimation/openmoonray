@@ -1,9 +1,13 @@
 ---
-title: Building MoonRay on Rocky Linux 9
+title: Building MoonRay on Centos 7
 ---
-# Building MoonRay on Rocky Linux 9
+# Building MoonRay on Centos 7
 
-Start with reading the [general build instructions](../general_build). This document gives more explicit instructions for building on a Rocky Linux 9 installation. To keep it concrete, I've chosen specific directory locations, which you can change as needed:
+Start with reading the [general build instructions](../general_build).
+
+This document gives more explicit instructions for building on a Centos 7 machine. All the information here should also be covered in the general document.
+
+To keep it concrete, I've chosen specific directory locations, which you can change as needed:
 
 - */source* location of the openmoonray repository clone
 - */build* CMake build directory
@@ -22,10 +26,10 @@ If you want to include MoonRay GPU support, you will also need to download the N
 ## Step 1. Base requirements
 ---
 
-The first step is to install some additional RPM packages. The script *building/Rocky9/install_packages.sh* will install the packages and perform some environment variable setup. 
+The first step is to install some additional RPM packages. The script *building/Centos7/install_packages.sh* will install the packages and perform some environment variable setup. 
 
 ```bash
-source /source/building/Rocky9/install_packages.sh
+source /source/building/Centos7/install_packages.sh
 ```
 
 You can add arguments `--nocuda` and `--noqt` to skip GPU and GUI support respectively.
@@ -34,20 +38,20 @@ You can add arguments `--nocuda` and `--noqt` to skip GPU and GUI support respec
 ## Step 2. Build the remaining dependencies
 ---
 
-The next step is to build the remaining dependencies from source. The CMake project *building/Rocky9/CMakeLists.txt* contains targets that will do it automatically.
+The next step is to build the remaining dependencies from source. The CMake project *building/Centos7/CMakeLists.txt* contains targets that will do it automatically.
 
 You need to create a CMake build directory : it can be anywhere, but I will use */build*. The build directory should generally be empty before starting this step, unless you are deliberately performing an incremental rebuild.
 
 ```bash
 mkdir /build
 cd /build
-cmake /source/building/Rocky9
+cmake /source/building/Centos7
 cmake --build . -- -j $(nproc)
 ```
 
 The option "-j $(nproc)" tells CMake to use all available cores on your machine for building. You may see a number of warning messages during the build.
 
-If you are building with GPU support, copy the Optix headers that you downloaded and extracted into */usr/local*
+If you are building with GPU support, copy the Optix headers that you downloaded and extracted into */usr/local/include*
 
 ```bash
 > cp -r /tmp/optix/include/* /usr/local/include
@@ -62,9 +66,12 @@ The main CMake project in *openmoonray* builds MoonRay itself. I will use the sa
 ```bash
 cd /build
 rm -rf *
-cmake /source -DPYTHON_EXECUTABLE=python3 -DBOOST_PYTHON_COMPONENT_NAME=python39 -DABI_VERSION=0
+export LUA_DIR=/usr/local
+cmake /source
 cmake --build . -j $(nproc)
 ```
+ 
+The build is configured to use the version of Lua we installed in step 2, rather than the one in */bin*, by setting ***LUA_DIR*** to */usr/local*.
 
 The install step will install to */installs/openmoonray* : again, this directory is arbitrary, and you can install wherever you like.
 
@@ -83,7 +90,6 @@ To set up the install and test moonray:
 > moonray_gui -in /source/testdata/rectangle.rdla -out /tmp/rectangle.exr
 > hd_render -in /source/testdata/sphere.usd -out /tmp/sphere.exr
 ```
-
 
 If everything is working, the moonray command should produce output like this:
 

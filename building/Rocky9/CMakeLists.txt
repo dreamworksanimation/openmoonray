@@ -12,11 +12,14 @@ project(openmoonray_third_party)
 include(ExternalProject)
 
 set(THIS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(InstallRoot /usr/local CACHE FILEPATH "Install root for dependencies")
 
 ExternalProject_Add(JsonCpp
     GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp.git
     GIT_TAG ba3fd412929ec4822788b401298e8d9e4950cbab # 0.10.7  
+    INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
         -DBUILD_SHARED_LIBS=1
         -DPYTHON_EXECUTABLE=/usr/bin/python3
         -DJSONCPP_LIB_BUILD_SHARED:BOOL=ON
@@ -26,6 +29,7 @@ set(CHAIN JsonCpp)
 ExternalProject_Add(OpenSubdiv
     GIT_REPOSITORY https://github.com/PixarAnimationStudios/OpenSubdiv
     GIT_TAG 82ab1b9f54c87fdd7e989a3470d53e137b8ca270 # v3_4_3
+    INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
       -DCMAKE_BUILD_TYPE=Release
       -DPYTHON_EXECUTABLE=/usr/bin/python3
@@ -106,9 +110,7 @@ ExternalProject_Add(OpenImageIO
 set(CHAIN OpenImageIO)
 
 ExternalProject_Add(OpenImageDenoise
-    URL https://github.com/OpenImageDenoise/oidn/releases/download/v1.4.3/oidn-1.4.3.src.tar.gz
-    # GIT_REPOSITORY https://github.com/OpenImageDenoise/oidn
-    # GIT_TAG d959bac5b7130b31c41095811ddfbe58c4cf03f4 # 1.4.3
+    URL https://github.com/OpenImageDenoise/oidn/releases/download/v2.0.1/oidn-2.0.1.src.tar.gz
     CMAKE_ARGS
         -DISPC_EXECUTABLE=/usr/local/bin/ispc
         -DOIDN_APPS=OFF

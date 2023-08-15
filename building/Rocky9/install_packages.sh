@@ -1,8 +1,37 @@
+# Copyright 2023 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0 
+
+# Install Rocky Linux 9 packages for building MoonRay
+# source this script in bash
+
+install_qt=1
+install_cuda=1
+for i in "$@" 
+do
+case ${i,,} in
+    --noqt|-noqt)
+        install_qt=0
+    ;;
+    --nocuda|-nocuda)
+        install_cuda=0
+    ;;
+    *)
+        echo "Unknown option: $i"
+        return 1
+    ;;
+esac
+done
+
+
 dnf install -y epel-release
 dnf config-manager --enable crb
 
-dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo
-dnf install -y cuda-runtime-11-8 cuda-toolkit-11-8
+# not required if you are not building with GPU support
+if [ $install_cuda -eq 1 ] 
+then
+    dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo
+    dnf install -y cuda-runtime-11-8 cuda-toolkit-11-8
+fi
 
 dnf install -y libglvnd-devel
 
@@ -31,8 +60,11 @@ dnf install -y log4cplus log4cplus-devel #2.0.5
 dnf install -y cppunit cppunit-devel #1.15.1
 dnf install -y libmicrohttpd libmicrohttpd-devel #0.9.72
 
-dnf install -y qt5-qtbase-devel qt5-qtscript-devel
-
+# not required if you are not building the GUI apps
+if [ $install_qt -eq 1 ]
+then
+    dnf install -y qt5-qtbase-devel qt5-qtscript-devel
+fi
 
 export PATH=/installs/cmake-3.23.1-linux-x86_64/bin:/usr/local/cuda/bin:${PATH}
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:${LD_LIBRARY_PATH}
