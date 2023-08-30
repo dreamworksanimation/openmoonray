@@ -72,7 +72,7 @@ More of the dependencies have a suitable version as part of Rocky 9, and so can 
 
 ***blosc boost lua openvdb tbb log4cplus cppunit libmicrohttpd***
 
-The ***libcgroup*** package is not available in Rocky 9 : *install_packages.sh* fetches it from another source (*kojihub.stream.centos.org*).
+The ***libcgroup*** package installation is not required on Rocky Linux 9 environment.
 
 Python 3.9 and Boost 1.75 come from Rocky 9. This changes a couple of things that were hard-coded into the main CMake build:
 - the name of the Python executable is "python3" (it is "python" in the Centos 7 build)
@@ -80,4 +80,37 @@ Python 3.9 and Boost 1.75 come from Rocky 9. This changes a couple of things tha
 
 As you can see in the main CMake command, these are now settable from the command line.
 
-There are a few very minor changes to the MoonRay source to enable it to compile with GCC 11 and Qt 5.15.3. In addition, the code must be built with C++ ABI version 0, rather than the value 6 used for the Centos 7 build. 
+There are a few very minor changes to the MoonRay source to enable it to compile with GCC 11 and Qt 5.15.3. In addition, the code must be built with C++ ABI version 0, rather than the value 6 used for the Centos 7 build.
+
+---
+## Building MoonRay Container with Apptainer and Rocky Linux 9 Image
+---
+
+The procedures of building MoonRay container with Apptainer and Rocky Linux 9 image is the following:
+
+1. Clone this repository
+2. Copy OptiX install script
+3. Build MoonRay container with Apptainer
+
+```bash
+git clone -b openmoonray-1.3.0.0 https://github.com/dreamworksanimation/openmoonray.git
+cp NVIDIA-OptiX-SDK-7.3.0-linux64-x86_64.sh openmoonray/building
+cd openmoonray/building
+apptainer build moonray.sif apptainer.def
+```
+
+To test MoonRay container
+
+```bash
+apptainer run moonray.sif bash
+MoonRay> moonray -in /source/testdata/rectangle.rdla -out /tmp/rectangle.exr
+MoonRay> moonray_gui -in /source/testdata/rectangle.rdla -out /tmp/rectangle.exr
+```
+
+To use MoonRay container with NVIDIA GPU
+
+```bash
+apptainer run --nv moonray.sif bash
+MoonRay> moonray -in /source/testdata/rectangle.rdla -out /tmp/rectangle.exr
+MoonRay> moonray_gui -exec_mode xpu -in /source/testdata/rectangle.rdla -out /tmp/rectangle.exr
+```
