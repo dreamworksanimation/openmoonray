@@ -93,24 +93,23 @@ The procedures of building MoonRay container with Apptainer and Rocky Linux 9 im
 3. Build MoonRay container with Apptainer
 
 ```bash
-git clone -b openmoonray-1.3.0.0 https://github.com/dreamworksanimation/openmoonray.git
-cp NVIDIA-OptiX-SDK-7.3.0-linux64-x86_64.sh openmoonray/building
-cd openmoonray/building
-apptainer build moonray.sif apptainer.def
+git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git
+export WORKDIR=$(pwd)
+bash openmoonray/building/Apptainer/build.sh
 ```
 
 To test MoonRay container
 
 ```bash
-apptainer run moonray.sif bash
-MoonRay> moonray -in /source/testdata/rectangle.rdla -out /tmp/rectangle.exr
-MoonRay> moonray_gui -in /source/testdata/rectangle.rdla -out /tmp/rectangle.exr
+apptainer run moonray.sif
+MoonRay> moonray -in /installs/testdata/rectangle.rdla -out /tmp/rectangle.exr
+MoonRay> moonray_gui -in /installs/testdata/rectangle.rdla -out /tmp/rectangle.exr
 ```
 
 To use MoonRay container with NVIDIA GPU
 
 ```bash
-apptainer run --nv moonray.sif bash
-MoonRay> moonray -in /source/testdata/rectangle.rdla -out /tmp/rectangle.exr
-MoonRay> moonray_gui -exec_mode xpu -in /source/testdata/rectangle.rdla -out /tmp/rectangle.exr
+apptainer run --nv moonray.sif
+MoonRay> moonray -in /installs/testdata/rectangle.rdla -out /tmp/rectangle.exr
+MoonRay> moonray_gui -exec_mode xpu -in /installs/testdata/rectangle.rdla -out /tmp/rectangle.exr
 ```

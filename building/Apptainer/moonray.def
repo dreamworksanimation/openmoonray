@@ -3,10 +3,10 @@ From: rockylinux/rockylinux:9.2
 
 %setup
     mkdir -p ${APPTAINER_ROOTFS}/source/building
+    mkdir -p ${APPTAINER_ROOTFS}/workdir
 
 %files
-    Rocky9 /source/building
-    NVIDIA-OptiX-SDK-7.3.0-linux64-x86_64.sh /source/building/Rocky9/optix.sh
+    ../Rocky9 /source/building
 
 %post
     # Step 1: Base Requiements
@@ -17,26 +17,26 @@ From: rockylinux/rockylinux:9.2
     cd /build
     cmake /source/building/Rocky9
     cmake --build . -- -j $(nproc)
+    rm -rf /build/*
 
     # Step 2 (optional): Install OptiX
     bash /source/building/Rocky9/optix.sh --prefix=/usr/local --skip-license
 
     # Step 3: Build MoonRay 
     cd /build
-    rm -rf *
-    cd /source
-    git clone -b openmoonray-1.3.0.0 --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git
-    cd /build
-    cmake /source/openmoonray \
+    cmake /workdir/openmoonray \
       -DPYTHON_EXECUTABLE=python3 -DBOOST_PYTHON_COMPONENT_NAME=python39 -DABI_VERSION=0
     cmake --build . -j $(nproc)
     mkdir -p /installs/openmoonray
     cmake --install . --prefix /installs/openmoonray
+    rm -rf /build/*
     
-    # Final Step: Move shader_json directory to writable location
+    # Final Step: Move shader_json directory to writable location and copy testdata
     cd /installs/openmoonray
     sed -i 's@rel_root=${sourcedir}/..@rel_root=/installs/openmoonray@' scripts/setup.sh
     sed -i 's@${rel_root}/shader_json@/tmp/shader_json@' scripts/setup.sh
+    cp -r /workdir/openmoonray/testdata /installs
+
 
 %environment
     export PS1="MoonRay> "
@@ -46,4 +46,4 @@ From: rockylinux/rockylinux:9.2
     export PYTHONPATH=/usr/local/lib/python
     ulimit -n 8192
     source /installs/openmoonray/scripts/setup.sh
-    "$@"
+    bash "$@"

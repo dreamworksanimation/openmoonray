@@ -1,0 +1,14 @@
+Bootstrap: docker
+From: python:2.7.18
+
+%setup
+    mkdir -p ${APPTAINER_ROOTFS}/workdir
+
+%files
+    ../../arras/distributed/minicoord/minicoord /
+
+%post
+    pip install tornado==4.5.3 requests==2.27.1
+
+%runscript
+    python -i /minicoord/run.py
