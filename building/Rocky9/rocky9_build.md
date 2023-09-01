@@ -72,7 +72,7 @@ More of the dependencies have a suitable version as part of Rocky 9, and so can 
 
 ***blosc boost lua openvdb tbb log4cplus cppunit libmicrohttpd***
 
-The ***libcgroup*** package installation is not required on Rocky Linux 9 environment.
+The ***libcgroup*** package installation is not mandatory from this version.
 
 Python 3.9 and Boost 1.75 come from Rocky 9. This changes a couple of things that were hard-coded into the main CMake build:
 - the name of the Python executable is "python3" (it is "python" in the Centos 7 build)
