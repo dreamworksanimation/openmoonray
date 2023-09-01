@@ -14,11 +14,6 @@ dnf install -y bison flex wget git python3 python3-devel patch \
 
 mkdir -p /installs/{bin,lib,include}
 cd /installs
-wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-0.42.2-5.el9.x86_64.rpm
-wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-devel-0.42.2-5.el9.x86_64.rpm
-dnf install libcgroup-0.42.2-5.el9.x86_64.rpm -y
-dnf install libcgroup-devel-0.42.2-5.el9.x86_64.rpm -y
-
 wget https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-linux-x86_64.tar.gz
 tar xzf cmake-3.23.1-linux-x86_64.tar.gz
 
@@ -32,7 +27,6 @@ dnf install -y cppunit cppunit-devel #1.15.1
 dnf install -y libmicrohttpd libmicrohttpd-devel #0.9.72
 
 dnf install -y qt5-qtbase-devel qt5-qtscript-devel
-
 
 export PATH=/installs/cmake-3.23.1-linux-x86_64/bin:/usr/local/cuda/bin:${PATH}
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:${LD_LIBRARY_PATH}
