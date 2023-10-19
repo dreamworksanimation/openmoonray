@@ -44,7 +44,7 @@ requires = [
     'boost',
     'cuda-12.1.0.x',
     'curl_no_ldap-7.49.1.x',
-    'embree-3.13.5.x',
+    'embree-4.1.0.x',
     'jsoncpp-1.9.5',
     'libmicrohttpd-0.9.71.x.1',
     'log4cplus-1.1.2.x',

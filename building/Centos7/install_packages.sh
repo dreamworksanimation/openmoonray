@@ -29,7 +29,7 @@ yum install -y devtoolset-9 devtoolset-9-gcc \
 yum install -y bison flex  wget git python3 python3-devel \
                    patch giflib-devel libmng libtiff-devel libjpeg-devel \
                    libatomic libcgroup-devel libuuid-devel \
-                   openssl-devel curl-devel
+                   openssl-devel curl-devel freetype-devel
 
 # not required if you are not building with GPU support
 if [ $install_cuda -eq 1 ] 

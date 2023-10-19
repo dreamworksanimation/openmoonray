@@ -89,6 +89,13 @@ Render prep time = 00:00:00.008
 00:00:01  671.2 MB | Total time                       = 00:00:01.442000
 Wrote /tmp/rectangle.exr
 ```
+
+Note: when running hd_render or other tools, you may see an error like this:
+
+**hd_render: symbol lookup error: /usr/local/lib/libusd_usdGeom.so: undefined symbol: _ZdaPvm**
+
+This can occur because devtoolset-9 contains a conflicting version of the TBB library (libtbb.so.2) in /opt/rh/devtoolset-9/root/usr/lib64/dyninst. To fix the error, either modify LD_LIBRARY_PATH to remove the "dyninst" directories, or simply type "exit" to leave the devtoolset-9 environment (then source setup.sh again).
+
 ---
 ## Step 4 : Commit container
 ---

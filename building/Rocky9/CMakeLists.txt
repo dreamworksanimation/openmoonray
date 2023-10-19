@@ -16,7 +16,7 @@ set(InstallRoot /usr/local CACHE FILEPATH "Install root for dependencies")
 
 ExternalProject_Add(JsonCpp
     GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp.git
-    GIT_TAG ba3fd412929ec4822788b401298e8d9e4950cbab # 0.10.7  
+    GIT_TAG 5defb4ed1a4293b8e2bf641e16b156fb9de498cc # 1.9.5
     INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
@@ -28,9 +28,10 @@ set(CHAIN JsonCpp)
 
 ExternalProject_Add(OpenSubdiv
     GIT_REPOSITORY https://github.com/PixarAnimationStudios/OpenSubdiv
-    GIT_TAG 82ab1b9f54c87fdd7e989a3470d53e137b8ca270 # v3_4_3
+    GIT_TAG 8ffa2b6566be10209529d7a0d1db02a0796b160c # v3_5_0
     INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
+      -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
       -DCMAKE_BUILD_TYPE=Release
       -DPYTHON_EXECUTABLE=/usr/bin/python3
       -DNO_PTEX=1 -DNO_OMP=1 -DNO_TBB=1 -DNO_CUDA=1 -DNO_GLFW_X11=1 -DNO_DOC=1
@@ -43,7 +44,9 @@ set(CHAIN OpenSubdiv)
 ExternalProject_Add(OpenEXR
     GIT_REPOSITORY https://github.com/AcademySoftwareFoundation/openexr
     GIT_TAG 8bc3741131db146ad08a5b83af9e6e48f0e94a03 # v2.5.7
+    INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
         -DBUILD_SHARED_LIBS=OFF
     DEPENDS ${CHAIN}
 )
@@ -55,32 +58,32 @@ ExternalProject_Add(Random123
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
-    INSTALL_COMMAND make install-include
+    INSTALL_COMMAND make install-include prefix=${InstallRoot}
     DEPENDS ${CHAIN}
 )
 set(CHAIN Random123)
 
 ExternalProject_Add(ISPC
-    # URL https://github.com/ispc/ispc/releases/download/v1.14.1/ispc-v1.14.1-linux.tar.gz
     URL https://github.com/ispc/ispc/releases/download/v1.20.0/ispc-v1.20.0-linux.tar.gz
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
-    INSTALL_COMMAND cp bin/ispc /usr/local/bin
+    INSTALL_COMMAND cp bin/ispc ${InstallRoot}/bin
     DEPENDS ${CHAIN}
 )
 set(CHAIN ISPC)
 
 ExternalProject_Add(embree
     GIT_REPOSITORY https://github.com/embree/embree
-    # GIT_TAG 69bd4c272f1ed608494f233ecfff3feec516880b # v3.12.1
-    GIT_TAG 698442324ccddd11725fb8875275dc1384f7fb40 # v3.13.5
-    PATCH_COMMAND patch -p1 < ${THIS_DIR}/embree_missing_type.patch
-    CMAKE_ARGS 
-        -DEMBREE_ISPC_EXECUTABLE=/usr/local/bin/ispc
+    GIT_TAG 0fcb306c9176221219dd15e27fe0527ed334948f # v4.1.0
+    INSTALL_DIR ${InstallRoot}
+    CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DEMBREE_ISPC_EXECUTABLE=<INSTALL_DIR>/bin/ispc
+        -DEMBREE_ISPC_SUPPORT=ON
         -DEMBREE_IGNORE_INVALID_RAYS=ON
         -DEMBREE_RAY_MASK=ON
-        -DEMBREE_MAX_ISA=AVX
+        -DEMBREE_MAX_ISA=AVX512
         -DEMBREE_TUTORIALS=OFF
         -DBUILD_SHARED_LIBS=ON
     DEPENDS ${CHAIN}
@@ -90,7 +93,9 @@ set(CHAIN embree)
 ExternalProject_Add(OpenColorIO
     GIT_REPOSITORY https://github.com/AcademySoftwareFoundation/OpenColorIO
     GIT_TAG 056b7b0cb0d087961e9dba75104820e44faf52a1 # v2.0.2
+    INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
         -DBUILD_SHARED_LIBS=ON
         -DOCIO_BUILD_STATIC=OFF
         -DCMAKE_CXX_STANDARD=17
@@ -100,9 +105,11 @@ set(CHAIN OpenColorIO)
 
 ExternalProject_Add(OpenImageIO
     GIT_REPOSITORY https://github.com/OpenImageIO/oiio
-    GIT_TAG 331a323468928c8017ad048b26d47c4e57a724a7 # 2.3.10.0
+    GIT_TAG 331a323468928c8017ad048b26d47c4e57a724a7 # 2.3.20.0
+    INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX:PATH=/usr/local
+        -DOpenEXR_ROOT=<INSTALL_DIR>
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
         -DUSE_QT=0
         -DUSE_PYTHON=0
     DEPENDS ${CHAIN}
@@ -111,8 +118,11 @@ set(CHAIN OpenImageIO)
 
 ExternalProject_Add(OpenImageDenoise
     URL https://github.com/OpenImageDenoise/oidn/releases/download/v2.0.1/oidn-2.0.1.src.tar.gz
+    INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
-        -DISPC_EXECUTABLE=/usr/local/bin/ispc
+        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+        -DISPC_EXECUTABLE=<INSTALL_DIR>/bin/ispc
+        -DTBB_ROOT=<INSTALL_DIR>
         -DOIDN_APPS=OFF
     DEPENDS ${CHAIN}
 )
@@ -120,21 +130,19 @@ set(CHAIN OpenImageDenoise)
 
 ExternalProject_Add(USD
     GIT_REPOSITORY https://github.com/PixarAnimationStudios/USD
-    # GIT_TAG 7a5f8c4311fed3ef2271d5e4b51025fb0f513730 # v21.08
-    # GIT_TAG 3b097e3ba8fabf1777a1256e241ea15df83f3065 # v22.05
     GIT_TAG 0c7b9a95f155c221ff7df9270a39a52e3b23af8b # v22.11
+    INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
+        -DCMAKE_PREFIX_PATH=<INSTALL_DIR>
         -DPXR_ENABLE_PYTHON_SUPPORT=ON
         -DPXR_USE_PYTHON_3=ON
-        -DPYTHON_LIBRARIES=/usr/lib64 
+        -DPYTHON_LIBRARIES=/usr/lib64
         -DPYTHON_INCLUDE_DIRS=/usr/include
-        -DBoost_NO_BOOST_CMAKE=ON 
-        -DBoost_NO_SYSTEM_PATHS=ON
-        -DBoost_LIBRARY_DIR=/usr/lib64 
-        -DBoost_INCLUDE_DIR=/usr/include  
+        -DBoost_LIBRARY_DIR=/usr/lib64
+        -DBoost_INCLUDE_DIR=/usr/include
         -DTBB_USE_DEBUG_BUILD=OFF
-        -DTBB_ROOT_DIR=/usr 
-        -DTBB_LIBRARIES=/usr/lib64 
+        -DTBB_ROOT_DIR=/usr
+        -DTBB_LIBRARIES=/usr/lib64
         -DTBB_INCLUDE_DIRS=/usr/include ..
         -DPXR_BUILD_TESTS=OFF
         -DPXR_BUILD_EXAMPLES=OFF
@@ -143,7 +151,10 @@ ExternalProject_Add(USD
         -DPXR_ENABLE_PTEX_SUPPORT=OFF
         -DPXR_ENABLE_OPENVDB_SUPPORT=OFF
         -DPXR_BUILD_USDVIEW=OFF
-             
+        -DBoost_NO_BOOST_CMAKE=ON
+        -DBoost_NO_SYSTEM_PATHS=ON
+        -DTBB_SUPPRESS_DEPRECATED_MESSAGES=1
     DEPENDS ${CHAIN}
 )
 set(CHAIN USD)
+

@@ -11,6 +11,12 @@ project(openmoonray_third_party)
 
 include(ExternalProject)
 
+include(ProcessorCount)
+ProcessorCount(N)
+if(NOT N EQUAL 0)
+  set(JOBS_ARG -j${N})
+endif()
+
 # User configurable settings
 set(InstallRoot /usr/local CACHE FILEPATH "Install root for dependencies")
 set(PythonVer 3.6 CACHE STRING "Python version (n.m), e.g. 3.6")
@@ -31,7 +37,7 @@ ExternalProject_Add(Boost
     URL https://sourceforge.net/projects/boost/files/boost/1.73.0/boost_1_73_0.tar.gz
     UPDATE_COMMAND ./bootstrap.sh --prefix=${InstallRoot}
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND ./b2 install -j$(nproc) --user-config=${THIS_DIR}/python-config.jam --with_python variant=release toolset=gcc link=shared threading=multi                  
+    BUILD_COMMAND ./b2 install ${JOBS_ARG} --user-config=${THIS_DIR}/python-config.jam --with_python variant=release toolset=gcc link=shared threading=multi
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND ""
     DEPENDS ${CHAIN}
@@ -40,7 +46,7 @@ set(CHAIN Boost)
 
 ExternalProject_Add(JsonCpp
     GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp.git
-    GIT_TAG 15949af09856076b584c7b432f065386ccd267a9 # 0.7.0
+    GIT_TAG 5defb4ed1a4293b8e2bf641e16b156fb9de498cc # 1.9.5
     INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
@@ -75,7 +81,7 @@ set(CHAIN MicroHttpd)
 
 ExternalProject_Add(OpenSubdiv
     GIT_REPOSITORY https://github.com/PixarAnimationStudios/OpenSubdiv
-    GIT_TAG 82ab1b9f54c87fdd7e989a3470d53e137b8ca270 # v3_4_3
+    GIT_TAG 8ffa2b6566be10209529d7a0d1db02a0796b160c # v3_5_0
     INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
@@ -113,9 +119,9 @@ ExternalProject_Add(OpenVDB
     GIT_REPOSITORY https://github.com/AcademySoftwareFoundation/openvdb
     GIT_TAG 88ae51a34ca70a23442dc60bba83894f35f7f728 # v8.2.0
     INSTALL_DIR ${InstallRoot}
-    CMAKE_ARGS 
-        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
-        -DBLOSC_ROOT=/usr
+    CMAKE_ARGS
+      -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+      -DBLOSC_ROOT=/usr
     DEPENDS ${CHAIN}
 )
 set(CHAIN OpenVDB)
@@ -124,7 +130,7 @@ ExternalProject_Add(Log4CPlus
     GIT_REPOSITORY https://github.com/log4cplus/log4cplus
     GIT_TAG bd2dfe9ef0817277a7d41fadecd84addaf943fe3 # REL_1_1_2
     INSTALL_DIR ${InstallRoot}
-    CMAKE_ARGS 
+    CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
     DEPENDS ${CHAIN}
 )
@@ -152,7 +158,6 @@ ExternalProject_Add(Random123
 set(CHAIN Random123)
 
 ExternalProject_Add(ISPC
-    # URL https://github.com/ispc/ispc/releases/download/v1.14.1/ispc-v1.14.1-linux.tar.gz
     URL https://github.com/ispc/ispc/releases/download/v1.20.0/ispc-v1.20.0-linux.tar.gz
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
@@ -164,17 +169,16 @@ set(CHAIN ISPC)
 
 ExternalProject_Add(embree
     GIT_REPOSITORY https://github.com/embree/embree
-#    GIT_TAG 69bd4c272f1ed608494f233ecfff3feec516880b # v3.12.1
-    GIT_TAG 698442324ccddd11725fb8875275dc1384f7fb40 # v3.13.5
-    PATCH_COMMAND patch -p1 < ${THIS_DIR}/embree_missing_type.patch
+    GIT_TAG 0fcb306c9176221219dd15e27fe0527ed334948f # v4.1.0
     INSTALL_DIR ${InstallRoot}
-    CMAKE_ARGS 
+    CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
         -DEMBREE_ISPC_EXECUTABLE=<INSTALL_DIR>/bin/ispc
+        -DEMBREE_ISPC_SUPPORT=ON
         -DEMBREE_TBB_ROOT=<INSTALL_DIR>
         -DEMBREE_IGNORE_INVALID_RAYS=ON
         -DEMBREE_RAY_MASK=ON
-        -DEMBREE_MAX_ISA=AVX
+        -DEMBREE_MAX_ISA=AVX512
         -DEMBREE_TUTORIALS=OFF
         -DBUILD_SHARED_LIBS=ON
     DEPENDS ${CHAIN}
@@ -196,7 +200,7 @@ set(CHAIN OpenColorIO)
 
 ExternalProject_Add(OpenImageIO
     GIT_REPOSITORY https://github.com/OpenImageIO/oiio
-    GIT_TAG 55ebad1f77f06527b23b4fe9d0da81fe8d0ecdc8 # 2.2.15.1
+    GIT_TAG 331a323468928c8017ad048b26d47c4e57a724a7 # 2.3.20.0
     INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
         -DOpenEXR_ROOT=<INSTALL_DIR>
@@ -210,6 +214,7 @@ set(CHAIN OpenImageIO)
 ExternalProject_Add(OpenImageDenoise
     URL https://github.com/OpenImageDenoise/oidn/releases/download/v2.0.1/oidn-2.0.1.src.tar.gz
     INSTALL_DIR ${InstallRoot}
+    PATCH_COMMAND patch devices/cpu/CMakeLists.txt ${THIS_DIR}/oidn_find_tbb.patch
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
         -DISPC_EXECUTABLE=<INSTALL_DIR>/bin/ispc
@@ -221,7 +226,6 @@ set(CHAIN OpenImageDenoise)
 
 ExternalProject_Add(USD
     GIT_REPOSITORY https://github.com/PixarAnimationStudios/USD
-    # GIT_TAG 7a5f8c4311fed3ef2271d5e4b51025fb0f513730 # v21.08
     GIT_TAG 3b097e3ba8fabf1777a1256e241ea15df83f3065 # v22.05
     INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
@@ -236,8 +240,10 @@ ExternalProject_Add(USD
         -DPXR_ENABLE_PTEX_SUPPORT=OFF
         -DPXR_ENABLE_OPENVDB_SUPPORT=OFF
         -DPXR_BUILD_USDVIEW=OFF
-        -DBoost_NO_BOOST_CMAKE=ON 
+        -DBoost_NO_BOOST_CMAKE=ON
         -DBoost_NO_SYSTEM_PATHS=ON
+        -DTBB_SUPPRESS_DEPRECATED_MESSAGES=1
     DEPENDS ${CHAIN}
 )
+set(CHAIN USD)
 
