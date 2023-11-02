@@ -96,6 +96,7 @@ ExternalProject_Add(OpenEXR
     GIT_REPOSITORY https://github.com/AcademySoftwareFoundation/openexr
     GIT_TAG 8bc3741131db146ad08a5b83af9e6e48f0e94a03 # v2.5.7
     INSTALL_DIR ${InstallRoot}
+    PATCH_COMMAND patch IlmBase/Half/CMakeLists.txt ${THIS_DIR}/../Imath_include_paths.patch
     CMAKE_ARGS
         -DBoost_ROOT=<INSTALL_DIR>
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>

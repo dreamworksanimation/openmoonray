@@ -39,7 +39,8 @@ dnf install -y gcc gcc-c++
 
 dnf install -y bison flex wget git python3 python3-devel patch \
                giflib-devel libmng libtiff-devel libjpeg-devel \
-               libatomic libuuid-devel openssl-devel curl-devel zlib-devel
+               libatomic libuuid-devel openssl-devel curl-devel \
+               freetype-devel zlib-devel
 
 mkdir -p /installs/{bin,lib,include}
 cd /installs

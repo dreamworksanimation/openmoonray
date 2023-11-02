@@ -1,0 +1,6 @@
+16a17,21
+> 
+> # Create a symlink during the install step to allow for "Imath" include paths.
+> # #include <OpenEXR/half.h>     <-- current way for this version of openexr
+> # #include <Imath/half.h>       <-- we want to support this too.
+> install(CODE "file(CREATE_LINK OpenEXR ${CMAKE_INSTALL_PREFIX}/include/Imath SYMBOLIC)")
