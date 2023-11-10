@@ -170,7 +170,7 @@ set(CHAIN ISPC)
 
 ExternalProject_Add(embree
     GIT_REPOSITORY https://github.com/embree/embree
-    GIT_TAG 0fcb306c9176221219dd15e27fe0527ed334948f # v4.1.0
+    GIT_TAG 341ef8c45d1ae072ead1ab65cd76e88b03d9302c # v4.2.0
     INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>

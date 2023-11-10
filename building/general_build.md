@@ -106,7 +106,7 @@ If you do this, you will also have to configure the main CMake build of MoonRay 
 
 ### 3. Optix
 
-MoonRay GPU support requires the NVIDIA Optix headers to build. These require an EULA, and can be downloaded from [here](https://developer.nvidia.com/designworks/optix/downloads/legacy). Be sure to download version 7.3, as MoonRay is not yet compatible with their more recent releases.
+MoonRay GPU support requires the NVIDIA Optix headers to build. These require an EULA, and can be downloaded from [here](https://developer.nvidia.com/designworks/optix/downloads/legacy). Be sure to download version 7.6, as MoonRay is not yet compatible with their more recent releases.
 
 Only the header files are needed, and the MoonRay build expects to find them in */usr/local/include* by default. You can change this by setting *OPTIX_ROOT*. You may need to unpack the Optix SDK to a temporary location and copy the headers across.
 
