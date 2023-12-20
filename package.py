@@ -37,6 +37,8 @@ variants = [
     ['os-rocky-9', 'opt_level-debug', 'refplat-vfx2021.0', 'gcc-9.3.x.1', 'amorphous-8', 'openvdb-8', 'usd_core-0.21.8.x.2', 'zlib-1.2.11.x.1'],
     ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2022.0', 'gcc-9.3.x.1', 'amorphous-9', 'openvdb-9', 'imath-3', 'usd_core-0.22.5.x', 'zlib-1.2.11.x.1'],
     ['os-rocky-9', 'opt_level-debug', 'refplat-vfx2022.0', 'gcc-9.3.x.1', 'amorphous-9', 'openvdb-9', 'imath-3', 'usd_core-0.22.5.x', 'zlib-1.2.11.x.1'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.0', 'gcc-11.x', 'amorphous-9', 'openvdb-10', 'imath-3', 'usd_core-0.22.5.x', 'zlib-1.2.11.x.1'],
+    ['os-rocky-9', 'opt_level-debug', 'refplat-vfx2023.0', 'gcc-11.x', 'amorphous-9', 'openvdb-10', 'imath-3', 'usd_core-0.22.5.x', 'zlib-1.2.11.x.1'],
 ]
 
 requires = [
@@ -44,7 +46,7 @@ requires = [
     'boost',
     'cuda-12.1.0.x',
     'curl_no_ldap-7.49.1.x',
-    'embree-4.1.0.x',
+    'embree-4.2.0.x',
     'jsoncpp-1.9.5',
     'libmicrohttpd-0.9.71.x.1',
     'log4cplus-1.1.2.x',
@@ -68,7 +70,7 @@ private_build_requires = [
     'cmake-3.23',
     'cppunit',
     'ispc-1.20.0.x',
-    'python-2.7|3.7|3.9'
+    'python-2.7|3.7|3.9|3.10'
 ]
 
 # Create dictionary of tests for the rez-test command

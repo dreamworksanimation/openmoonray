@@ -31,7 +31,7 @@ include(GNUInstallDirs)
 option(BUILD_QT_APPS                "Whether or not to build apps that require Qt" YES)
 option(MOONRAY_USE_CUDA             "Whether to use CUDA (and Optix) - Enables XPU mode and Optix denoising" YES)
 
-option(ABI_SET_VERSION              "Enable the abi-version option" ON)
+option(ABI_SET_VERSION              "Enable the abi-version option" OFF)
 if(ABI_SET_VERSION)
     set(ABI_VERSION "6" CACHE STRING "If ABI_SET_VERSION is on, which version to set")
 endif()
