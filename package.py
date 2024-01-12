@@ -57,7 +57,7 @@ requires = [
     'openimageio-2.3.20.0.x',
     'opensubdiv-3.5.0.x.0',
     'openvdb',
-    'optix-7.3.0.x',
+    'optix-7.6.0.x',
     'qt',
     'random123-1.08.3',
     'tbb',
