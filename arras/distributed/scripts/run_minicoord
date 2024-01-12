@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
 
 SOURCEDIR="$( dirname -- "${BASH_SOURCE[0]:-$0}";)"
 cd ${SOURCEDIR}/../python/minicoord

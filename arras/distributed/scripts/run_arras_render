@@ -1,4 +1,7 @@
 #!/bin/bash
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
 # run arras_render, using coordinator on local machine
 # specify rdla file to render as an argument
 
