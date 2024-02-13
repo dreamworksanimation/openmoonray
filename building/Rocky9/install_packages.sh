@@ -42,6 +42,8 @@ dnf install -y bison flex wget git python3 python3-devel patch \
                libatomic libuuid-devel openssl-devel curl-devel \
                freetype-devel zlib-devel
 
+dnf install -y lsb_release
+
 mkdir -p /installs/{bin,lib,include}
 cd /installs
 wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-0.42.2-5.el9.x86_64.rpm
