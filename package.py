@@ -33,7 +33,7 @@ variants = [
     ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2020.3', 'gcc-6.3.x.2', 'amorphous-8', 'openvdb-8', 'usd_core-0.20.8.x.2', 'zlib-1.2.8.x.2'],
     ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2021.0', 'gcc-9.3.x.1', 'amorphous-8', 'openvdb-8', 'usd_core-0.21.8.x.2', 'zlib-1.2.8.x.2'],
     ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2021.0', 'gcc-9.3.x.1', 'amorphous-8', 'openvdb-8', 'usd_core-0.21.8.x.2', 'zlib-1.2.8.x.2'],
-    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2021.0', 'clang-13', 'gcc-9.3.x.1', 'amorphous-8', 'openvdb-8', 'usd_core-0.21.8.x.2', 'zlib-1.2.8.x.2'],
+    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2021.0', 'clang-13', 'amorphous-8', 'openvdb-8', 'usd_core-0.21.8.x.2', 'zlib-1.2.8.x.2'],
     ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2022.0', 'gcc-9.3.x.1', 'amorphous-9', 'openvdb-9', 'imath-3', 'usd_core-0.22.5.x', 'zlib-1.2.8.x.2'],
     ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2022.0', 'gcc-9.3.x.1', 'amorphous-9', 'openvdb-9', 'imath-3', 'usd_core-0.22.5.x', 'zlib-1.2.8.x.2'],
     ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2021.0', 'gcc-9.3.x.1', 'amorphous-8', 'openvdb-8', 'usd_core-0.21.8.x.2', 'zlib-1.2.11.x.1'],
