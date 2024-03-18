@@ -6,6 +6,7 @@
 
 install_qt=1
 install_cuda=1
+install_cgroup=1
 for i in "$@" 
 do
 case ${i,,} in
@@ -14,6 +15,9 @@ case ${i,,} in
     ;;
     --nocuda|-nocuda)
         install_cuda=0
+    ;;
+    --nocgroup|-nocgroup)
+        install_cgroup=0
     ;;
     *)
         echo "Unknown option: $i"
@@ -46,10 +50,14 @@ dnf install -y lsb_release
 
 mkdir -p /installs/{bin,lib,include}
 cd /installs
-wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-0.42.2-5.el9.x86_64.rpm
-wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-devel-0.42.2-5.el9.x86_64.rpm
-dnf install libcgroup-0.42.2-5.el9.x86_64.rpm -y
-dnf install libcgroup-devel-0.42.2-5.el9.x86_64.rpm -y
+
+if [ $install_cgroup -eq 1 ] 
+then
+    wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-0.42.2-5.el9.x86_64.rpm
+    wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-devel-0.42.2-5.el9.x86_64.rpm
+    dnf install libcgroup-0.42.2-5.el9.x86_64.rpm -y
+    dnf install libcgroup-devel-0.42.2-5.el9.x86_64.rpm -y
+fi
 
 wget https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-linux-x86_64.tar.gz
 tar xzf cmake-3.23.1-linux-x86_64.tar.gz
