@@ -29,8 +29,6 @@ help = ('For assistance, '
         "please contact the folio's owner at: moonbase-dev@dreamworks.com")
 
 variants = [
-    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2020.3', 'gcc-6.3.x.2', 'amorphous-8', 'openvdb-8', 'usd_core-0.20.8.x.2', 'zlib-1.2.8.x.2'],
-    ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2020.3', 'gcc-6.3.x.2', 'amorphous-8', 'openvdb-8', 'usd_core-0.20.8.x.2', 'zlib-1.2.8.x.2'],
     ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2021.0', 'gcc-9.3.x.1', 'amorphous-8', 'openvdb-8', 'usd_core-0.21.8.x.2', 'zlib-1.2.8.x.2'],
     ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2021.0', 'gcc-9.3.x.1', 'amorphous-8', 'openvdb-8', 'usd_core-0.21.8.x.2', 'zlib-1.2.8.x.2'],
     ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2021.0', 'clang-13', 'amorphous-8', 'openvdb-8', 'usd_core-0.21.8.x.2', 'zlib-1.2.8.x.2'],
