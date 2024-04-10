@@ -10,6 +10,9 @@ echo "Setting up release in ${rel_root}"
 # NB required for Arras to function (it needs to find execComp)
 export PATH=${rel_root}/bin:${PATH}
 
+# need python modules for the USD interface
+export PYTHONPATH=${rel_root}/lib/python:${PYTHONPATH}
+
 # tell moonray where to find dsos
 export RDL2_DSO_PATH=${rel_root}/rdl2dso
 
