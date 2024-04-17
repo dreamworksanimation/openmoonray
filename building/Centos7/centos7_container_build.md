@@ -63,7 +63,7 @@ The main CMake project in *openmoonray* builds MoonRay itself, and installs it t
 > cd /build
 > rm -rf *
 > export LUA_DIR=/usr/local
-> cmake /source -DMOONRAY_USE_CUDA=NO
+> cmake /source -DMOONRAY_USE_OPTIX=NO
 > cmake --build . -j $(nproc)
 
 > mkdir /installs/openmoonray

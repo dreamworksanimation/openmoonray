@@ -80,7 +80,7 @@ mkdir /installs/openmoonray
 cmake --install /build --prefix /installs/openmoonray
 ```
 
-You can use the options ***-DBUILD_QT_APPS=NO*** and ***-DMOONRAY_USE_CUDA=NO*** in the first CMake command to disable GUI apps and GPU support respectively.
+You can use the options ***-DBUILD_QT_APPS=NO*** and ***-DMOONRAY_USE_OPTIX=NO*** in the first CMake command to disable GUI apps and GPU support respectively.
 
 To set up the install and test moonray:
 

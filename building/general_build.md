@@ -156,7 +156,7 @@ cmake --build . -- -j $(nproc)
 
 Setting ***-DBUILD_QT_APPS=NO*** will suppress building of the Qt applications *moonray_gui* and *arras_render*, which removes the dependency on Qt5 libraries.
 
-Setting ***-DMOONRAY_USE_CUDA=NO*** builds MoonRay without GPU support : CUDA and Optix are no longer required dependencies, but MoonRay will not use XPU mode or GPU denoising even if a GPU is present at run time.
+Setting ***-DMOONRAY_USE_OPTIX=NO*** builds MoonRay without GPU support : CUDA and Optix are no longer required dependencies, but MoonRay will not use XPU mode or GPU denoising even if a GPU is present at run time.
 
 ---
 ## Installation Setup

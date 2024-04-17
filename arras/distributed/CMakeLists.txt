@@ -8,7 +8,6 @@ project(ArrasDistributed
         LANGUAGES CXX)
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/../../release)
-# set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake)
 
 # ================================================
 # Find dependencies
@@ -26,7 +25,7 @@ find_package(Boost REQUIRED
 
 # if we aren't building ArrasCore, get it from the release
 if (NOT Building_ArrasCore)
-    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_INSTALL_PREFIX}/cmake")
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/cmake)
     find_package(ArrasCore REQUIRED)
 endif()
 
@@ -49,38 +48,9 @@ endif()
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
 
-# TODO: Review these, and add them where appropriate
-# These options are used in our SCons builds at the top-level,
-# but that doesn't seem like good practice to repeat here. Each
-# library/executable should probably set have its own required
-# target_compile_options. For now, disabling all of these
-#[[
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    add_compile_options(
-        PUBLIC
-            -Wno-narrowing       # W: Conversion int to short int may alter value
-            -Wno-conversion      # W: Conversion between datatypes may alter value
-            -Wno-switch          # W: Not all possible cases are explicitly handled
-            -Wno-unknown-pragmas # W: Don't yell at me about pragmas
-            -Wno-unused-variable # W: Don't yell at me about unused variables
-            -Wno-sign-compare    # W: Sign vs. Unsigned comparisons
-            -fabi-version=6      # O: Application Binary Interface to version 6
-            -Wno-unused-local-typedefs # W: Locally defined typedef but not used
-            -Wno-class-memaccess # W: with no trivial copy-assignment
-            -Wno-maybe-uninitialized # W: may be used uninitialized in this function
-            -Wno-cast-function-type # W: cast between incompatible function types
-            -fno-var-tracking-assignments # W: Turn off variable tracking
-            -mavx  # O: Enable AVX
-            -mfma # O: Enable FMA
-            -ffast-math # O: Fast Math
-            -msse)
-endif()
-#]]
-
 # ================================================
 # Add project files
 # ================================================
-
 add_subdirectory(arras4_node)
 add_subdirectory(minicoord)
 add_subdirectory(scripts)

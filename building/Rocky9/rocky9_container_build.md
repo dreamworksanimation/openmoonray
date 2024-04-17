@@ -62,7 +62,7 @@ The main CMake project in *openmoonray* builds MoonRay itself, and installs it t
 ```bash
 > cd /build
 > rm -rf *
-> cmake /source -DPYTHON_EXECUTABLE=python3 -DBOOST_PYTHON_COMPONENT_NAME=python39 -DABI_VERSION=0 -DMOONRAY_USE_CUDA=NO
+> cmake /source -DPYTHON_EXECUTABLE=python3 -DBOOST_PYTHON_COMPONENT_NAME=python39 -DABI_VERSION=0 -DMOONRAY_USE_OPTIX=NO
 > cmake --build . -j $(nproc)
 
 > mkdir /installs/openmoonray

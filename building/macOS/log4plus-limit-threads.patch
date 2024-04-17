@@ -1,0 +1,13 @@
+diff --git a/src/global-init.cxx b/src/global-init.cxx
+index 2777bc11..18445c80 100644
+--- a/src/global-init.cxx
++++ b/src/global-init.cxx
+@@ -141,7 +141,7 @@ struct DefaultContext
+     spi::FilterFactoryRegistry filter_factory_registry;
+     spi::LocaleFactoryRegistry locale_factory_registry;
+ #if ! defined (LOG4CPLUS_SINGLE_THREADED)
+-    std::unique_ptr<progschj::ThreadPool> thread_pool {new progschj::ThreadPool};
++    std::unique_ptr<progschj::ThreadPool> thread_pool {new progschj::ThreadPool (4)};
+ #endif
+     Hierarchy hierarchy;
+ };
