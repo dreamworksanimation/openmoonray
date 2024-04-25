@@ -43,9 +43,7 @@ find_package(JPEG REQUIRED)
 find_package(OpenImageIO REQUIRED)
 find_package(TBB REQUIRED)
 
-# ================================================
 # Set the RPATH for binaries in the install tree
-# ================================================
 set(CMAKE_INSTALL_RPATH ${GLOBAL_INSTALL_RPATH})
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
