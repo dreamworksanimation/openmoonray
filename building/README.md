@@ -1,9 +1,6 @@
----
-title: Building MoonRay
----
 # Building MoonRay
 
-Start with reading the [general build instructions](general_build.md)
+Start with reading the [general build instructions](general_build.md).  
 We also provide more concrete examples of the building process:
 
 [Building on Rocky Linux 9](Rocky9/rocky9_build.md)

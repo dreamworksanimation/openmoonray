@@ -1,6 +1,3 @@
----
-title: Building MoonRay in a Centos 7 Docker container
----
 # Building MoonRay in a Centos 7 Docker container
 
 Start with reading the [general build instructions](../general_build).

@@ -1,14 +1,14 @@
----
-title: Building Open MoonRay
----
-
 # Building Open MoonRay
 
+### Linux
 MoonRay currently builds on Linux systems. We test the build on Centos 7 (with GCC 6 and 9) and Rocky Linux 9 (with GCC 11). It should be possible to build on other distributions, but often some adjustments are needed, especially regarding obtaining the necessary third-party dependencies. MoonRay can be built directly on a Linux system or inside a suitable Docker container.
 
 Support for GPU/XPU and building of the GUI tools are both options that can be turned off if you don't need them.
 
 The build process described here includes cloning the source, obtaining the required dependencies and building MoonRay itself. The details depend somewhat on the Linux distribution being used, whether you need compatibility with some other software or build framework, and where you want to install MoonRay. This document discusses the various alternatives. For more concrete instructions, look at the documents that discuss building on specific platforms.
+
+### macOS
+MoonRay now also builds on macOS Apple silicon systems and can leverage the unified memory architecture for XPU mode. Much of the content in these general build instructions are applicable to macOS, although they were originally written for Linux builds. Look [here](macOS/macOS_build.md) for macOS specific instructions.
 
 ---
 ## MoonRay Source Repositories

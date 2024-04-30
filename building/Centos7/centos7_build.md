@@ -1,6 +1,3 @@
----
-title: Building MoonRay on Centos 7
----
 # Building MoonRay on Centos 7
 
 Start with reading the [general build instructions](../general_build).

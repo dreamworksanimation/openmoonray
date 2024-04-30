@@ -1,6 +1,3 @@
----
-title: Building MoonRay on Rocky Linux 9
----
 # Building MoonRay on Rocky Linux 9
 
 Start with reading the [general build instructions](../general_build). This document gives more explicit instructions for building on a Rocky Linux 9 installation. To keep it concrete, I've chosen specific directory locations, which you can change as needed:
