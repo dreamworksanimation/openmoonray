@@ -54,6 +54,11 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# Make sure we disable CMake from implicitly adding -pthread to all targets, this
+# is problematic because ISPC targets will inherit this flag incorrectly and will
+# error and not compile. Targets which do need this flag eg. GCC are explicitly set.
+set(THREADS_HAVE_PTHREAD_ARG FALSE)
+
 # ================================================
 # Subdirectories
 # ================================================
