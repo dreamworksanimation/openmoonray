@@ -1,0 +1,13 @@
+name: Trigger the CI Plan Run
+
+on:
+  workflow_dispatch:
+
+jobs:
+  trigger_CI_plan:
+    runs-on: [macOS]
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: OpenMoonRay/openmoonray
+          token: ${{ secrets.BART_GA_PAT }}
