@@ -42,6 +42,9 @@ variants = [
     ['os-rocky-9', 'opt_level-debug', 'refplat-vfx2023.0', 'gcc-11.x', 'amorphous-9', 'openvdb-10', 'imath-3', 'usd_core-0.22.5.x', 'zlib-1.2.11.x.1'],
 ]
 
+conf_rats_variants = variants[0:2]
+conf_CI_variants = list(filter(lambda v: 'os-CentOS-7' in v, variants))
+
 requires = [
     'amorphous',
     'boost',

@@ -1,0 +1,171 @@
+# -*- coding: utf-8 -*-
+syntax: 1
+
+pipeline-configurations:
+
+  continuous-integration:
+    checkout:
+      fresh: true
+    build:
+      rez_args: -b cmake
+      prepend_release_dir: true
+      resource:
+        os-rocky-9: EL9
+        os-CentOS-7: EL7_RaTS_build_fast
+    test:
+      enabled: true
+      cmd:
+      - rez-test _packagename_ variant0
+      - rez-test _packagename_ variant1
+      - rez-test _packagename_ variant2
+      - rez-test _packagename_ variant3
+      - rez-test _packagename_ variant4
+      ignore_failures: false
+      ignore_failures_email: true
+      resource:
+      - EL7_RaTS_build_fast
+      - EL7_RaTS_build_fast
+      - EL7_RaTS_build_fast
+      - EL7_RaTS_build_fast
+      - EL7_RaTS_build_fast
+      postp: /opt/electriccloud/electriccommander/bin/postp
+      name_filter: foobar
+    release:
+      enabled: true
+    finalize:
+      email_enabled: false
+      zulip_enabled: false
+    initialize:
+      email_enabled: true
+      zulip_enabled: false
+
+  pre-release:
+    checkout:
+      fresh: true
+    build:
+      rez_args: -b cmake
+      prepend_release_dir: true
+      resource:
+        os-rocky-9: EL9
+        os-CentOS-7: EL7_RaTS_build_fast
+    test:
+      enabled: false
+    finalize:
+      zulip_enabled: false
+    initialize:
+      zulip_enabled: false
+
+  release:
+    build:
+      rez_args: -b cmake
+      resource:
+        os-rocky-9: EL9
+        os-CentOS-7: EL7_RaTS_build_fast
+    test:
+      enabled: false
+    finalize:
+      zulip_enabled: false
+    initialize:
+      email_enabled: false
+      zulip_enabled: false
+
+  rats:
+    checkout:
+      enabled: true
+      fresh: true
+      clone: 0
+      merge_enabled: false
+      merge_target: develop
+      merge_target_type: branch
+    build:
+      enabled: true
+      resource:
+        os-rocky-9: EL9
+        os-CentOS-7: EL7_RaTS_build_fast
+      post_cmd:
+      rez_args: -b cmake
+      postp: /opt/electriccloud/electriccommander/bin/postp
+      build_directory: ../build
+      parallel_variants: true
+      prepend_release_dir: true
+    scan:
+      enabled: false
+      abi_checker: false
+      checkmarx: false
+      fossID: false
+      dwa_policy: false
+    test:
+      enabled: false
+    release:
+      enabled: true
+      ask_approval: false
+      update_git: false
+      update_jira: false
+    finalize:
+      email_enabled: false
+      email_recipients_failure:
+      - _submitter_
+      - _contributor_
+      email_recipients_success:
+      - _submitter_
+      - _contributor_
+      chat_enabled: false
+      zulip_enabled: false
+      zulip_stream: CM DevOps Updates
+      zulip_topic: Continuous Integration
+    initialize:
+      email_enabled: true
+      email_recipients:
+      - _submitter_
+      - _contributor_
+      chat_enabled: false
+      zulip_enabled: false
+      zulip_stream: CM DevOps Updates
+      zulip_topic: Continuous Integration
+
+
+package-configurations:
+
+  rez-2-CI:
+    build_context:
+    - buildtools
+    environment:
+      REZ_ALTERNATE_CONFIGURATION: CI
+    packages_path:
+    - /rel/rez/dwa
+    - /rel/rez/third_party
+    - /rel/lang/python/packages
+    release_packages_path: /rel/rez/dwa
+    symlink_directory: null
+    symlinks: false
+    variants: true
+    yaml: false
+
+  rez-2-RaTS:
+    build_context:
+    - buildtools
+    environment:
+      REZ_ALTERNATE_CONFIGURATION: rats
+    packages_path:
+    - /rel/rez/dwa
+    - /rel/rez/third_party
+    - /rel/lang/python/packages
+    release_packages_path: /rel/rez/dwa
+    symlink_directory: null
+    symlinks: false
+    variants: true
+    yaml: false
+
+  rez-2-testmap:
+    build_context:
+    - buildtools
+    environment: {}
+    packages_path:
+    - /rel/rez/dwa
+    - /rel/rez/third_party
+    - /rel/lang/python/packages
+    release_packages_path: /rel/rez/dwa
+    symlink_directory: null
+    symlinks: false
+    variants: true
+    yaml: false

@@ -5,7 +5,6 @@ function(HdMoonray_cxx_compile_options target)
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         target_compile_options(${target}
             PRIVATE
-                -fabi-version=6                 # corrects the promotion behavior of C++11 scoped enums and the mangling of template argument packs.
                 -fexceptions                    # Enable exception handling.
                 -ffast-math                     # Sets the options -fno-math-errno, -funsafe-math-optimizations, -ffinite-math-only,
                                                 #     -fno-rounding-math, -fno-signaling-nans, -fcx-limited-range, -fexcess-precision=fast.
