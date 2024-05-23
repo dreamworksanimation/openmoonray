@@ -6,6 +6,7 @@ on:
 jobs:
   trigger_CI_plan:
     runs-on: [macOS]
+    steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
