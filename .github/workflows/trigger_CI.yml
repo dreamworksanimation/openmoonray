@@ -2,13 +2,59 @@ name: Trigger the CI Plan Run
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   trigger_CI_plan:
-    runs-on: [macOS]
+    env:
+      CHATROOM: ${{ secrets.TRIGGER_CI_CHATROOM }}
+      approot: ${{ github.workspace }}
+    runs-on: [self-hosted, macOS]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
+          path: source/openmoonray
           repository: OpenMoonRay/openmoonray
           token: ${{ secrets.BART_GA_PAT }}
+          submodules: true
+      - name: Check for new dependencies
+        shell: bash
+        run: |
+          if ! cmp -s ${approot}/CMakeLists.txt ${approot}/source/openmoonray/building/macOS/CMakeLists.txt
+          then
+            rm -rf ${approot}/CMakeLists.txt ${approot}/installs
+          fi
+      - name: Build dependencies
+        shell: bash
+        run: |
+          if [ ! -d ${approot}/installs ]
+          then
+            mkdir -p ${approot}/{installs/{bin,lib,include},build-deps}
+            cd ${approot}/build-deps
+            cmake ${approot}/source/openmoonray/building/macOS
+            cmake --build .
+            cp -f ${approot}/source/openmoonray/building/macOS/CMakeLists.txt ${approot}/CMakeLists.txt
+          fi
+      - name: Build
+        shell: bash
+        working-directory: ./source/openmoonray
+        run: |
+          echo Current directory is $(pwd)
+          mkdir -p ${approot}/{installs/openmoonray,build}
+          cmake --preset dwa-macos-release
+          cmake --build --preset dwa-macos-release
+      - name: Run unittests
+        shell: bash
+        working-directory: ./build
+        run: |
+          ctest -C Release -j $(sysctl -n hw.physicalcpu)
+      - name: Cleanup
+        if: always()
+        shell: bash
+        run: |
+          echo Removing build products
+          cd ${approot}
+          rm -rf build installs/openmoonray source build-deps
