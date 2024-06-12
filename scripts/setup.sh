@@ -3,37 +3,46 @@
 
 # setup environment variables to use release
 
-sourcedir="$( dirname -- "${BASH_SOURCE[0]:-$0}";)"
-rel_root=${sourcedir}/..
-echo "Setting up release in ${rel_root}"
+sourcedir="$(realpath $( dirname -- "${BASH_SOURCE[0]:-$0}";))"
+omr_root="$(realpath ${sourcedir}/..)"
+
+# Walk up to find the top-level install dir where the dependencies are installed
+install_root=${omr_root}
+while [ "$(basename ${install_root})" != "installs" ]
+do
+    install_root=$(dirname ${install_root})
+done
+
+echo "Found install root at ${install_root}"
+echo "Setting up release in ${omr_root}"
 
 # NB required for Arras to function (it needs to find execComp)
-export PATH=${rel_root}/bin:${PATH}
+export PATH=${omr_root}/bin:${PATH}
 
 # need python modules for the USD interface
-export PYTHONPATH=${rel_root}/lib/python:${PYTHONPATH}
+export PYTHONPATH=${install_root}/lib/python:${PYTHONPATH}
 
 # tell moonray where to find dsos
-export RDL2_DSO_PATH=${rel_root}/rdl2dso
+export RDL2_DSO_PATH=${omr_root}/rdl2dso
 
 # tell moonray where to find shaders file for XPU mode.
 # it will look for ${REZ_MOONRAY_ROOT}/shaders/GPUShaders.ptx
-export REZ_MOONRAY_ROOT=${rel_root}
+export REZ_MOONRAY_ROOT=${omr_root}
 
 # tell Arras where to find session files
-export ARRAS_SESSION_PATH=${rel_root}/sessions
+export ARRAS_SESSION_PATH=${omr_root}/sessions
 
 # tell Hydra Ndr plugins where to find shader descriptions
-export MOONRAY_CLASS_PATH=${rel_root}/shader_json
+export MOONRAY_CLASS_PATH=${omr_root}/shader_json
 
 # add Hydra plugins to path
-export PXR_PLUGIN_PATH=${rel_root}/plugin/usd:${PXR_PLUGIN_PATH}
-export PXR_PLUGINPATH_NAME=${rel_root}/plugin/usd:${PXR_PLUGINPATH_NAME}
+export PXR_PLUGINPATH_NAME=${omr_root}/plugin/usd:${omr_root}/plugin/pxr:${PXR_PLUGINPATH_NAME}
+export PXR_PLUGIN_PATH=${omr_root}/plugin/usd:${omr_root}/plugin/pxr:${PXR_PLUGIN_PATH}
 
 # create shader descriptions if they don't exist
-if [ ! -d "${rel_root}/shader_json" ]
+if [ ! -d "${omr_root}/shader_json" ]
 then
     echo "Building shader descriptions..."
-    ${rel_root}/bin/rdl2_json_exporter --out ${rel_root}/shader_json/ --sparse
+    ${omr_root}/bin/rdl2_json_exporter --out ${omr_root}/shader_json/ --sparse
     echo "...done"
 fi

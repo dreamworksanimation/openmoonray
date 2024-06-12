@@ -74,7 +74,7 @@ private_build_requires = [
     'cmake-3.23',
     'cppunit',
     'ispc-1.20.0.x',
-    'python-2.7|3.7|3.9|3.10'
+    'python-3.7|3.9|3.10'
 ]
 
 # Create dictionary of tests for the rez-test command
