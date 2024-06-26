@@ -1,4 +1,4 @@
-Building MoonRay on macOS Sonoma (macOS 14)  
+Building MoonRay on macOS Sonoma (macOS 14)
 The build steps for macOS align closely with those for CentOS 7, documented by Dreamworks [here](../Centos7/centos7_build.md), but with a few tweaks.
 
 Base requirements:
@@ -8,7 +8,7 @@ Base requirements:
     https://github.com/Kitware/CMake/releases/download/v3.26.5/cmake-3.26.5-macos-universal.dmg
     sudo "/Applications/CMake.app/Contents/bin/cmake-gui" --install
 
-Create a clean root folder for moonray, and follow the next three steps:
+Create a clean root folder for moonray.  Attempting to build atop a previous installation may cause issues.
 
 1. Create the folders
     ```
