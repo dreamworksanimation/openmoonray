@@ -1,7 +1,7 @@
 # Building Open MoonRay
 
 ### Linux
-MoonRay currently builds on Linux systems. We test the build on Centos 7 (with GCC 6 and 9) and Rocky Linux 9 (with GCC 11). It should be possible to build on other distributions, but often some adjustments are needed, especially regarding obtaining the necessary third-party dependencies. MoonRay can be built directly on a Linux system or inside a suitable Docker container.
+MoonRay currently builds on Linux systems. We test the build on Rocky Linux 9 (with GCC 11). It should be possible to build on other distributions, but often some adjustments are needed, especially regarding obtaining the necessary third-party dependencies. MoonRay can be built directly on a Linux system or inside a suitable Docker container.
 
 Support for GPU/XPU and building of the GUI tools are both options that can be turned off if you don't need them.
 
@@ -40,18 +40,14 @@ MoonRay is dependent on a number of third-party libraries and tools. You can obt
 
 Rather than providing a list of dependencies and versions, we provide sets of scripts and CMake projects in the */building* directory of *openmoonray*. Running these scripts will install the dependencies onto the system. This has several advantages. Firstly, the scripts will always match the current source, and can be directly tested for accuracy by running them. Secondly, they contain build options and other settings, as well as specifying a particular version for each dependency. If your requirements fit what they do, you can simply run them directly to install the dependencies. If not, you can either modify them as appropriate, or use them as a reference.
 
-There are separate directories under */building* for obtaining dependencies under different Linux distributions (currently Centos 7 and Rocky Linux 9). The rest of this section describes how to use the scripts. They are designed to run in the *bash* shell.
+There are separate directories under */building* for obtaining dependencies based on OS or Linux distribution (currently Rocky Linux 9 and macOS Sonoma). The rest of this section describes how to use the scripts. They are designed to run in the *bash* shell.
 
 ### 1. Packages
 
-The first step is to install required packages from the OS distribution. The availability of suitable package versions varies from distribution to distribution : for example, Rocky Linux 9 has more of the dependencies available that does Centos 7. If there is no suitable binary package for a dependency, you can download it as source and build it -- as discussed in the next section. The script to install the required packages is called *install_packages.sh*. It makes some changes to the current shell environment, so you should run it like this:
+The first step is to install required packages from the OS distribution. The availability of suitable package versions varies from distribution to distribution: for example, Rocky Linux 9 has more of the dependencies available than did Centos 7. If there is no suitable binary package for a dependency, you can download it as source and build it -- as discussed in the next section. The script to install the required packages is called *install_packages.sh*. It makes some changes to the current shell environment, so you should run it like this:
 
 ```bash
 source building/Rocky9/install_packages.sh
-```
-or
-```bash
-source building/Centos7/install_packages.sh
 ```
 
 Generally root permissions are necessary to install packages onto a system. It might be possible to install to an alternate location that doesn't require root permissions, but we have not tested this.
@@ -60,7 +56,7 @@ Generally root permissions are necessary to install packages onto a system. It m
 
 **Compiler**
 
-The Centos 7 script installs devtoolset-9 (i.e. GCC version 9). OpenMoonRay should also compile successfully with GCC 6. The Rocky 9 script installs GCC 11. clang 13/15 should also work for MoonRay, but we have seen a few issues building the dependencies with clang.
+The Rocky 9 script installs GCC 11. clang 13/15 should also work for MoonRay, but we have seen a few issues building the dependencies with clang.
 
 **CMake**
 
@@ -76,7 +72,7 @@ The GUI tools ***moonray_gui*** and ***arras_render*** are written using Qt 5. I
 
 ### 2. Dependencies built from source
 
-The directories */building/Centos7* and */building/Rocky9* also contain CMake projects that download and build the remaining dependencies from source. If you view the *CMakeLists.txt* files, you will see a series of ***ExternalProject_Add*** commands. Each one of these spawns a separate CMake environment that downloads, builds and installs a third-party package. You can view the full syntax for *ExternalProject_Add* [here](https://cmake.org/cmake/help/v3.23/module/ExternalProject.html), but in most cases it should be fairly clear what the options do. If you already have some of the dependencies installed, or you have some other way of obtaining them, you can comment out the corresponding command in *CMakeLists.txt*. You can also try changing options or versions if you need to : the project contains settings that we have tested, but they are not necessarily the only set that work.
+The directories */building/macOS* and */building/Rocky9* also contain CMake projects that download and build the remaining dependencies from source. If you view the *CMakeLists.txt* files, you will see a series of ***ExternalProject_Add*** commands. Each one of these spawns a separate CMake environment that downloads, builds and installs a third-party package. You can view the full syntax for *ExternalProject_Add* [here](https://cmake.org/cmake/help/v3.23/module/ExternalProject.html), but in most cases it should be fairly clear what the options do. If you already have some of the dependencies installed, or you have some other way of obtaining them, you can comment out the corresponding command in *CMakeLists.txt*. You can also try changing options or versions if you need to : the project contains settings that we have tested, but they are not necessarily the only set that work.
 
 The procedure for running the dependencies CMake project is as follows:
 
@@ -93,7 +89,7 @@ The option *-j $(nproc)* tells make/cmake to use all available cores for buildin
 
 The projects are set up to build the individual dependencies serially : the DEPENDS line on each *ExternalProject_Add* forces this. Issues or errors in the build process tend to be less confusing when run this way, but you can try optimzing the dependencies to enable a faster, fully-parallel build if desired. Once the build is complete, you can delete the contents of the build directory.
 
-The dependency building projects don't have many configuration options. Generally, adapting the process to run on a different platform requires trial and error, producing multiple inter-related changes. We don't have any very practical way to capture the differences in a model that is any simpler than the scripts themselves. Therefore developing a new dependency install process in practice means producing a new set of scripts, similar to the sets for Centos 7 and Rocky 9.
+The dependency building projects don't have many configuration options. Generally, adapting the process to run on a different platform requires trial and error, producing multiple inter-related changes. We don't have any very practical way to capture the differences in a model that is any simpler than the scripts themselves. Therefore developing a new dependency install process in practice means producing a new set of scripts, similar to the set for Rocky 9.
 
 You can change the directory that the dependency build project installs to, using the variable *InstallRoot*. For example:
 
@@ -136,21 +132,6 @@ The MoonRay CMake project also includes some custom options, some of which may b
 ```bash
 # Rocky 9
 cmake <openmoonray root dir> -DPYTHON_EXECUTABLE=python3 -DBOOST_PYTHON_COMPONENT_NAME=python39 -DABI_VERSION=0
-cmake --build . -- -j $(nproc)
-```
-
-The Centos 7 build works with the default values of these options, but uses a version of Lua installed in */usr/local* that is different than the one already in Centos 7. You need to configure the build to use this version by setting the environment variable ***LUA_DIR*** to */usr/local*
-
-```bash
-# Centos 7
-export LUA_DIR=/usr/local
-cmake <openmoonray root dir>
-cmake --build . -- -j $(nproc)
-```
-or
-```bash
-# Centos 7
-LUA_DIR=/usr/local cmake <openmoonray root dir>
 cmake --build . -- -j $(nproc)
 ```
 
@@ -235,14 +216,14 @@ will cause cmake to look for the headers in */moonray_deps/jsoncpp/include*, and
 
 The environment variables used for the different packages are:
 
-- CPPUNIT_ROOT  		
-- JSONCPP_ROOT		
+- CPPUNIT_ROOT
+- JSONCPP_ROOT
 - LIBCURL_ROOT
-- LIBUNWIND_ROOT		
-- LOG4CPLUS_ROOT		
+- LIBUNWIND_ROOT
+- LOG4CPLUS_ROOT
 - LUA_DIR
-- OPENSUBDIV_ROOT	      
-- OPENVDB_ROOT 	      
+- OPENSUBDIV_ROOT
+- OPENVDB_ROOT
 - OPTIX_ROOT
 - ISPC
 
@@ -276,7 +257,7 @@ CMake provides a ***presets*** mechanism, which can be useful to capture sets of
 ## Building in a Docker container
 ---
 
-You can build MoonRay inside a Docker container : the process isn't really different than building directly on a machine. Building in a container for Centos 7 and for Rocky 9 have sets of instructions in the documentation.
+You can build MoonRay inside a Docker container: the process isn't really different than building directly on a machine. There are instructions for building in a container for Rocky 9, but the process may be different for other distributions.
 
 ### Container build tips
 
@@ -294,7 +275,7 @@ You can save the current state of the container at any time using the docker com
 
 You can use the docker build command to create an initial base container with the OS and the packages installed by *install_packages.sh*. This is done by writing a "Dockerfile" with the contents of *install_packages.sh* translated into docker build commands. You don't have to do this, and it is not documented further here.
 
-Running the GUI applications from inside a container requires X to be set up in the container. Exactly how to do this may depend on the X setup on the host, but the documented Centos 7 process gives an example.
+Running the GUI applications from inside a container requires X to be set up in the container. Exactly how to do this may depend on the X setup on the host, but the documented Rocky 9 process gives an example.
 
 ---
 ## Building the Repositories Separately

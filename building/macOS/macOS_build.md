@@ -1,5 +1,4 @@
 Building MoonRay on macOS Sonoma (macOS 14)
-The build steps for macOS align closely with those for CentOS 7, documented by Dreamworks [here](../Centos7/centos7_build.md), but with a few tweaks.
 
 Base requirements:
 - macOS Sonoma (macOS 14)
