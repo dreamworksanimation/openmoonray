@@ -67,9 +67,11 @@ add_subdirectory(moonray)
 add_subdirectory(scripts)
 
 if(GLD STREQUAL "$ENV{STUDIO}")
-    install(FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/SDKScript
-        DESTINATION
-        .)
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/SDKScript
+        DESTINATION .
+        PERMISSIONS
+          OWNER_READ OWNER_WRITE
+          GROUP_READ GROUP_WRITE
+          WORLD_READ)
 endif()
 
