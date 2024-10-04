@@ -1,0 +1,86 @@
+{
+    "version": 4,
+    "configurePresets": [
+        {
+            "name": "macos-environment",
+            "hidden": true,
+            "environment": {
+                "DEPS_ROOT"                     : "${sourceParentDir}/installs",
+                "BUILD_DIR"                     : "${sourceParentDir}/build",
+                "Boost_ROOT"                    : "$env{DEPS_ROOT}",
+                "Libuuid_ROOT"                  : "$env{DEPS_ROOT}",
+                "CppUnit_ROOT"                  : "$env{DEPS_ROOT}",
+                "ISPC"                          : "$env{DEPS_ROOT}/bin/ispc",
+                "JsonCpp_ROOT"                  : "$env{DEPS_ROOT}",
+                "Libcurl_ROOT"                  : "$env{DEPS_ROOT}",
+                "Log4cplus_ROOT"                : "$env{DEPS_ROOT}",
+                "LUA_DIR"                       : "$env{DEPS_ROOT}",
+                "OpenSubDiv_ROOT"               : "$env{DEPS_ROOT}",
+                "OpenVDB_ROOT"                  : "$env{DEPS_ROOT}",
+                "OPTIX_ROOT"                    : "$env{DEPS_ROOT}/optix",
+                "PXR_USD_LOCATION"              : "$env{DEPS_ROOT}",
+                "PXR_INCLUDE_DIRS"              : "$env{DEPS_ROOT}/include",
+                "Random123_ROOT"                : "$env{DEPS_ROOT}",
+                "ZLIB_ROOT"                     : "$env{DEPS_ROOT}"
+            },
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "$env{DEPS_ROOT}"
+            }
+        },
+        {
+            "name": "macos-environment-houdini",
+            "hidden": true,
+            "inherits": "macos-environment",
+            "environment": {
+                "PREFIX_PXR"                : "${sourceParentDir}/building/macOS/pxr-houdini",
+                "HOUDINI_INSTALL_DIR"       : "/Applications/Houdini/Houdini19.5.805/Frameworks/Houdini.framework/Versions/19.5",
+                "PXR_LIB_PREFIX"            : "$env{HOUDINI_INSTALL_DIR}/Libraries",
+                "PXR_INCLUDE_PREFIX"        : "$env{HOUDINI_INSTALL_DIR}/Resources/toolkit/include",
+                "PXR_DEPS_PREFIX"           : "$env{DEPS_ROOT}",
+                "PXR_BOOST_PYTHON_LIB"      : "$env{HOUDINI_INSTALL_DIR}/Libraries/libhboost_python39-mt-a64.dylib"
+            },
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "$env{DEPS_ROOT};$env{PREFIX_PXR}",
+                "MOONRAY_USE_HOUDINI": "TRUE"
+            }
+        },
+        {
+            "name": "macos-release",
+            "displayName": "macOS Release",
+            "inherits": "macos-environment",
+            "binaryDir": "$env{BUILD_DIR}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_INSTALL_PREFIX": "${sourceParentDir}/installs/openmoonray"
+            },
+            "generator": "Xcode"
+        },
+        {
+            "name": "macos-houdini-release",
+            "displayName": "macOS Release (Houdini)",
+            "inherits": "macos-environment-houdini",
+            "binaryDir": "$env{BUILD_DIR}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_INSTALL_PREFIX": "${sourceParentDir}/installs/openmoonray"
+            },
+            "generator": "Xcode"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "macos-release",
+            "displayName": "macOS Release",
+            "configurePreset": "macos-release",
+            "configuration": "Release",
+            "targets": ["install"]
+        },
+        {
+            "name": "macos-houdini-release",
+            "displayName": "macOS Release (Houdini)",
+            "configurePreset": "macos-houdini-release",
+            "configuration": "Release",
+            "targets": ["install"]
+        }
+    ]
+}

@@ -3,7 +3,7 @@
 
 # setup environment variables to use release
 
-sourcedir="$(realpath $( dirname -- "${BASH_SOURCE[0]:-$0}";))"
+sourcedir="$(realpath $( dirname -- "${BASH_SOURCE[0]:-$0}"))"
 omr_root="$(realpath ${sourcedir}/..)"
 
 # Walk up to find the top-level install dir where the dependencies are installed
@@ -20,7 +20,8 @@ echo "Setting up release in ${omr_root}"
 export PATH=${omr_root}/bin:${PATH}
 
 # need python modules for the USD interface
-export PYTHONPATH=${install_root}/lib/python:${PYTHONPATH}
+export PYTHONPATH=${install_root}/lib/python:/usr/local/lib/python:${PYTHONPATH}
+
 
 # tell moonray where to find dsos
 export RDL2_DSO_PATH=${omr_root}/rdl2dso

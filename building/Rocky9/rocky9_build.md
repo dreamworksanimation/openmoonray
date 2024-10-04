@@ -22,7 +22,8 @@ If you want to include MoonRay GPU support, you will also need to download the N
 The first step is to install some additional RPM packages. The script *building/Rocky9/install_packages.sh* will install the packages and perform some environment variable setup. 
 
 ```bash
-source /source/building/Rocky9/install_packages.sh
+sudo source /source/building/Rocky9/install_packages.sh
+sudo dnf install -y cuda-toolkit
 ```
 
 You can add arguments `--nocuda` and `--noqt` to skip GPU and GUI support respectively.
@@ -59,7 +60,7 @@ The main CMake project in *openmoonray* builds MoonRay itself. I will use the sa
 ```bash
 cd /build
 rm -rf *
-cmake /source -DPYTHON_EXECUTABLE=python3 -DBOOST_PYTHON_COMPONENT_NAME=python39 -DABI_VERSION=0
+cmake /source -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=python3 -DBOOST_PYTHON_COMPONENT_NAME=python39 -DABI_VERSION=0
 cmake --build . -j $(nproc)
 ```
 
