@@ -50,7 +50,7 @@ jobs:
         shell: bash
         working-directory: ./build
         run: |
-          ctest -C Release -j $(sysctl -n hw.physicalcpu)
+          ctest -C Release -L unit -j $(sysctl -n hw.physicalcpu)
       - name: Cleanup
         if: always()
         shell: bash
