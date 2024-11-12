@@ -1,9 +1,9 @@
 Building MoonRay on macOS Sonoma (macOS 14)
 
 Base requirements:
-- macOS Sonoma (macOS 14)
-- Install Xcode
-- Download and install CMake 3.26.5
+- macOS Sonoma (macOS 14, also tested with macOS 15.1 Sequoia)
+- Install Xcode (tested with 15.2 and 16.1)
+- Download and install CMake 3.26.5 (or greater)
     https://github.com/Kitware/CMake/releases/download/v3.26.5/cmake-3.26.5-macos-universal.dmg
     sudo "/Applications/CMake.app/Contents/bin/cmake-gui" --install
 
