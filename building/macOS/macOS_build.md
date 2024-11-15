@@ -61,10 +61,10 @@ Create a clean root folder for moonray.  Attempting to build atop a previous ins
     houdini
     ```
 
-    In the Main menu bar at top select Desktop->Solaris
-    In the Scene View tab on the main window, change from "obj" to "stage".
-    Click in the Solaris network editor, hit tab, type "sphere" and hit enter to place a sphere on the stage.
-    In the viewport menu, click on "Persp" and select "Moonray", this should trigger rendering.
+    In the Main menu bar at top select Desktop->Solaris.
+    In the Scene View tab on the main window, change from "obj" to "stage" if it is not already set to "stage".
+    Click in the Solaris network editor, hit tab, type "sphere" and hit enter and then click to place a sphere on the stage.
+    In the viewport, click on "Persp" and select "Moonray", this should trigger rendering.
 
 7. Cleanup
     ```
