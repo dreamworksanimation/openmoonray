@@ -7,7 +7,8 @@ Base requirements:
     https://github.com/Kitware/CMake/releases/download/v3.26.5/cmake-3.26.5-macos-universal.dmg
     sudo "/Applications/CMake.app/Contents/bin/cmake-gui" --install
 
-Create a clean root folder for moonray.  Attempting to build atop a previous installation may cause issues.
+Open a new shell and create a clean root folder for moonray.  Attempting to build atop a previous installation
+or not using a fresh shell may cause issues.
 
 1. Create the folders
     ```
