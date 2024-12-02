@@ -15,11 +15,11 @@ pipeline-configurations:
     test:
       enabled: true
       cmd:
-      - rez-test _packagename_ variant0
-      - rez-test _packagename_ variant1
-      - rez-test _packagename_ variant2
-      - rez-test _packagename_ variant3
-      - rez-test _packagename_ variant4
+      - rez-test _packagename_ variant7
+      - rez-test _packagename_ variant8
+      - rez-test _packagename_ variant9
+      - rez-test _packagename_ variant10
+      - rez-test _packagename_ variant11
       ignore_failures: false
       ignore_failures_email: true
       resource:
