@@ -2,6 +2,7 @@
     "version": 4,
     "include": [
             "CMakeDWAPresets.json",
+            "CMakeLinuxPresets.json",
             "CMakeMacOSPresets.json"
     ]
 }

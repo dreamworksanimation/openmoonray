@@ -7,16 +7,18 @@ Base requirements:
     https://github.com/Kitware/CMake/releases/download/v3.26.5/cmake-3.26.5-macos-universal.dmg
     sudo "/Applications/CMake.app/Contents/bin/cmake-gui" --install
 
-Open a new shell and create a clean root folder for moonray.  Attempting to build atop a previous installation
-or not using a fresh shell may cause issues.
-
-1. Create the folders
+---
+## Step 1. Create the folders
+---
+    Create a clean root folder for moonray.  Attempting to build atop a previous installation may cause issues.
     ```
     mkdir -p /Applications/MoonRay/{installs,build,build-deps,source}
     mkdir -p /Applications/MoonRay/installs/{bin,lib,include}
     ```
 
-2. Check out the OpenMoonRay source - alongside `installs/`
+---
+## Step 2. Check out the OpenMoonRay source - alongside `installs/`
+---
     ```
     cd /Applications/MoonRay/source
     git clone --recurse-submodules <repository>
@@ -30,17 +32,24 @@ or not using a fresh shell may cause issues.
     * Edit source/openmoonray/building/macOS/pxr-houdini/pxrTargets.cmake to update HPYTHONLIB, HPYTHONINC and INTERFACE_INCLUDE_DIRECTORIES
     ```
 
-3. Build the dependencies - alongside `source/` and `installs/`
+---
+## Step 3. Build the dependencies - alongside `source/` and `installs/`
+---
     Note: If building for Houdini you'll need to build moonray against Houdini's USD libraries.
     You'll want to skip building USD during this step by adding -DNOUSD=1 to the first cmake
-    command below: `cmake -DNO_USD=1 ../building/macOS`
+    command below: `cmake -DNO_USD=1 ../building/macOS`.  You should clean
+    the build-deps/ and installs/ directory if you have previously installed the dependencies
+    without passing -DNOUSD=1, to remove any USD related files or step 5 may fail to link to
+    Houdini's USD libs.
     ```
     cd /Applications/MoonRay/build-deps
     cmake ../building/macOS
     cmake --build .
     ```
 
-4. Build MoonRay
+---
+## Step 4. Build MoonRay
+---
     Note: If building for Houdini, replace macos-release presets below with macos-houdini-release
     ```
     cd /Applications/MoonRay/openmoonray
@@ -48,7 +57,9 @@ or not using a fresh shell may cause issues.
     cmake --build --preset macos-release
     ```
 
-5. Run / test
+---
+## Step 5. Run/Test
+---
     ```
     source /Applications/MoonRay/installs/openmoonray/scripts/setup.sh
     cd /Applications/MoonRay/openmoonray/testdata
@@ -67,7 +78,9 @@ or not using a fresh shell may cause issues.
     Click in the Solaris network editor, hit tab, type "sphere" and hit enter and then click to place a sphere on the stage.
     In the viewport, click on "Persp" and select "Moonray", this should trigger rendering.
 
-7. Cleanup
+---
+## Step 7. Post-build/install Cleanup
+---
     ```
-    rm -rf /Applications/MoonRay/{build,build-deps,openmoonray/release}
+    rm -rf /Applications/MoonRay/{build,build-deps}
     ```

@@ -11,8 +11,7 @@ project(openmoonray_third_party)
 
 include(ExternalProject)
 
-set(THIS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(InstallRoot /usr/local CACHE FILEPATH "Install root for dependencies")
+set(InstallRoot /opt/MoonRay/installs CACHE FILEPATH "Install root for dependencies")
 
 ExternalProject_Add(JsonCpp
     GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp.git
@@ -23,6 +22,7 @@ ExternalProject_Add(JsonCpp
         -DBUILD_SHARED_LIBS=1
         -DPYTHON_EXECUTABLE=/usr/bin/python3
         -DJSONCPP_LIB_BUILD_SHARED:BOOL=ON
+        -DJSONCPP_WITH_PKGCONFIG_SUPPORT=OFF
 )
 set(CHAIN JsonCpp)
 
@@ -35,8 +35,8 @@ ExternalProject_Add(OpenSubdiv
       -DCMAKE_BUILD_TYPE=Release
       -DPYTHON_EXECUTABLE=/usr/bin/python3
       -DNO_PTEX=1 -DNO_OMP=1 -DNO_TBB=1 -DNO_CUDA=1 -DNO_GLFW_X11=1 -DNO_DOC=1
-      -DNO_OPENCL=1 -DNO_CLEW=1 -DNO_REGRESSION=1 -DNO_EXAMPLES=1 -DNO_TUTORIALS=1 -DNO_GLTESTS=1 
-      -DNO_MACOS_FRAMEWORK=1 -DNO_METAL=1 -DNO_TESTS=1 
+      -DNO_OPENCL=1 -DNO_CLEW=1 -DNO_REGRESSION=1 -DNO_EXAMPLES=1 -DNO_TUTORIALS=1 -DNO_GLTESTS=1
+      -DNO_MACOS_FRAMEWORK=1 -DNO_METAL=1 -DNO_TESTS=1
     DEPENDS ${CHAIN}
 )
 set(CHAIN OpenSubdiv)
@@ -44,7 +44,7 @@ set(CHAIN OpenSubdiv)
 ExternalProject_Add(OpenEXR
     GIT_REPOSITORY https://github.com/AcademySoftwareFoundation/openexr
     GIT_TAG 8bc3741131db146ad08a5b83af9e6e48f0e94a03 # v2.5.7
-    PATCH_COMMAND patch IlmBase/Half/CMakeLists.txt ${THIS_DIR}/../Imath_include_paths.patch
+    PATCH_COMMAND patch IlmBase/Half/CMakeLists.txt ${CMAKE_CURRENT_SOURCE_DIR}/../Imath_include_paths.patch
     INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
@@ -96,6 +96,11 @@ ExternalProject_Add(OpenColorIO
     GIT_TAG 056b7b0cb0d087961e9dba75104820e44faf52a1 # v2.0.2
     INSTALL_DIR ${InstallRoot}
     CMAKE_ARGS
+        -DOCIO_BUILD_APPS=OFF
+        -DOCIO_BUILD_TESTS=OFF
+        -DOCIO_BUILD_GPU_TESTS=OFF
+        -DOCIO_USE_SSE=OFF
+        -DOCIO_BUILD_PYTHON=OFF
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
         -DBUILD_SHARED_LIBS=ON
         -DOCIO_BUILD_STATIC=OFF
@@ -129,34 +134,36 @@ ExternalProject_Add(OpenImageDenoise
 )
 set(CHAIN OpenImageDenoise)
 
-ExternalProject_Add(USD
-    GIT_REPOSITORY https://github.com/PixarAnimationStudios/USD
-    GIT_TAG 0c7b9a95f155c221ff7df9270a39a52e3b23af8b # v22.11
-    INSTALL_DIR ${InstallRoot}
-    CMAKE_ARGS
-        -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
-        -DCMAKE_PREFIX_PATH=<INSTALL_DIR>
-        -DPXR_ENABLE_PYTHON_SUPPORT=ON
-        -DPXR_USE_PYTHON_3=ON
-        -DPYTHON_LIBRARIES=/usr/lib64
-        -DPYTHON_INCLUDE_DIRS=/usr/include
-        -DBoost_LIBRARY_DIR=/usr/lib64
-        -DBoost_INCLUDE_DIR=/usr/include
-        -DTBB_USE_DEBUG_BUILD=OFF
-        -DTBB_ROOT_DIR=/usr
-        -DTBB_LIBRARIES=/usr/lib64
-        -DTBB_INCLUDE_DIRS=/usr/include ..
-        -DPXR_BUILD_TESTS=OFF
-        -DPXR_BUILD_EXAMPLES=OFF
-        -DPXR_BUILD_TUTORIALS=OFF
-        -DPXR_BUILD_USD_TOOLS=OFF
-        -DPXR_ENABLE_PTEX_SUPPORT=OFF
-        -DPXR_ENABLE_OPENVDB_SUPPORT=OFF
-        -DPXR_BUILD_USDVIEW=OFF
-        -DBoost_NO_BOOST_CMAKE=ON
-        -DBoost_NO_SYSTEM_PATHS=ON
-        -DTBB_SUPPRESS_DEPRECATED_MESSAGES=1
-    DEPENDS ${CHAIN}
-)
-set(CHAIN USD)
+if(NOT NO_USD)
+    ExternalProject_Add(USD
+        GIT_REPOSITORY https://github.com/PixarAnimationStudios/USD
+        GIT_TAG 0c7b9a95f155c221ff7df9270a39a52e3b23af8b # v22.11
+        INSTALL_DIR ${InstallRoot}
+        CMAKE_ARGS
+            -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+            -DCMAKE_PREFIX_PATH=<INSTALL_DIR>
+            -DPXR_ENABLE_PYTHON_SUPPORT=ON
+            -DPXR_USE_PYTHON_3=ON
+            -DPYTHON_LIBRARIES=/usr/lib64
+            -DPYTHON_INCLUDE_DIRS=/usr/include
+            -DBoost_LIBRARY_DIR=/usr/lib64
+            -DBoost_INCLUDE_DIR=/usr/include
+            -DTBB_USE_DEBUG_BUILD=OFF
+            -DTBB_ROOT_DIR=/usr
+            -DTBB_LIBRARIES=/usr/lib64
+            -DTBB_INCLUDE_DIRS=/usr/include ..
+            -DPXR_BUILD_TESTS=OFF
+            -DPXR_BUILD_EXAMPLES=OFF
+            -DPXR_BUILD_TUTORIALS=OFF
+            -DPXR_BUILD_USD_TOOLS=OFF
+            -DPXR_ENABLE_PTEX_SUPPORT=OFF
+            -DPXR_ENABLE_OPENVDB_SUPPORT=OFF
+            -DPXR_BUILD_USDVIEW=OFF
+            -DBoost_NO_BOOST_CMAKE=ON
+            -DBoost_NO_SYSTEM_PATHS=ON
+            -DTBB_SUPPRESS_DEPRECATED_MESSAGES=1
+        DEPENDS ${CHAIN}
+    )
+    set(CHAIN USD)
+endif()
 

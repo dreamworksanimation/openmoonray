@@ -304,37 +304,37 @@ ExternalProject_Add(qt5
 set(CHAIN qt5)
 
 if(NOT NO_USD)
-ExternalProject_Add(USD
-    GIT_REPOSITORY https://github.com/PixarAnimationStudios/USD
-    GIT_TAG 0c7b9a95f155c221ff7df9270a39a52e3b23af8b # v22.11
-    BUILD_COMMAND make ${JOBS_ARG}
-    CMAKE_ARGS
-        -DCMAKE_PREFIX_PATH:PATH=${InstallRoot}
-        -DCMAKE_IGNORE_PATH:PATH=/opt/homebrew
-        -DCMAKE_IGNORE_PREFIX_PATH:PATH=/opt/homebrew
-        -DCMAKE_INSTALL_PREFIX:PATH=${InstallRoot}
-        -DPXR_ENABLE_PYTHON_SUPPORT=ON
-        -DPXR_USE_PYTHON_3=ON
-        -DPXR_USE_DEBUG_PYTHON=OFF
-        -DPYTHON_EXECUTABLE=/usr/bin/python3
-        -DPYTHON_LIBRARY=/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/libpython3.9.dylib
-        -DPYTHON_INCLUDE_DIR=/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Headers
-        -DPYTHON_VERSION_MAJOR=3
-        -DPYTHON_VERSION_MINOR=9
-        -DTBB_USE_DEBUG_BUILD=OFF
-        -DPXR_BUILD_TESTS=OFF
-        -DPXR_BUILD_EXAMPLES=OFF
-        -DPXR_BUILD_TUTORIALS=OFF
-        -DPXR_BUILD_USD_TOOLS=OFF
-        -DPXR_ENABLE_PTEX_SUPPORT=OFF
-        -DPXR_ENABLE_OPENVDB_SUPPORT=OFF
-        -DPXR_BUILD_USDVIEW=OFF
-        -DBoost_NO_BOOST_CMAKE=ON
-        -DBoost_NO_SYSTEM_PATHS=ON
-        -DCMAKE_MACOSX_RPATH=ON
-    DEPENDS ${CHAIN}
-)
-set(CHAIN USD)
+    ExternalProject_Add(USD
+        GIT_REPOSITORY https://github.com/PixarAnimationStudios/USD
+        GIT_TAG 0c7b9a95f155c221ff7df9270a39a52e3b23af8b # v22.11
+        BUILD_COMMAND make ${JOBS_ARG}
+        CMAKE_ARGS
+            -DCMAKE_PREFIX_PATH:PATH=${InstallRoot}
+            -DCMAKE_IGNORE_PATH:PATH=/opt/homebrew
+            -DCMAKE_IGNORE_PREFIX_PATH:PATH=/opt/homebrew
+            -DCMAKE_INSTALL_PREFIX:PATH=${InstallRoot}
+            -DPXR_ENABLE_PYTHON_SUPPORT=ON
+            -DPXR_USE_PYTHON_3=ON
+            -DPXR_USE_DEBUG_PYTHON=OFF
+            -DPYTHON_EXECUTABLE=/usr/bin/python3
+            -DPYTHON_LIBRARY=/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/libpython3.9.dylib
+            -DPYTHON_INCLUDE_DIR=/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Headers
+            -DPYTHON_VERSION_MAJOR=3
+            -DPYTHON_VERSION_MINOR=9
+            -DTBB_USE_DEBUG_BUILD=OFF
+            -DPXR_BUILD_TESTS=OFF
+            -DPXR_BUILD_EXAMPLES=OFF
+            -DPXR_BUILD_TUTORIALS=OFF
+            -DPXR_BUILD_USD_TOOLS=OFF
+            -DPXR_ENABLE_PTEX_SUPPORT=OFF
+            -DPXR_ENABLE_OPENVDB_SUPPORT=OFF
+            -DPXR_BUILD_USDVIEW=OFF
+            -DBoost_NO_BOOST_CMAKE=ON
+            -DBoost_NO_SYSTEM_PATHS=ON
+            -DCMAKE_MACOSX_RPATH=ON
+        DEPENDS ${CHAIN}
+    )
+    set(CHAIN USD)
 endif()
 
 ExternalProject_Add(libuuid

@@ -77,5 +77,5 @@ then
     dnf install -y qt5-qtbase-devel qt5-qtscript-devel
 fi
 
-export PATH=/installs/cmake-3.23.1-linux-x86_64/bin:/usr/local/cuda/bin:${PATH}
+export PATH=/usr/local/cuda/bin:${PATH}
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:${LD_LIBRARY_PATH}

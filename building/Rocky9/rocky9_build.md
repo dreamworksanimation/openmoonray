@@ -1,96 +1,104 @@
-# Building MoonRay on Rocky Linux 9
+Building MoonRay on Rocky Linux 9
 
-Start with reading the [general build instructions](../general_build). This document gives more explicit instructions for building on a Rocky Linux 9 installation. To keep it concrete, I've chosen specific directory locations, which you can change as needed:
+Requires CMake 3.23.1 (or greater)
 
-- */source* location of the openmoonray repository clone
-- */build* CMake build directory
-- */installs/moonray* location to install MoonRay
-
-To clone the source from the github repo (on the host), use this git command:
-
-```bash
-git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git /source
-```
-You can place the clone anywhere : the rest of this document assumes it is in */source*, so change any reference to */source* to your chosen location.
-
-If you want to include MoonRay GPU support, you will also need to download the NVIDIA Optix headers (from [here](https://developer.nvidia.com/designworks/optix/downloads/legacy)), which require an EULA. Be sure to download version 7.3, as MoonRay is not yet compatible with their more recent releases. Once you have extracted the download contents, note the location of the header files (under *include*) : these will be copied to */usr/local/include* during the process.
+If you want to include MoonRay GPU support, you will also need to download the NVIDIA Optix headers
+(from [here](https://developer.nvidia.com/designworks/optix/downloads/legacy)), which require an EULA.
+Be sure to download version 7.3, as MoonRay is not yet compatible with their more recent releases.
+Once you have extracted the download contents, note the location of the header files (under *include*): these will be copied to */usr/local/include* in step 3 below.
 
 ---
-## Step 1. Base requirements
+## Step 1. Create the folders
 ---
-
-The first step is to install some additional RPM packages. The script *building/Rocky9/install_packages.sh* will install the packages and perform some environment variable setup. 
-
-```bash
-sudo source /source/building/Rocky9/install_packages.sh
-sudo dnf install -y cuda-toolkit
-```
-
-You can add arguments `--nocuda` and `--noqt` to skip GPU and GUI support respectively.
+    Create a clean root folder for moonray.  Attempting to build atop a previous installation may cause issues.
+    These can be created in the location of your choosing, but these instruction, the provided CMake presets,
+    and several of the scripts mentioned in these instructions assume this location/structure.
+    ```
+    mkdir -p /opt/MoonRay/{installs,build,build-deps,source}
+    mkdir -p /opt/MoonRay/installs/{bin,lib,include}
+    ```
 
 ---
-## Step 2. Build the remaining dependencies
+## Step 2. Clone the OpenMoonRay source
 ---
+    ```
+    cd /opt/MoonRay/source
+    git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git
+    cd ..
 
-The next step is to build the remaining dependencies from source. The CMake project *building/Rocky9/CMakeLists.txt* contains targets that will do it automatically.
-
-You need to create a CMake build directory : it can be anywhere, but I will use */build*. The build directory should generally be empty before starting this step, unless you are deliberately performing an incremental rebuild.
-
-```bash
-mkdir /build
-cd /build
-cmake /source/building/Rocky9
-cmake --build . -- -j $(nproc)
-```
-
-The option "-j $(nproc)" tells CMake to use all available cores on your machine for building. You may see a number of warning messages during the build.
-
-If you are building with GPU support, copy the Optix headers that you downloaded and extracted into */usr/local*
-
-```bash
-> cp -r /tmp/optix/include/* /usr/local/include
-```
+    Note: If building for Houdini, you'll potentially need to make the following changes before proceeding:
+    * Edit source/openmoonray/CMakeLinuxPresets.json to update HOUDINI_INSTALL_DIR
+    * Edit source/openmoonray/scripts/Rocky9/setupHoudini.sh to update HOUDINI_PATH
+    * Edit source/openmoonray/building/Rocky9/pxr-houdini/pxrTargets.cmake to update HPYTHONLIB, HPYTHONINC and INTERFACE_INCLUDE_DIRECTORIES
+    ```
 
 ---
-## Step 3. Build MoonRay
+## Step 3. Install some of the dependencies via script/package manager
 ---
+    ```bash
+    sudo source source/openmoonray/building/Rocky9/install_packages.sh
+    sudo dnf install -y cuda-toolkit
+    ```
+    You can add arguments `--nocuda` and `--noqt` to skip GPU and GUI support respectively.
+    If you are building with GPU support, copy the Optix headers that you downloaded and extracted into */usr/local*
 
-The main CMake project in *openmoonray* builds MoonRay itself. I will use the same */build* directory as before (though you don't have to), but it must be empty before running cmake.
+    ```bash
+    cp -r /tmp/optix/include/* /usr/local/include
+    ```
 
-```bash
-cd /build
-rm -rf *
-cmake /source -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=python3 -DBOOST_PYTHON_COMPONENT_NAME=python39 -DABI_VERSION=0
-cmake --build . -j $(nproc)
-```
-
-The install step will install to */installs/openmoonray* : again, this directory is arbitrary, and you can install wherever you like.
-
-```bash
-mkdir /installs/openmoonray
-cmake --install /build --prefix /installs/openmoonray
-```
-
-You can use the options ***-DBUILD_QT_APPS=NO*** and ***-DMOONRAY_USE_OPTIX=NO*** in the first CMake command to disable GUI apps and GPU support respectively.
-
-To set up the install and test moonray:
-
-```bash
-> source /installs/openmoonray/scripts/setup.sh
-> moonray -in /source/testdata/rectangle.rdla -out /tmp/rectangle.exr
-> moonray_gui -in /source/testdata/rectangle.rdla -out /tmp/rectangle.exr
-> hd_render -in /source/testdata/sphere.usd -out /tmp/sphere.exr
-```
+---
+## Step 4. Build the remaining dependencies from source
+---
+    Note: If building for Houdini you'll need to build moonray against Houdini's USD libraries.
+    You'll want to skip building USD during this step by adding -DNOUSD=1 to the first cmake
+    command below: `cmake -DNO_USD=1 ../source/openmoonray/building/Rocky9`.  You should clean
+    the build-deps/ and installs/ directory if you have previously installed the dependencies
+    without passing -DNOUSD=1, to remove any USD related files or step 5 may fail to link to
+    Houdini's USD libs.
+    ```
+    cd build-deps
+    cmake ../source/openmoonray/building/Rocky9
+    cmake --build . -- -j $(nproc)
+    ```
 
 
-If everything is working, the moonray command should produce output like this:
+---
+## Step 5. Build MoonRay
+---
+    Note: If building for Houdini, replace macos-release presets below with rocky9-houdini-release
+    ```
+    cd /opt/MoonRay/source/openmoonray
+    cmake --preset rocky9-release
+    cmake --build --preset rocky9-release -- -j $(nproc)
+    ```
 
-```
-Loading Scene File(s): /source/testdata/rectangle.rdla
-Render prep time = 00:00:00.008
-  [+] Rendering [======================] 100.0%
-00:00:01  671.2 MB | ---------- Time ------------------------------------------
-00:00:01  671.2 MB | Render time                      = 00:00:01.404000
-00:00:01  671.2 MB | Total time                       = 00:00:01.442000
-Wrote /tmp/rectangle.exr
-```
+---
+## Step 6. Run/Test
+---
+    ```
+    source /opt/MoonRay/installs/openmoonray/scripts/setup.sh
+    cd /opt/MoonRay/source/openmoonray/testdata
+    moonray_gui -exec_mode xpu -info -in curves.rdla
+    ```
+
+    HOUDINI:
+    Open a terminal and run:
+    ```
+    cd ~
+    source pushd /opt/hfs20.0/; source houdini_setup; popd
+    source /opt/MoonRay/source/openmoonray/scripts/Rocky9/setupHoudini.sh
+    houdini
+    ```
+
+    In the Main menu bar at top select Desktop->Solaris
+    In the Scene View tab on the main window, change from "obj" to "stage".
+    Click in the Solaris network editor, hit tab, type "sphere" and hit enter to place a sphere on the stage.
+    In the viewport menu, click on "Persp" and select "Moonray", this should trigger rendering.
+
+---
+## Step 8. Post-build/install Cleanup
+---
+    ```
+    rm -rf /opt/MoonRay/{build,build-deps}
+    ```
+
