@@ -29,7 +29,7 @@ Base requirements:
     Note: If building for Houdini, you'll potentially need to make the following changes before proceeding:
     * Edit source/openmoonray/CMakeMacOSPresets.json to update HOUDINI_INSTALL_DIR
     * Edit source/openmoonray/scripts/macOS/setupHoudini.sh to update HOUDINI_PATH
-    * Edit source/openmoonray/building/macOS/pxr-houdini/pxrTargets.cmake to update HPYTHONLIB, HPYTHONINC and INTERFACE_INCLUDE_DIRECTORIES
+    * Edit source/openmoonray/building/macOS/pxr-houdini/pxrTargets.cmake to update HPYTHONLIB, HPYTHONINC
     ```
 
 ---

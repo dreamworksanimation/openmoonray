@@ -17,9 +17,8 @@ cmake_policy(VERSION 2.6...3.21)
 # Commands may need to know the format version.
 set(CMAKE_IMPORT_FILE_VERSION 1)
 
-
-SET(HPYTHONLIB /Applications/Houdini/Houdini19.5.805/Frameworks/Python.framework/Versions/3.9/lib/libpython3.9.dylib)
-SET(HPYTHONINC /Applications/Houdini/Houdini19.5.805/Frameworks/Python.framework/Versions/3.9/include/python3.9)
+SET(HPYTHONLIB $ENV{HOUDINI_INSTALL_DIR}/Frameworks/Python.framework/Versions/3.9/lib/libpython3.9.dylib)
+SET(HPYTHONINC $ENV{HOUDINI_INSTALL_DIR}/Frameworks/Python.framework/Versions/3.9/include/python3.9)
 
 # Protect against multiple inclusion, which would fail when already imported targets are added once more.
 set(_targetsDefined)

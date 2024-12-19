@@ -29,7 +29,7 @@ Once you have extracted the download contents, note the location of the header f
     Note: If building for Houdini, you'll potentially need to make the following changes before proceeding:
     * Edit source/openmoonray/CMakeLinuxPresets.json to update HOUDINI_INSTALL_DIR
     * Edit source/openmoonray/scripts/Rocky9/setupHoudini.sh to update HOUDINI_PATH
-    * Edit source/openmoonray/building/Rocky9/pxr-houdini/pxrTargets.cmake to update HPYTHONLIB, HPYTHONINC and INTERFACE_INCLUDE_DIRECTORIES
+    * Edit source/openmoonray/building/Rocky9/pxr-houdini/pxrTargets.cmake to update HPYTHONLIB, HPYTHONINC if needed
     ```
 
 ---
@@ -84,8 +84,8 @@ Once you have extracted the download contents, note the location of the header f
     HOUDINI:
     Open a terminal and run:
     ```
-    cd ~
-    source pushd /opt/hfs20.0/; source houdini_setup; popd
+    cd /opt/hfs20.0  # location of houdini install
+    source houdini_setup
     source /opt/MoonRay/source/openmoonray/scripts/Rocky9/setupHoudini.sh
     houdini
     ```
