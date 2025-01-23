@@ -48,16 +48,21 @@ conf_rats_variants = variants[0:2]
 conf_CI_variants = list(filter(lambda v: 'os-CentOS-7' in v, variants))
 
 requires = [
+    'alembic_utilities',
     'amorphous',
     'boost',
+    'cfx_fur-10',
     'cuda-12.1.0.x',
     'curl_no_ldap-7.49.1.x',
     'embree-4.2.0.x',
+    'geometry',
+    'gtypes',
     'jsoncpp-1.9.5',
     'libmicrohttpd-0.9.71.x.1',
     'log4cplus-1.1.2.x',
     'lua',
     'mkl',
+    'oceanlib-10',
     'openexr',
     'openimagedenoise',
     'openimageio-2.3.20.0.x',
@@ -69,14 +74,16 @@ requires = [
     'tbb',
     'usd_core',
     'usd_imaging',
-    'uuid-1.0.0'
+    'uuid-1.0.0',
+    'willow-10.2.0.x.4.30',
 ]
 
 private_build_requires = [
+    'alembic',
     'cmake-3.23',
     'cppunit',
     'ispc-1.20.0.x',
-    'python-3.7|3.9|3.10'
+    'python-3.7|3.9|3.10',
 ]
 
 # Create dictionary of tests for the rez-test command
