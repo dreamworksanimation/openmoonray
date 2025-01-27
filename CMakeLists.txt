@@ -10,6 +10,7 @@ if(NOT DEFINED CMAKE_INSTALL_PREFIX OR ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/lo
     set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/release)
 endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/rats/cmake)
 
 # Make sure Cuda's bin directory is in ${PATH} so that check_language can find it.
 set(ENV{PATH} "${CUDAToolkit_ROOT}/bin:$ENV{PATH}")
