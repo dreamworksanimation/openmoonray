@@ -6,8 +6,11 @@ MoonRay is DreamWorks’ open-source, award-winning, state-of-the-art production
 * [Trolls World Tour](https://www.dreamworks.com/movies/trolls-world-tour)  
 * [The Boss Baby: Family Business](https://www.dreamworks.com/movies/the-boss-baby-2)  
 * [The Bad Guys](https://www.dreamworks.com/movies/the-bad-guys)  
-* [Puss In Boots: The Last Wish](https://www.dreamworks.com/movies/puss-in-boots-the-last-wish)
-* [The Wild Robot](https://www.dreamworks.com/movies/the-wild-robot)
+* [Puss In Boots: The Last Wish](https://www.dreamworks.com/movies/puss-in-boots-the-last-wish)  
+* [Ruby Gillman: Teenage Kraken](https://www.dreamworks.com/movies/ruby-gillman-teenage-kraken)  
+* [Trolls Band Together](https://www.dreamworks.com/movies/trolls-band-together)  
+* [Kung Fu Panda 4](https://www.dreamworks.com/movies/kung-fu-panda-4)  
+* [The Wild Robot](https://www.dreamworks.com/movies/the-wild-robot)  
 
 MoonRay was developed at DreamWorks and is in continuous active development and includes an extensive
 library of production-tested, physically based materials, a USD Hydra render delegate, multi-machine and cloud rendering via the
