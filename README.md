@@ -8,6 +8,7 @@ MoonRay is DreamWorks’ open-source, award-winning, state-of-the-art production
 * [The Bad Guys](https://www.dreamworks.com/movies/the-bad-guys)  
 * [Puss In Boots: The Last Wish](https://www.dreamworks.com/movies/puss-in-boots-the-last-wish)
 * [The Wild Robot](https://www.dreamworks.com/movies/the-wild-robot)
+* [Dog Man](https://www.dreamworksdogman.com/)
 
 MoonRay was developed at DreamWorks and is in continuous active development and includes an extensive
 library of production-tested, physically based materials, a USD Hydra render delegate, multi-machine and cloud rendering via the
