@@ -15,17 +15,11 @@ pipeline-configurations:
     test:
       enabled: true
       cmd:
+      - rez-test _packagename_ variant6
       - rez-test _packagename_ variant7
-      - rez-test _packagename_ variant8
-      - rez-test _packagename_ variant9
-      - rez-test _packagename_ variant10
-      - rez-test _packagename_ variant11
       ignore_failures: false
       ignore_failures_email: true
       resource:
-      - EL7_RaTS_build_fast
-      - EL7_RaTS_build_fast
-      - EL7_RaTS_build_fast
       - EL7_RaTS_build_fast
       - EL7_RaTS_build_fast
       postp: /opt/electriccloud/electriccommander/bin/postp
