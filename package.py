@@ -34,11 +34,11 @@ variants = [
     ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'clang-17.0.6.x', 'openvdb-10', 'zlib-1.2.11.x.1'],
     ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.23.8.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
     ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.24.3.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2022.0', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1',    'openvdb-9',  'zlib-1.2.11.x.1'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2022.0', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1',    'openvdb-9',  'zlib-1.2.11.x.1', 'opensubdiv-3.5.0.x.0'],
     ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2024.0', 'usd_core-0.24.3.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
 
-    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2022.0', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1', 'openvdb-9', 'zlib-1.2.8.x.2'],
-    ['os-CentOS-7', 'opt_level-debug',    'refplat-vfx2022.0', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1', 'openvdb-9', 'zlib-1.2.8.x.2'],
+    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2022.0', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1', 'openvdb-9', 'zlib-1.2.8.x.2', 'opensubdiv-3.5.0.x.0'],
+    ['os-CentOS-7', 'opt_level-debug',    'refplat-vfx2022.0', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1', 'openvdb-9', 'zlib-1.2.8.x.2', 'opensubdiv-3.5.0.x.0'],
 ]
 
 conf_rats_variants = variants[0:2]
@@ -63,7 +63,7 @@ requires = [
     'oceanlib-10',
     'openexr',
     'openimagedenoise',
-    'opensubdiv-3.5.0.x.0',
+    'opensubdiv',
     'openvdb',
     'optix-7.6.0.x',
     'qt',
