@@ -32,6 +32,7 @@ variants = [
     ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
     ['os-rocky-9', 'opt_level-debug',    'refplat-vfx2023.1', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
     ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'clang-17.0.6.x', 'openvdb-10', 'zlib-1.2.11.x.1'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.23.8.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
     ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.24.3.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
     ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2022.0', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1',    'openvdb-9',  'zlib-1.2.11.x.1'],
     ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2024.0', 'usd_core-0.24.3.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
