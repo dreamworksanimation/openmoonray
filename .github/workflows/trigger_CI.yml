@@ -2,6 +2,17 @@ name: Trigger the CI Plan Run
 
 on:
   workflow_dispatch:
+    inputs:
+      force-rebuild-deps:
+        description: 'Force rebuild dependencies'
+        default: false
+        required: false
+        type: boolean
+      skip-cleanup:
+        description: 'Skip cleanup'
+        default: false
+        required: false
+        type: boolean
   push:
     branches:
       - main
@@ -13,6 +24,10 @@ jobs:
       approot: ${{ github.workspace }}
     runs-on: [self-hosted, macOS]
     steps:
+      - name: Store environment
+        shell: bash
+        run: |
+          printenv > ${approot}/ENV.txt
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -21,9 +36,11 @@ jobs:
           token: ${{ secrets.BART_TOKEN }}
           submodules: true
       - name: Check for new dependencies
+        env:
+            FORCE_REBUILD: ${{ inputs.force-rebuild-deps }}
         shell: bash
         run: |
-          if ! cmp -s ${approot}/CMakeLists.txt ${approot}/source/openmoonray/building/macOS/CMakeLists.txt
+          if [ ! cmp -s ${approot}/CMakeLists.txt ${approot}/source/openmoonray/building/macOS/CMakeLists.txt ] || [ "${FORCE_REBUILD}" == "true" ]
           then
             rm -rf ${approot}/CMakeLists.txt ${approot}/installs
           fi
@@ -52,9 +69,14 @@ jobs:
         run: |
           ctest -C Release -L unit -j $(sysctl -n hw.physicalcpu)
       - name: Cleanup
+        env:
+            SKIP_CLEANUP: ${{ inputs.skip-cleanup }}
         if: always()
         shell: bash
         run: |
-          echo Removing build products
-          cd ${approot}
-          rm -rf build installs/openmoonray source build-deps
+          if [ "$SKIP_CLEANUP" == "false" ]
+          then
+            echo Removing build products
+            cd ${approot}
+            rm -rf build installs/openmoonray source build-deps
+          fi
