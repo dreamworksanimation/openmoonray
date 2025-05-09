@@ -258,6 +258,17 @@ ExternalProject_Add(JPEGTurbo
 )
 set(CHAIN JPEGTurbo)
 
+ExternalProject_Add(pybind11
+    GIT_REPOSITORY https://github.com/pybind/pybind11
+    GIT_TAG a2e59f0e7065404b44dfe92a28aca47ba1378dc4 # v2.13.6
+    BUILD_COMMAND make ${JOBS_ARG}
+    CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX:PATH=${InstallRoot}
+        -DPYBIND11_TEST=NO
+    DEPENDS ${CHAIN}
+)
+set(CHAIN pybind11)
+
 ExternalProject_Add(OpenImageIO
     GIT_REPOSITORY https://github.com/OpenImageIO/oiio
     GIT_TAG 331a323468928c8017ad048b26d47c4e57a724a7 # 2.3.20.0
@@ -273,7 +284,7 @@ ExternalProject_Add(OpenImageIO
         -DOpenEXR_ROOT=${InstallRoot}
         -DCMAKE_INSTALL_PREFIX:PATH=${InstallRoot}
         -DUSE_QT=0
-        -DUSE_PYTHON=0
+        -DUSE_PYTHON=1
     DEPENDS ${CHAIN}
 )
 set(CHAIN OpenImageIO)
@@ -282,7 +293,7 @@ ExternalProject_Add(OpenImageDenoise
    URL https://github.com/OpenImageDenoise/oidn/releases/download/v2.2.0/oidn-2.2.0.arm64.macos.tar.gz
    BUILD_COMMAND ""
    CONFIGURE_COMMAND ""
-   INSTALL_COMMAND bash -c "rm ../OpenImageDenoise/lib/libtbb.dylib"
+   INSTALL_COMMAND bash -c "rm -f ../OpenImageDenoise/lib/libtbb.dylib"
            COMMAND bash -c "ditto ../OpenImageDenoise ${InstallRoot}"
    DEPENDS ${CHAIN}
 )

@@ -66,6 +66,9 @@ set(THREADS_HAVE_PTHREAD_ARG FALSE)
 add_subdirectory(arras)
 add_subdirectory(moonray)
 add_subdirectory(scripts)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/rats)
+    add_subdirectory(rats)
+endif()
 
 if(GLD STREQUAL "$ENV{STUDIO}")
     install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/SDKScript

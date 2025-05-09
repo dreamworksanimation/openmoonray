@@ -20,7 +20,8 @@
                 "PXR_USD_LOCATION"              : "$env{DEPS_ROOT}",
                 "PXR_INCLUDE_DIRS"              : "$env{DEPS_ROOT}/include",
                 "Random123_ROOT"                : "$env{DEPS_ROOT}",
-                "ZLIB_ROOT"                     : "/usr/local"
+                "ZLIB_ROOT"                     : "/usr/local",
+                "OIIO_PYTHON"                   : "$env{DEPS_ROOT}/lib/python3.9/site-packages"
             },
             "cacheVariables": {
                 "CMAKE_PREFIX_PATH": "$env{DEPS_ROOT}"

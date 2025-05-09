@@ -24,10 +24,6 @@ jobs:
       approot: ${{ github.workspace }}
     runs-on: [self-hosted, macOS]
     steps:
-      - name: Store environment
-        shell: bash
-        run: |
-          printenv > ${approot}/ENV.txt
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -35,6 +31,13 @@ jobs:
           repository: dwanim/openmoonray
           token: ${{ secrets.BART_TOKEN }}
           submodules: true
+      - name: Checkout RATS
+        uses: actions/checkout@v3
+        with:
+          path: source/openmoonray/rats
+          repository: dwanim/rats
+          token: ${{ secrets.BART_TOKEN }}
+          lfs: true
       - name: Check for new dependencies
         env:
             FORCE_REBUILD: ${{ inputs.force-rebuild-deps }}
@@ -68,6 +71,14 @@ jobs:
         working-directory: ./build
         run: |
           ctest -C Release -L unit -j $(sysctl -n hw.physicalcpu)
+      - name: Run RATS
+        env:
+          RATS_CANONICAL_DIR: /Applications/MoonRay/rats_canonicals
+        shell: bash
+        working-directory: ./build
+        run: |
+          source ${approot}/installs/openmoonray/Release/scripts/setup.sh
+          ctest -C Release -L rats -L 'render|diff' --output-on-failure  -j $(sysctl -n hw.physicalcpu)
       - name: Cleanup
         env:
             SKIP_CLEANUP: ${{ inputs.skip-cleanup }}
