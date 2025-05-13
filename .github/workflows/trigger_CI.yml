@@ -89,5 +89,6 @@ jobs:
           then
             echo Removing build products
             cd ${approot}
-            rm -rf build installs/openmoonray source build-deps
+            rm -rf installs/openmoonray source build-deps
+            find build -not \( -path build/rats -prune \) -exec rm -rf {} +
           fi
