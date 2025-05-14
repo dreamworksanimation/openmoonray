@@ -1,4 +1,4 @@
-name: Trigger the CI Plan Run
+name: Mac CI and RATS workflow
 
 on:
   workflow_dispatch:
@@ -18,20 +18,20 @@ on:
       - main
 
 jobs:
-  trigger_CI_plan:
+  CI_and_Rats:
     env:
       CHATROOM: ${{ secrets.TRIGGER_CI_CHATROOM }}
       approot: ${{ github.workspace }}
     runs-on: [self-hosted, macOS]
     steps:
-      - name: Checkout
+      - name: Clone openmoonray
         uses: actions/checkout@v3
         with:
           path: source/openmoonray
           repository: dwanim/openmoonray
           token: ${{ secrets.BART_TOKEN }}
           submodules: true
-      - name: Checkout RATS
+      - name: Clone rats
         uses: actions/checkout@v3
         with:
           path: source/openmoonray/rats
@@ -66,12 +66,12 @@ jobs:
           mkdir -p ${approot}/{installs/openmoonray,build}
           cmake --preset dwa-macos-release
           cmake --build --preset dwa-macos-release
-      - name: Run unittests
+      - name: Run unit tests
         shell: bash
         working-directory: ./build
         run: |
           ctest -C Release -L unit -j $(sysctl -n hw.physicalcpu)
-      - name: Run RATS
+      - name: Run RATS tests
         env:
           RATS_CANONICAL_DIR: /Applications/MoonRay/rats_canonicals
         shell: bash
@@ -89,6 +89,8 @@ jobs:
           then
             echo Removing build products
             cd ${approot}
-            rm -rf installs/openmoonray source build-deps
-            find build -not \( -path build/rats -prune \) -exec rm -rf {} +
+            mv ./build/rats .
+            rm -rf build installs/openmoonray source build-deps
+            mkdir build
+            mv rats build/
           fi
