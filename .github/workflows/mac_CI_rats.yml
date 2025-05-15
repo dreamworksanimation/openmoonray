@@ -90,7 +90,7 @@ jobs:
             echo Removing build products
             cd ${approot}
             mv ./build/rats .
-            rm -rf build installs/openmoonray source build-deps
+            rm -rf build source build-deps
             mkdir build
             mv rats build/
           fi
