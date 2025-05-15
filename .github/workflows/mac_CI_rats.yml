@@ -21,7 +21,7 @@ jobs:
   CI_and_Rats:
     env:
       CHATROOM: ${{ secrets.TRIGGER_CI_CHATROOM }}
-      approot: ${{ github.workspace }}
+      workspace: ${{ github.workspace }}
     runs-on: [self-hosted, macOS]
     steps:
       - name: Clone openmoonray
@@ -43,29 +43,31 @@ jobs:
             FORCE_REBUILD: ${{ inputs.force-rebuild-deps }}
         shell: bash
         run: |
-          if [ ! cmp -s ${approot}/CMakeLists.txt ${approot}/source/openmoonray/building/macOS/CMakeLists.txt ] || [ "${FORCE_REBUILD}" == "true" ]
+          if [ ! cmp -s ${workspace}/CMakeLists.txt ${workspace}/source/openmoonray/building/macOS/CMakeLists.txt ] || [ "${FORCE_REBUILD}" == "true" ]
           then
-            rm -rf ${approot}/CMakeLists.txt ${approot}/installs
+            rm -rf ${workspace}/CMakeLists.txt ${workspace}/installs
           fi
       - name: Build dependencies
         shell: bash
         run: |
-          if [ ! -d ${approot}/installs ]
+          if [ ! -d ${workspace}/installs ]
           then
-            mkdir -p ${approot}/{installs/{bin,lib,include},build-deps}
-            cd ${approot}/build-deps
-            cmake ${approot}/source/openmoonray/building/macOS
+            mkdir -p ${workspace}/{installs/{bin,lib,include},build-deps}
+            cd ${workspace}/build-deps
+            cmake ${workspace}/source/openmoonray/building/macOS
             cmake --build .
-            cp -f ${approot}/source/openmoonray/building/macOS/CMakeLists.txt ${approot}/CMakeLists.txt
+            cp -f ${workspace}/source/openmoonray/building/macOS/CMakeLists.txt ${workspace}/CMakeLists.txt
           fi
       - name: Build
         shell: bash
         working-directory: ./source/openmoonray
         run: |
           echo Current directory is $(pwd)
-          mkdir -p ${approot}/{installs/openmoonray,build}
+          rm -rf ${workspace}/build
+          mkdir -p ${workspace}/{installs/openmoonray,build}
           cmake --preset dwa-macos-release
           cmake --build --preset dwa-macos-release
+          chmod go+w ${workspace}/build/Testing/Temporary/LastTest.log
       - name: Run unit tests
         shell: bash
         working-directory: ./build
@@ -77,7 +79,7 @@ jobs:
         shell: bash
         working-directory: ./build
         run: |
-          source ${approot}/installs/openmoonray/Release/scripts/setup.sh
+          source ${workspace}/installs/openmoonray/Release/scripts/setup.sh
           ctest -C Release -L rats -L 'render|diff' --output-on-failure  -j $(sysctl -n hw.physicalcpu)
       - name: Cleanup
         env:
@@ -88,9 +90,6 @@ jobs:
           if [ "$SKIP_CLEANUP" == "false" ]
           then
             echo Removing build products
-            cd ${approot}
-            mv ./build/rats .
-            rm -rf build source build-deps
-            mkdir build
-            mv rats build/
+            cd ${workspace}
+            rm -rf source build-deps installs/openmoonray
           fi
