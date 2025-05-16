@@ -8,11 +8,6 @@ on:
         default: false
         required: false
         type: boolean
-      skip-cleanup:
-        description: 'Skip cleanup'
-        default: false
-        required: false
-        type: boolean
   push:
     branches:
       - main
@@ -24,6 +19,13 @@ jobs:
       workspace: ${{ github.workspace }}
     runs-on: [self-hosted, macOS]
     steps:
+      - name: Cleanup previous run
+        if: always()
+        shell: bash
+        run: |
+          echo Removing build products
+          cd ${workspace}
+          rm -rf build-deps build source installs/openmoonray
       - name: Clone openmoonray
         uses: actions/checkout@v3
         with:
@@ -50,6 +52,7 @@ jobs:
       - name: Build dependencies
         shell: bash
         run: |
+          umask 0
           if [ ! -d ${workspace}/installs ]
           then
             mkdir -p ${workspace}/{installs/{bin,lib,include},build-deps}
@@ -62,16 +65,17 @@ jobs:
         shell: bash
         working-directory: ./source/openmoonray
         run: |
+          umask 0
           echo Current directory is $(pwd)
-          rm -rf ${workspace}/build
           mkdir -p ${workspace}/{installs/openmoonray,build}
           cmake --preset dwa-macos-release
           cmake --build --preset dwa-macos-release
-          chmod go+w ${workspace}/build/Testing/Temporary/LastTest.log
+          chmod -R go+w ${workspace}/build
       - name: Run unit tests
         shell: bash
         working-directory: ./build
         run: |
+          umask 0
           ctest -C Release -L unit -j $(sysctl -n hw.physicalcpu)
       - name: Run RATS tests
         env:
@@ -79,17 +83,7 @@ jobs:
         shell: bash
         working-directory: ./build
         run: |
+          umask 0
           source ${workspace}/installs/openmoonray/Release/scripts/setup.sh
           ctest -C Release -L rats -L 'render|diff' --output-on-failure  -j $(sysctl -n hw.physicalcpu)
-      - name: Cleanup
-        env:
-            SKIP_CLEANUP: ${{ inputs.skip-cleanup }}
-        if: always()
-        shell: bash
-        run: |
-          if [ "$SKIP_CLEANUP" == "false" ]
-          then
-            echo Removing build products
-            cd ${workspace}
-            rm -rf source build-deps installs/openmoonray
-          fi
+
