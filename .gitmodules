@@ -70,3 +70,6 @@
 	path = moonray/render_profile_viewer
 	url = ../render_profile_viewer.git
 	branch = main
+[submodule "rats"]
+	path = rats
+	url = ../rats

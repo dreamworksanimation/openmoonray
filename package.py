@@ -76,7 +76,7 @@ requires = [
 
 private_build_requires = [
     'alembic',
-    'cmake-3.23',
+    'cmake',
     'cppunit',
     'ispc-1.20.0.x',
     'python-3.7|3.9|3.10|3.11',
@@ -86,7 +86,7 @@ private_build_requires = [
 commandstr = lambda i: "cd build/"+os.path.join(*variants[i])+"; ctest -j $(nproc) -L 'unit'"
 testentry = lambda i: ("variant%d" % i,
                        { "command": commandstr(i),
-                         "requires": ["cmake-3.23"] + variants[i] } )
+                         "requires": ["cmake"] + variants[i] } )
 testlist = [testentry(i) for i in range(len(variants))]
 tests = dict(testlist)
 

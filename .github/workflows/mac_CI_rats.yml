@@ -33,12 +33,6 @@ jobs:
           repository: dwanim/openmoonray
           token: ${{ secrets.BART_TOKEN }}
           submodules: true
-      - name: Clone rats
-        uses: actions/checkout@v3
-        with:
-          path: source/openmoonray/rats
-          repository: dwanim/rats
-          token: ${{ secrets.BART_TOKEN }}
           lfs: true
       - name: Check for new dependencies
         env:
