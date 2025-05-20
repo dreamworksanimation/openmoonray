@@ -23,7 +23,6 @@ jobs:
         if: always()
         shell: bash
         run: |
-          echo Removing build products
           cd ${workspace}
           rm -rf build-deps build source installs/openmoonray
       - name: Clone openmoonray
@@ -32,7 +31,7 @@ jobs:
           path: source/openmoonray
           repository: dwanim/openmoonray
           token: ${{ secrets.BART_TOKEN }}
-          submodules: true
+          submodules: recursive
           lfs: true
       - name: Check for new dependencies
         env:
@@ -60,7 +59,6 @@ jobs:
         working-directory: ./source/openmoonray
         run: |
           umask 0
-          echo Current directory is $(pwd)
           mkdir -p ${workspace}/{installs/openmoonray,build}
           cmake --preset dwa-macos-release
           cmake --build --preset dwa-macos-release
