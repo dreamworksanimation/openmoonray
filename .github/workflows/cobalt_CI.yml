@@ -1,17 +1,17 @@
-name: Cobalt CI and RATS workflow
+name: Cobalt CI and RATS
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+# push:
+#   branches:
+#     - main
 
 jobs:
   CI_and_RATS:
     env:
       CHATROOM: ${{ secrets.TRIGGER_CI_CHATROOM }}
       workspace: ${{ github.workspace }}
-    runs-on: [self-hosted, jlanz]
+    runs-on: [self-hosted, cobaltsong]
     steps:
       - name: Cleanup previous run
         if: always()

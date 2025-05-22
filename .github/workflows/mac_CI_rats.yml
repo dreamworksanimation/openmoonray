@@ -1,4 +1,4 @@
-name: Mac CI and RATS workflow
+name: Mac CI and RATS
 
 on:
   workflow_dispatch:
