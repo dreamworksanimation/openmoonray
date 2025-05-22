@@ -1,0 +1,72 @@
+name: Cobalt CI and RATS workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  CI_and_RATS:
+    env:
+      CHATROOM: ${{ secrets.TRIGGER_CI_CHATROOM }}
+      workspace: ${{ github.workspace }}
+    runs-on: [self-hosted, jlanz]
+    steps:
+      - name: Cleanup previous run
+        if: always()
+        shell: bash
+        run: |
+          cd ${workspace}
+          rm -rf source installs
+      - name: Clone openmoonray
+        uses: actions/checkout@v3
+        with:
+          path: source/openmoonray
+          repository: dwanim/openmoonray
+          token: ${{ secrets.BART_TOKEN }}
+          submodules: recursive
+          lfs: true
+      - name: Clone moonshine_dwa
+        uses: actions/checkout@v3
+        with:
+          path: source/openmoonray/moonray/moonshine_dwa
+          repository: dwanim/moonshine_dwa
+          token: ${{ secrets.BART_TOKEN }}
+          lfs: true
+      - name: Build
+        shell: bash
+        working-directory: ./source/openmoonray
+        run: |
+          source $REL_BOOT_DIR/rez/init.sh
+          source /rel/boot/rez/rez2.sh
+          export REZ_LOCAL_PACKAGES_PATH=${workspace}/installs
+          export REZ_PACKAGES_PATH=${REZ_PRE_PACKAGES_PATH}:${REZ_LOCAL_PACKAGES_PATH}:${REZ_RELEASE_PACKAGES_PATH}:/rel/rez/third_party:/rel/rez/pypi:/rel/lang/python/packages:${REZ_POST_PACKAGES_PATH}
+          rez-env buildtools-2 -c "rez-build -i --variants 0"
+      - name: Run unit tests
+        shell: bash
+        working-directory: ./source/openmoonray
+        run: |
+          source $REL_BOOT_DIR/rez/init.sh
+          source /rel/boot/rez/rez2.sh
+          export REZ_LOCAL_PACKAGES_PATH=${workspace}/installs
+          export REZ_PACKAGES_PATH=${REZ_PRE_PACKAGES_PATH}:${REZ_LOCAL_PACKAGES_PATH}:${REZ_RELEASE_PACKAGES_PATH}:/rel/rez/third_party:/rel/rez/pypi:/rel/lang/python/packages:${REZ_POST_PACKAGES_PATH}
+          rez-env buildtools-2 -c "rez-test openmoonray variant0"
+      - name: Clone rats_canonicals
+        uses: actions/checkout@v3
+        with:
+          path: rats_canonicals
+          repository: dwanim/rats_canonicals
+          token: ${{ secrets.BART_TOKEN }}
+          lfs: true
+      - name: Run RATS tests
+        env:
+          RATS_CANONICAL_DIR: ${{ github.workspace }}/rats_canonicals
+        shell: bash
+        working-directory: ./source/openmoonray
+        run: |
+          source $REL_BOOT_DIR/rez/init.sh
+          source /rel/boot/rez/rez2.sh
+          export REZ_LOCAL_PACKAGES_PATH=${workspace}/installs
+          export REZ_PACKAGES_PATH=${REZ_PRE_PACKAGES_PATH}:${REZ_LOCAL_PACKAGES_PATH}:${REZ_RELEASE_PACKAGES_PATH}:/rel/rez/third_party:/rel/rez/pypi:/rel/lang/python/packages:${REZ_POST_PACKAGES_PATH}
+          rez-env buildtools-2 -c "rez-test openmoonray rats"

@@ -13,7 +13,7 @@ on:
       - main
 
 jobs:
-  CI_and_Rats:
+  CI_and_RATS:
     env:
       CHATROOM: ${{ secrets.TRIGGER_CI_CHATROOM }}
       workspace: ${{ github.workspace }}
