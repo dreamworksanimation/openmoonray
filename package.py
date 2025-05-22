@@ -84,7 +84,7 @@ private_build_requires = [
 
 # Create dictionary of tests for the rez-test command
 # First, add unit tests entry for each variant
-commandstr = lambda i: "cd build/"+os.path.join(*variants[i])+"; ctest -j $(nproc) -L 'unit'"
+commandstr = lambda i: "cd build/"+os.path.join(*variants[i])+"; ctest --no-tests=error -j $(nproc) -L 'unit'"
 testentry = lambda i: ("variant%d" % i,
                        { "command": commandstr(i),
                          "requires": ["cmake"] + variants[i] } )
@@ -92,7 +92,7 @@ testlist = [testentry(i) for i in range(len(variants))]
 
 # Next, add rats tests entry
 rats_variant = 0
-rats_cmd = "cd build/"+os.path.join(*variants[rats_variant])+"; ctest -j 16 -L 'rats' -L 'render|diff'"
+rats_cmd = "cd build/"+os.path.join(*variants[rats_variant])+"; ctest --no-tests=error -j 16 -L 'rats' -L 'render|diff'"
 rats_testentry = { "command": rats_cmd,
                     "requires": ["cmake"] + variants[rats_variant] }
 testlist.append(("rats", rats_testentry))
