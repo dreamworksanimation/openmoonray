@@ -31,7 +31,7 @@ dnf install -y epel-release
 dnf config-manager --enable crb
 
 # not required if you are not building with GPU support
-if [ $install_cuda -eq 1 ] 
+if [ $install_cuda -eq 1 ]
 then
     dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo
     dnf install -y cuda-runtime-11-8 cuda-toolkit-11-8
@@ -41,7 +41,7 @@ dnf install -y libglvnd-devel
 
 dnf install -y gcc gcc-c++
 
-dnf install -y bison flex wget git python3 python3-devel patch \
+dnf install -y bison flex wget python3 python3-devel pybind11-devel patch \
                giflib-devel libmng libtiff-devel libjpeg-devel \
                libatomic libuuid-devel openssl-devel curl-devel \
                freetype-devel zlib-devel
@@ -51,7 +51,7 @@ dnf install -y lsb_release
 mkdir -p /installs/{bin,lib,include}
 cd /installs
 
-if [ $install_cgroup -eq 1 ] 
+if [ $install_cgroup -eq 1 ]
 then
     wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-0.42.2-5.el9.x86_64.rpm
     wget https://kojihub.stream.centos.org/kojifiles/packages/libcgroup/0.42.2/5.el9/x86_64/libcgroup-devel-0.42.2-5.el9.x86_64.rpm

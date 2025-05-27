@@ -40,14 +40,12 @@ Once you have extracted the download contents, note the location of the header f
     ```
 
 ---
-## Step 3. Install some of the dependencies via script/package manager
----
-    ```bash
-    sudo source source/openmoonray/building/Rocky9/install_packages.sh
-    sudo dnf install -y cuda-toolkit
-    ```
-    You can add arguments `--nocuda` and `--noqt` to skip GPU and GUI support respectively.
-    If you are building with GPU support, copy the Optix headers that you downloaded and extracted into */usr/local*
+### Step 2. Clone the OpenMoonRay source
+```bash
+sudo dnf install -y git git-lfs
+cd /opt/MoonRay/source
+git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git
+```
 
     ```bash
     cp -r /tmp/optix/include/* /usr/local/include

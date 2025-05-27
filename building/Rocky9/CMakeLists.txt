@@ -109,15 +109,6 @@ ExternalProject_Add(OpenColorIO
 )
 set(CHAIN OpenColorIO)
 
-ExternalProject_Add(pybind11
-    GIT_REPOSITORY https://github.com/pybind/pybind11
-    GIT_TAG a2e59f0e7065404b44dfe92a28aca47ba1378dc4 # v2.13.6
-    INSTALL_DIR ${InstallRoot}
-    CMAKE_ARGS
-        -DPYBIND11_TEST=NO
-)
-set(CHAIN pybind11)
-
 ExternalProject_Add(OpenImageIO
     GIT_REPOSITORY https://github.com/OpenImageIO/oiio
     GIT_TAG 331a323468928c8017ad048b26d47c4e57a724a7 # 2.3.20.0
