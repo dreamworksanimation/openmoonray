@@ -52,6 +52,7 @@ git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonra
     ```
 
 ---
+<<<<<<< HEAD
 ## Step 4. Build the remaining dependencies from source
 ---
     Note: If building for Houdini you'll need to build moonray against Houdini's USD libraries.
@@ -65,6 +66,23 @@ git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonra
     cmake ../source/openmoonray/building/Rocky9
     cmake --build . -- -j $(nproc)
     ```
+||||||| parent of 8819681 (Fix typo in rocky9_build.md (#156))
+### Step 3. Install some of the dependencies via script/package manager
+```bash
+sudo source/openmoonray/building/Rocky9/install_packages.sh
+sudo dnf install -y cuda-toolkit
+```
+You can add arguments `--nocuda` and `--noqt` to skip GPU and GUI support respectively.
+If you are building with GPU support, copy the Optix headers that you downloaded and extracted into */usr/local*
+=======
+### Step 3. Install some of the dependencies via script/package manager
+```bash
+sudo source openmoonray/building/Rocky9/install_packages.sh
+sudo dnf install -y cuda-toolkit
+```
+You can add arguments `--nocuda` and `--noqt` to skip GPU and GUI support respectively.
+If you are building with GPU support, copy the Optix headers that you downloaded and extracted into */usr/local*
+>>>>>>> 8819681 (Fix typo in rocky9_build.md (#156))
 
 
 ---
