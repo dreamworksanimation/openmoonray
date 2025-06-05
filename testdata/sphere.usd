@@ -16,7 +16,9 @@ def DistantLight "d_light"
     bool normalize = true
 }
 
-def Sphere "sphere"
+def Sphere "sphere" (
+    prepend apiSchemas = ["MaterialBindingAPI"]
+)
 {
     rel material:binding = </checkerboard>
 }

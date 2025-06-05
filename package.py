@@ -110,7 +110,8 @@ def commands():
     prependenv('MOONRAY_CLASS_PATH', '{root}/coredata')
     prependenv('MOONRAY_DSO_PATH', '{root}/rdl2dso')
     prependenv('PATH', '{root}/bin')
-    prependenv('PXR_PLUGIN_PATH', '{root}/plugin/pxr')
+    prependenv('PXR_PLUGIN_PATH', '{root}/plugin/pxr') # for legacy DWA USD builds
+    prependenv('PXR_PLUGINPATH_NAME', '{root}/plugin/pxr')
     prependenv('PYTHONPATH', '{root}/python/lib/$PYTHON_NAME')
     prependenv('RDL2_DSO_PATH', '{root}/rdl2dso')
 

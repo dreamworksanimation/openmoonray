@@ -21,8 +21,8 @@ export RDL2_DSO_PATH=${rel_root}/rdl2dso.proxy:${rel_rool}/rdl2dso
 export ARRAS_SESSION_PATH=${rel_root}/sessions/hdMoonray
 # adds the Arras runtime execComp to the path
 export PATH=${rel_root}/bin:${PATH}
-# adds the pxr plugins to the plugin path 
-export PXR_PLUGINPATH_NAME=${rel_root}/plugin/usd:${PXR_PLUGINPATH_NAME}
+# adds the pxr plugins to the plugin path
+export PXR_PLUGINPATH_NAME=${rel_root}/plugin/pxr:${PXR_PLUGINPATH_NAME}
 ```
 
 When using the DWA USD build, you need to set PXR_PLUGIN_PATH in place of PXR_PLUGINPATH_NAME.

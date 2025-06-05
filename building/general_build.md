@@ -166,7 +166,7 @@ The other environment variables set up by *setup.sh* are:
 | **REZ_MOONRAY_ROOT  = *release*** | *tells moonray where to find shaders file for XPU mode (it will look for ${REZ_MOONRAY_ROOT}/shaders/GPUShaders.ptx* |
 | **ARRAS_SESSION_PATH = *release*/sessions** | *tells Arras where to find session files* |
 | **MOONRAY_CLASS_PATH = *release*/shader_json** | *tells Hydra Ndr plugins where to find shader descriptions (see above)* |
-| **PXR_PLUGINPATH_NAME += *release*/plugin/usd** | *adds MoonRay Hydra plugins to Hydra plugin path* |
+| **PXR_PLUGINPATH_NAME += *release*/plugin/pxr** | *adds MoonRay Hydra plugins to Hydra plugin path* |
 
 *setup.py* doesn't set up PYTHONPATH to include the Python modules that come with USD. It doesn't need to be set for MoonRay's purposes, but the *hd_render* command will log a series of warnings that they are not found. This isn't harmful, because *hd_render* doesn't invoke Python code.
 

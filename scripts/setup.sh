@@ -37,8 +37,8 @@ export ARRAS_SESSION_PATH=${omr_root}/sessions
 export MOONRAY_CLASS_PATH=${omr_root}/shader_json
 
 # add Hydra plugins to path
-export PXR_PLUGINPATH_NAME=${omr_root}/plugin/usd:${omr_root}/plugin/pxr:${PXR_PLUGINPATH_NAME}
-export PXR_PLUGIN_PATH=${omr_root}/plugin/usd:${omr_root}/plugin/pxr:${PXR_PLUGIN_PATH}
+export PXR_PLUGINPATH_NAME=${omr_root}/plugin/pxr:${PXR_PLUGINPATH_NAME}
+export PXR_PLUGIN_PATH=${omr_root}/plugin/pxr:${PXR_PLUGIN_PATH} # for legacy DWA USD builds
 
 # create shader descriptions if they don't exist
 if [ ! -d "${omr_root}/shader_json" ]
