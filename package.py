@@ -45,7 +45,7 @@ conf_rats_variants = variants[0:2]
 conf_CI_variants = list(filter(lambda v: 'os-CentOS-7' in v, variants))
 
 requires = [
-    'alembic_utilities',
+    'alembic_utilities-10',
     'amorphous',
     'boost',
     'cfx_fur-10',
@@ -71,7 +71,7 @@ requires = [
     'tbb',
     'usd_imaging',
     'uuid-1.0.0',
-    'willow-10.2.0.x.4.30',
+    'willow-10.2.0.x.4.31',
 ]
 
 private_build_requires = [

@@ -1,0 +1,32 @@
+name: Create or Update requirements.txt
+
+on:
+  pull_request:
+    branches: [ "main", "release", "cmtest" ]
+    types: [closed]
+  workflow_dispatch:
+
+jobs:
+  update-requirements:
+    runs-on: [self-hosted, rez]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Checkout external repository
+        uses: actions/checkout@v3
+        with:
+          repository: dwanim/cm-actions
+          path: external-repo
+          ref: main
+          token: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Add/Update requirements.txt file
+        env:
+          GITHUB_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        shell: /bin/tcsh {0}
+        run: |
+          csh_env
+          rez2
+          rez-env requests buildtools-2 -- python external-repo/ci/snyk.py ${{ github.repository_owner }} ${{ github.event.repository.name }} ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} ${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.ref }}
