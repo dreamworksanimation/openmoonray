@@ -10,7 +10,13 @@ To keep it concrete, I've chosen specific directory locations inside the contain
 - */build* CMake build directory
 - */installs/moonray* location to install MoonRay
 
-You will need Docker and a copy of the MoonRay source. To clone the source from the github repo (on the host), use this git command:
+You will need Docker, Git, Git LFS, and a copy of the MoonRay source.  Some of these submodules use Git LFS to track some of the files. To install Git LFS use the following git command:
+
+```bash
+git lfs install
+```
+
+To clone the source from the github repo (on the host), use this git command:
 
 ```bash
 > git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git 
