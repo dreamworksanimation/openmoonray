@@ -1,4 +1,4 @@
-# Copyright 2024 DreamWorks Animation LLC
+# Copyright 2024-2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 # -*- coding: utf-8 -*-
@@ -29,13 +29,13 @@ help = ('For assistance, '
         "please contact the folio's owner at: moonbase-dev@dreamworks.com")
 
 variants = [
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
-    ['os-rocky-9', 'opt_level-debug',    'refplat-vfx2023.1', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'clang-17.0.6.x', 'openvdb-10', 'zlib-1.2.11.x.1'],
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.23.8.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.24.3.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2022.0', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1',    'openvdb-9',  'zlib-1.2.11.x.1', 'opensubdiv-3.5.0.x.0'],
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2024.0', 'usd_core-0.24.3.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-10', 'zlib-1.2.11.x.1'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-11.x',       'openvdb-11', 'zlib-1.2.11.x'],
+    ['os-rocky-9', 'opt_level-debug',    'refplat-vfx2023.1', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-11.x',       'openvdb-11', 'zlib-1.2.11.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'clang-17.0.6.x', 'openvdb-10', 'zlib-1.2.11.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.23.8.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-11', 'zlib-1.2.11.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'usd_core-0.24.3.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-11', 'zlib-1.2.11.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2022.0', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1',    'openvdb-9',  'zlib-1.2.11.x', 'opensubdiv-3.5.0.x.0'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2024.0', 'usd_core-0.24.3.x', 'openimageio-2.4.8.0.x',  'gcc-11.x',       'openvdb-11', 'zlib-1.2.11.x'],
 
     ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2022.0', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1', 'openvdb-9', 'zlib-1.2.8.x.2', 'opensubdiv-3.5.0.x.0'],
     ['os-CentOS-7', 'opt_level-debug',    'refplat-vfx2022.0', 'usd_core-0.22.5.x', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1', 'openvdb-9', 'zlib-1.2.8.x.2', 'opensubdiv-3.5.0.x.0'],
@@ -71,7 +71,7 @@ requires = [
     'tbb',
     'usd_imaging',
     'uuid-1.0.0',
-    'willow-10.2.0.x.4.31',
+    'willow-10.2.0.x.4.32',
 ]
 
 private_build_requires = [
@@ -79,7 +79,7 @@ private_build_requires = [
     'cmake',
     'cppunit',
     'ispc-1.20.0.x',
-    'python-3.7|3.9|3.10|3.11',
+    'python-3.9|3.10|3.11',
 ]
 
 # Create dictionary of tests for the rez-test command

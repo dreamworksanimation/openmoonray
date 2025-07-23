@@ -1,4 +1,4 @@
-# Copyright 2023-2024 DreamWorks Animation LLC
+# Copyright 2023-2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 cmake_minimum_required (VERSION 3.23.1)
@@ -11,6 +11,9 @@ if(NOT DEFINED CMAKE_INSTALL_PREFIX OR ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/lo
 endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/cmake)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/rats/cmake)
+
+# Get Qt major version from rez if we are using rez
+set(QtMajor "Qt$ENV{REZ_QT_MAJOR_VERSION}")
 
 # Make sure Cuda's bin directory is in ${PATH} so that check_language can find it.
 set(ENV{PATH} "${CUDAToolkit_ROOT}/bin:$ENV{PATH}")
@@ -30,7 +33,11 @@ include(OMR_Platform)
 # ================================================
 # Options
 # ================================================
-option(BUILD_QT_APPS      "Whether or not to build apps that require Qt" YES)
+if(Qt6 STREQUAL ${QtMajor})
+    option(BUILD_QT_APPS  "Whether or not to build apps that require Qt" NO)
+else()
+    option(BUILD_QT_APPS  "Whether or not to build apps that require Qt" YES)
+endif()
 option(ABI_SET_VERSION    "Enable the abi-version option" OFF)
 if(ABI_SET_VERSION)
     set(ABI_VERSION "6" CACHE STRING "If ABI_SET_VERSION is on, which version to set")

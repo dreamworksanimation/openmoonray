@@ -123,7 +123,6 @@ package-configurations:
   rez-2-CI:
     build_context:
     - buildtools
-    - python-3.7
     environment:
       REZ_ALTERNATE_CONFIGURATION: CI
     packages_path:
@@ -140,7 +139,6 @@ package-configurations:
   rez-2-RaTS:
     build_context:
     - buildtools
-    - python-3.7
     environment:
       REZ_ALTERNATE_CONFIGURATION: rats
     packages_path:
@@ -157,7 +155,6 @@ package-configurations:
   rez-2-testmap:
     build_context:
     - buildtools
-    - python-3.7
     environment: {}
     packages_path:
     - /rel/rez/dwa
