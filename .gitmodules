@@ -73,3 +73,4 @@
 [submodule "rats"]
 	path = rats
 	url = ../rats
+	branch = main
