@@ -1,6 +1,7 @@
 name: Harmony Pipeline CD Trigger (/rel/rez/dwa)
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
