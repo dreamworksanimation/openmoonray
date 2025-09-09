@@ -28,15 +28,15 @@ your GitHub username(s).
 
 * If you are an individual writing the code on your own time and
   you're SURE you are the sole owner of any intellectual property you
-  contribute, you can [sign the CLA as an individual contributor](https://github.com/dreamworksanimation/openmoonray/blob/release/tsc/icla.md).
+  contribute, you can [sign the CLA as an individual contributor](https://github.com/dreamworksanimation/openmoonray/blob/main/tsc/icla.md).
 
 * If you are writing the code as part of your job, or if there is any
   possibility that your employers might think they own any
   intellectual property you create, then you should use the [Corporate
   Contributor Licence
-  Agreement](https://github.com/dreamworksanimation/openmoonray/blob/release/tsc/ccla.md).
+  Agreement](https://github.com/dreamworksanimation/openmoonray/blob/main/tsc/ccla.md).
 
-The MoonRay CLAs are in the [OpenMoonRay repo](https://github.com/dreamworksanimation/openmoonray/tree/release/tsc).
+The MoonRay CLAs are in the [OpenMoonRay repo](https://github.com/dreamworksanimation/openmoonray/tree/main/tsc).
 
 #### Commit Sign-Off
 
