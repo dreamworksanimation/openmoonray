@@ -58,3 +58,7 @@ boot
 .src_project*
 .config.xml
 .metadata_src_project
+
+# Non-OpenMoonRay repos
+moonray/moonshine_dwa
+moonray/moonray_tools

@@ -1,0 +1,51 @@
+# This workflow updates the OpenMoonRay submodules which then triggers
+# the CI/RaTS test plan to run. Since multiple repos can be updated (merged) in
+# a short time period, we want it to only run once so we set it to cancel any running
+# work flow and to delay the update for two minutes to allow only the last trigger to
+# run to completion in the case of multiple repo merges.
+
+name: Update Submodules
+
+on:
+  workflow_call:
+    inputs:
+      repo:
+        required: false
+        type: string
+        default: "openmoonray"
+      branch:
+        required: false
+        type: string
+        default: "main"
+
+concurrency:
+  group: Update
+  cancel-in-progress: true
+
+jobs:
+  Update:
+    env:
+      BART_CLOUD_TOKEN: ${{ secrets.BART_TOKEN }}
+      BART_CLOUD_USER: ${{ secrets.BART_USER }}
+      OS_RELEASE: ${{ vars.OS_RELEASE }}
+      REL_BOOT_DIR: ${{ vars.REL_BOOT_DIR }}
+    runs-on: [EL9, rez]
+    continue-on-error: true
+    steps:
+      - name: Delay start
+        run: |
+          sleep 120
+      - name: Module Update
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          source /rel/boot/rez/rezx.sh
+          rez-env moonbase_release_tools -c 'printenv' | egrep -e '^PYTHONPATH=' >> ${GITHUB_ENV}
+      - name: Submodules update
+        if: ${{ !cancelled() }}
+        shell: /rel/third_party/rez/current/ws9/bin/python3 {0}
+        run: |
+          from GitOperation import upgrade_submodules
+          upgrade_submodules("dwanim", "${{ inputs.repo }}",
+                             "Sync submodules for ${{ inputs.repo }}.",
+                             "${{ inputs.branch }}")

@@ -1,0 +1,52 @@
+name: CI RaTS
+
+on: workflow_dispatch
+
+jobs:
+  BuildTest:
+    strategy:
+      fail-fast: false
+      matrix:
+        variants: ['0 3', '1 2', '4 5 6']
+        include:
+          - runner: rats
+            variants: '0 3'
+          - runner: moonbase
+            variants: '1 2'
+          - runner: moonbase
+            variants: '4 5 6'
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - id: CleanupPreviousRun
+        shell: bash
+        run: |
+          rm -rf * .??*
+      - id: CloneOpenmoonray
+        uses: actions/checkout@v5
+        with:
+          path: "source/openmoonray"
+          repository: dwanim/openmoonray
+          token: ${{ secrets.BART_TOKEN }}
+          submodules: recursive
+          lfs: true
+      - id: CloneRats_canonicals
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.BART_TOKEN }}
+          lfs: true
+      - id: CloneMoonshine_dwa
+        uses: actions/checkout@v5
+        with:
+          path: "source/openmoonray/moonray/moonshine_dwa"
+          repository: dwanim/moonshine_dwa
+          token: ${{ secrets.BART_TOKEN }}
+          lfs: true
+      - id: CloneMoonray_tools
+        uses: actions/checkout@v5
+        with:
+          path: "source/openmoonray/moonray/moonray_tools"
+          repository: dwanim/moonray_tools
+          token: ${{ secrets.BART_TOKEN }}
+          lfs: true
+      - id: Build_variants
+        run: .github/workflows/scripts/build_and_test_variant.sh ${{ matrix.variants }}
