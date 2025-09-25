@@ -1,9 +1,32 @@
 name: CI RaTS
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - 'flowpipeline.yaml'
+      - 'LICENSE'
+      - 'tsc/**'
+
+concurrency:
+  group: WaitForUpdates
+  cancel-in-progress: true
 
 jobs:
+  WaitForUpdates:
+    runs-on: EL9
+    continue-on-error: true
+    steps:
+      - name: Delay start
+        run: |
+          sleep 120
   BuildTest:
+    needs: WaitForUpdates
+    if: ${{ !cancelled() }}
     strategy:
       fail-fast: false
       matrix:
@@ -24,27 +47,27 @@ jobs:
       - id: CloneOpenmoonray
         uses: actions/checkout@v5
         with:
-          path: "source/openmoonray"
-          repository: dwanim/openmoonray
           token: ${{ secrets.BART_TOKEN }}
           submodules: recursive
           lfs: true
       - id: CloneRats_canonicals
         uses: actions/checkout@v5
         with:
+          path: "rats_canonicals"
+          repository: dwanim/rats_canonicals_tin
           token: ${{ secrets.BART_TOKEN }}
           lfs: true
       - id: CloneMoonshine_dwa
         uses: actions/checkout@v5
         with:
-          path: "source/openmoonray/moonray/moonshine_dwa"
+          path: "moonray/moonshine_dwa"
           repository: dwanim/moonshine_dwa
           token: ${{ secrets.BART_TOKEN }}
           lfs: true
       - id: CloneMoonray_tools
         uses: actions/checkout@v5
         with:
-          path: "source/openmoonray/moonray/moonray_tools"
+          path: "moonray/moonray_tools"
           repository: dwanim/moonray_tools
           token: ${{ secrets.BART_TOKEN }}
           lfs: true

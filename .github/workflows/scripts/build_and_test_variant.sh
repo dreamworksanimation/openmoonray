@@ -16,15 +16,12 @@ echo "Building and tests variant(s) " ${variants}
 # define environment variables that are setup by the studio.
 export REL_BOOT_DIR=/rel/boot
 export OS_RELEASE=$(/bin/cat /etc/redhat-release | sed -r 's/.*release ([0-9]+).*/ws\1/')
-export RATS_CANONICAL_DIR=$(pwd)
+export RATS_CANONICAL_DIR=$(pwd)/rats_canonicals
 
 # Setup access to rez.
 source /rel/boot/rez/rezx.sh
 export REZ_LOCAL_PACKAGES_PATH=$(pwd)/installs
 export REZ_PACKAGES_PATH=${REZ_PRE_PACKAGES_PATH}:${REZ_LOCAL_PACKAGES_PATH}:${REZ_RELEASE_PACKAGES_PATH}:/rel/rez/third_party:/rel/rez/pypi:/rel/lang/python/packages:${REZ_POST_PACKAGES_PATH}
-
-# Change to the openmoonray source directory
-cd source/openmoonray
 
 # Build the variants.
 rez-env buildtools -c "rez-build -i --variants ${variants}"
