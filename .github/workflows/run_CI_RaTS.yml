@@ -16,6 +16,9 @@ concurrency:
   group: WaitForUpdates
   cancel-in-progress: true
 
+env:
+  CHATROOM: ${{ secrets.TRIGGER_RATS_CHATROOM }}
+
 jobs:
   WaitForUpdates:
     runs-on: EL9
@@ -24,6 +27,11 @@ jobs:
       - name: Delay start
         run: |
           sleep 120
+      - name: Report to Chat Room
+        if: ${{ !cancelled() }}
+        run: |
+          curl -X POST -H 'Content-Type: application/json' --url ${CHATROOM} \
+              -d '{"text": "Starting CI/RaTS test run on main to verify last merge was correct."}'
   BuildTest:
     needs: WaitForUpdates
     if: ${{ !cancelled() }}
@@ -73,3 +81,21 @@ jobs:
           lfs: true
       - id: Build_variants
         run: .github/workflows/scripts/build_and_test_variant.sh ${{ matrix.variants }}
+  GreenMessage:
+    needs: BuildTest
+    if: ${{ !cancelled() && needs.BuildTest.result == 'success' }}
+    runs-on: EL9
+    steps:
+      - name: Report success to Chat Room
+        run: |
+          curl -X POST -H 'Content-Type: application/json' --url ${CHATROOM} \
+              -d '{"text": "CI/RaTS test run complete with green status."}'
+  RedMessage:
+    needs: BuildTest
+    if: ${{ !cancelled() && needs.BuildTest.result == 'failure' }}
+    runs-on: EL9
+    steps:
+      - name: Report failure to Chat Room
+        run: |
+          curl -X POST -H 'Content-Type: application/json' --url ${CHATROOM} \
+              -d '{"text": "CI/RaTS test run complete with red status."}'
