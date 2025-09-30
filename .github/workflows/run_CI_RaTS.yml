@@ -31,7 +31,7 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           curl -X POST -H 'Content-Type: application/json' --url ${CHATROOM} \
-              -d '{"text": "Starting CI/RaTS test run on main to verify last merge was correct."}'
+              -d '{"text": "Starting CI/RaTS test run on ${{ github.ref_name }} to verify last merge was correct."}'
   BuildTest:
     needs: WaitForUpdates
     if: ${{ !cancelled() }}

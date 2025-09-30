@@ -49,11 +49,11 @@
 [submodule "arras/arras_render"]
 	path = arras/arras_render
 	url = ../arras_render
-	branch = cmake_linux
+	branch = main
 [submodule "arras/distributed/arras4_node"]
 	path = arras/distributed/arras4_node
 	url = ../arras4_node
-	branch = cmake_linux
+	branch = main
 [submodule "cmake_modules"]
 	path = cmake_modules
 	url = ../cmake_modules
