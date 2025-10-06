@@ -70,6 +70,10 @@ endif()
 # error and not compile. Targets which do need this flag eg. GCC are explicitly set.
 set(THREADS_HAVE_PTHREAD_ARG FALSE)
 
+# Find TBB first, so MKL can use it. MKL's package config tries to find it too, but
+# it doesn't seem to work for certain versions of TBB.
+find_package(TBB REQUIRED)
+
 # ================================================
 # Subdirectories
 # ================================================

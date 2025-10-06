@@ -29,7 +29,7 @@ help = ('For assistance, '
         "please contact the folio's owner at: moonbase-dev@dreamworks.com")
 
 variants = [
-    [
+    [   # variant 0
         'os-rocky-9',
         'opt_level-optdebug',
         'refplat-vfx2023.1',
@@ -39,7 +39,7 @@ variants = [
         'openvdb-11',
         'zlib-1.2.11.x'
     ],
-    [
+    [   # variant 1
         'os-rocky-9',
         'opt_level-debug',
         'refplat-vfx2023.1',
@@ -49,7 +49,7 @@ variants = [
         'openvdb-11',
         'zlib-1.2.11.x'
     ],
-    [
+    [   # variant 2
         'os-rocky-9',
         'opt_level-optdebug',
         'refplat-vfx2023.1',
@@ -59,7 +59,7 @@ variants = [
         'openvdb-11',
         'zlib-1.2.11.x'
     ],
-    [
+    [   # variant 3
         'os-rocky-9',
         'opt_level-optdebug',
         'refplat-vfx2023.1',
@@ -69,7 +69,7 @@ variants = [
         'openvdb-11',
         'zlib-1.2.11.x'
     ],
-    [
+    [   # variant 4
         'os-rocky-9',
         'opt_level-optdebug',
         'refplat-vfx2023.1',
@@ -79,7 +79,7 @@ variants = [
         'openvdb-10',
         'zlib-1.2.11.x'
     ],
-    [
+    [   # variant 5
         'os-rocky-9',
         'opt_level-optdebug',
         'refplat-vfx2024.0',
@@ -89,7 +89,17 @@ variants = [
         'openvdb-11',
         'zlib-1.2.11.x'
     ],
-    [
+    [   # variant 6
+        'os-rocky-9',
+        'opt_level-optdebug',
+        'refplat-vfx2025.0',
+        'usd_core-0.25.5.1.x',
+        'openimageio-3.0',
+        'gcc-11.x',
+        'openvdb-12',
+        'zlib-1.2.11.x'
+    ],
+    [   # variant 7
         'os-rocky-9',
         'opt_level-optdebug',
         'refplat-vfx2022.0',
