@@ -115,8 +115,8 @@ variants = [
 conf_rats_variants = variants[0:2]
 
 # Add ephemeral package to each variant.
-for i in range(len(variants)):
-    variants[i].insert(0, '.openmoonray_variant-%d' % i)
+for i, variant in enumerate(variants):
+    variant.insert(0, '.openmoonray_variant-%d' % i)
 
 requires = [
     'boost',
@@ -173,8 +173,8 @@ testentry = lambda i: ("variant%d" % i,
                              "type": "requires",
                              "value": [".openmoonray_variant-%d" % i]
                          },
-                         "run_on": "explicit"
-                     } )
+                         "run_on": "explicit",
+                     }, )
 testlist = [testentry(i) for i in range(len(variants))]
 
 # Second, add a retry unit tests entry for each variant
@@ -186,8 +186,8 @@ retrytestentry = lambda i: ("retry_variant%d" % i,
                                   "type": "requires",
                                   "value": [".openmoonray_variant-%d" % i]
                               },
-                              "run_on": "explicit"
-                          } )
+                              "run_on": "explicit",
+                          }, )
 testlist.extend([retrytestentry(i) for i in range(len(variants))])
 
 # Next, add rats tests entry
@@ -199,7 +199,7 @@ rats_testentry = { "command": rats_cmd,
                              "type": "requires",
                              "value": [".openmoonray_variant-%d" % rats_variant]
                          },
-                         "run_on": "explicit"
+                         "run_on": "explicit",
                      }
 testlist.append(("rats", rats_testentry))
 
@@ -212,7 +212,7 @@ retry_rats_testentry = { "command": retry_rats_cmd,
                              "type": "requires",
                              "value": [".openmoonray_variant-%d" % rats_variant]
                          },
-                         "run_on": "explicit"
+                         "run_on": "explicit",
                      }
 testlist.append(("retry_rats", retry_rats_testentry))
 
@@ -225,7 +225,7 @@ rats_debug_testentry = { "command": rats_debug_cmd,
                              "type": "requires",
                              "value": [".openmoonray_variant-%d" % rats_debug_variant]
                          },
-                         "run_on": "explicit"
+                         "run_on": "explicit",
                      }
 testlist.append(("rats-debug", rats_debug_testentry))
 
@@ -238,7 +238,7 @@ retry_rats_debug_testentry = { "command": retry_rats_debug_cmd,
                                    "type": "requires",
                                    "value": [".openmoonray_variant-%d" % rats_debug_variant]
                                },
-                               "run_on": "explicit"
+                               "run_on": "explicit",
                            }
 testlist.append(("retry_rats-debug", retry_rats_debug_testentry))
 
