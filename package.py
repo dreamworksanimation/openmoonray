@@ -174,7 +174,7 @@ testentry = lambda i: ("variant%d" % i,
                              "value": [".openmoonray_variant-%d" % i]
                          },
                          "run_on": "explicit",
-                     }, )
+                     })
 testlist = [testentry(i) for i in range(len(variants))]
 
 # Second, add a retry unit tests entry for each variant
@@ -187,7 +187,8 @@ retrytestentry = lambda i: ("retry_variant%d" % i,
                                   "value": [".openmoonray_variant-%d" % i]
                               },
                               "run_on": "explicit",
-                          }, )
+                          })
+
 testlist.extend([retrytestentry(i) for i in range(len(variants))])
 
 # Next, add rats tests entry

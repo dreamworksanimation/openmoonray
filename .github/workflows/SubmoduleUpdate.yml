@@ -18,10 +18,6 @@ on:
         type: string
         default: "main"
 
-concurrency:
-  group: Update
-  cancel-in-progress: true
-
 jobs:
   Update:
     env:

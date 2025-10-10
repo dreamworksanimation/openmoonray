@@ -1,4 +1,4 @@
-name: Mac CI and RATS
+name: CI/RATS - macOS/M3
 
 on:
   workflow_dispatch:
@@ -18,6 +18,10 @@ on:
       - 'LICENSE'
       - 'tsc/**'
 
+concurrency:
+  group: WaitForUpdatesMacOS
+  cancel-in-progress: true
+
 jobs:
   CI_and_RATS:
     env:
@@ -25,6 +29,14 @@ jobs:
       workspace: ${{ github.workspace }}
     runs-on: [self-hosted, macOS]
     steps:
+      - name: Delay start
+        run: |
+          sleep 120
+      - name: Report to Chat Room
+        if: ${{ !cancelled() }}
+        run: |
+          curl -X POST -H 'Content-Type: application/json' --url ${CHATROOM} \
+              -d '{"text": "Starting MacOS CI/RaTS test run on ${{ github.ref_name }} to verify last merge was correct."}'
       - name: Cleanup previous run
         if: always()
         shell: bash
@@ -32,7 +44,7 @@ jobs:
           cd ${workspace}
           rm -rf build-deps build source installs/openmoonray
       - name: Clone openmoonray
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           path: source/openmoonray
           repository: dwanim/openmoonray
@@ -44,7 +56,7 @@ jobs:
             FORCE_REBUILD: ${{ inputs.force-rebuild-deps }}
         shell: bash
         run: |
-          if [ ! cmp -s ${workspace}/CMakeLists.txt ${workspace}/source/openmoonray/building/macOS/CMakeLists.txt ] || [ "${FORCE_REBUILD}" == "true" ]
+          if ! cmp -s ${workspace}/CMakeLists.txt ${workspace}/source/openmoonray/building/macOS/CMakeLists.txt || [[ "${FORCE_REBUILD}" == "true" ]]
           then
             rm -rf ${workspace}/CMakeLists.txt ${workspace}/installs
           fi
@@ -85,3 +97,14 @@ jobs:
           source ${workspace}/installs/openmoonray/Release/scripts/setup.sh
           ctest -C Release -L rats -L 'render|diff' --output-on-failure  -j $(sysctl -n hw.physicalcpu)
 
+  StatusMessage:
+    needs: CI_and_RATS
+    if: ${{ !cancelled() }}
+    env:
+      status: ${{ needs.CI_and_RATS.result == 'success' && 'green' || 'red' }}
+    runs-on: [self-hosted, macOS]
+    steps:
+      - name: Report status to Chat Room
+        run: |
+          curl -X POST -H 'Content-Type: application/json' --url ${CHATROOM} \
+              -d '{"text": "MacOS CI/RaTS test run on ${{ github.ref_name }} complete with ${status} status."}'
