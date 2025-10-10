@@ -1,31 +1,31 @@
-# MoonRay
-MoonRay is DreamWorks’ open-source, award-winning, state-of-the-art production MCRT renderer, which has been used on the following feature films:
-* [How to Train Your Dragon: The Hidden World](https://www.dreamworks.com/movies/how-to-train-your-dragon-the-hidden-world)  
-* [Abominable](https://www.dreamworks.com/movies/abominable)  
-* [The Croods: A New Age](https://www.dreamworks.com/movies/the-croods-2)  
-* [Trolls World Tour](https://www.dreamworks.com/movies/trolls-world-tour)  
-* [The Boss Baby: Family Business](https://www.dreamworks.com/movies/the-boss-baby-2)  
-* [The Bad Guys](https://www.dreamworks.com/movies/the-bad-guys)  
-* [Puss In Boots: The Last Wish](https://www.dreamworks.com/movies/puss-in-boots-the-last-wish)  
-* [Ruby Gillman: Teenage Kraken](https://www.dreamworks.com/movies/ruby-gillman-teenage-kraken)  
-* [Trolls Band Together](https://www.dreamworks.com/movies/trolls-band-together)  
-* [Kung Fu Panda 4](https://www.dreamworks.com/movies/kung-fu-panda-4)  
-* [The Wild Robot](https://www.dreamworks.com/movies/the-wild-robot)  
+![MoonRay](docs/images/moonray.png)
 
-MoonRay was developed at DreamWorks and is in continuous active development and includes an extensive
-library of production-tested, physically based materials, a USD Hydra render delegate, multi-machine and cloud rendering via the
-Arras distributed computation framework.
+[Website](https://openmoonray.org) | [Discussion Forum](https://github.com/dreamworksanimation/openmoonray/discussions) | [Documentation](https://docs.openmoonray.org/) | [Releases](https://github.com/dreamworksanimation/openmoonray/releases) | [License](https://www.apache.org/licenses/LICENSE-2.0)
 
-## Cloning
-This is the top-level repository for MoonRay opensource. The actual source code is contained in a number of other repositories referenced here as git submodules.
+MoonRay is an open source, production path-tracing renderer, that efficiently renders images for animation, visual effects and other uses.  MoonRay supports industry standards and libraries and was open sourced by DreamWorks, where it is in active use for their [feature film animation](https://openmoonray.org/documentation) pipeline. With MoonRay, you can take advantage of an extensive library of production-tested, physically based materials, a USD Hydra render delegate, and local, multi-machine and cloud rendering for interactive and batch rendering. It runs on CPU and hybrid GPU (XPU) hardware and offers tools for [regression testing](https://github.com/dreamworksanimation/rats), [performance monitoring](https://docs.openmoonray.org/user-reference/tools/render-profile-viewer/) and [more](https://docs.openmoonray.org/user-reference/tools/).
+
+### License
+
+MoonRay is released under the [Apache License, Version 2.0](LICENSE), which is a free, open source software license developed and maintained by the Apache Software Foundation.
+
+### Contributions
+
+MoonRay welcomes contributions to the project. Please refer to the [Contribution Guidelines](CONTRIBUTING.md) for details on how to make a contribution.
+
+### Cloning
+
+This is the top-level repository for the MoonRay project. The actual source code is contained in a number of other repositories referenced here as git submodules.
 
 To clone this repository along with the submodules:
-```bash
-git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git
-```
 
-[Source Structure](https://docs.openmoonray.org/developer-reference/source-structure/)  
-[Building MoonRay](https://docs.openmoonray.org/getting-started/installation/building-moonray/)  
-[Documentation](https://docs.openmoonray.org/)  
-[Website](https://openmoonray.org/)  
+```git clone --recurse-submodules https://github.com/dreamworksanimation/openmoonray.git```
 
+### Build and Run
+
+You can get started building MoonRay on Linux or MacOS, or a container by reading the [Building MoonRay](https://docs.openmoonray.org/getting-started/installation/building-moonray/) documentatation website.
+
+
+
+### Developer Quick Start
+
+A helpful start will be at understanding the [structure of the source code](https://docs.openmoonray.org/developer-reference/source-structure/), followed by the overall [Developer's Guide](https://docs.openmoonray.org/developer-reference/).
