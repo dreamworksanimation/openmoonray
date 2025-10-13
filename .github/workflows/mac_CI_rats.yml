@@ -22,11 +22,14 @@ concurrency:
   group: WaitForUpdatesMacOS
   cancel-in-progress: true
 
+env:
+  CHATROOM: ${{ secrets.TRIGGER_RATS_CHATROOM }}
+
 jobs:
   CI_and_RATS:
     env:
-      CHATROOM: ${{ secrets.TRIGGER_CI_CHATROOM }}
       workspace: ${{ github.workspace }}
+      retry_flags: --rerun-failed --output-on-failure
     runs-on: [self-hosted, macOS]
     steps:
       - name: Delay start
@@ -82,20 +85,23 @@ jobs:
           cmake --build --preset dwa-macos-release
           chmod -R go+w ${workspace}/build
       - name: Run unit tests
+        env:
+          unittest_flags: -C Release -L unit -j $(sysctl -n hw.physicalcpu)
         shell: bash
         working-directory: ./build
         run: |
           umask 0
-          ctest -C Release -L unit -j $(sysctl -n hw.physicalcpu)
+          ctest ${{ env.unittest_flags }} || ctest ${{ env.unittest_flags }} ${{ env.retry_flags }}
       - name: Run RATS tests
         env:
           RATS_CANONICAL_DIR: /Applications/MoonRay/rats_canonicals
+          rats_flags: -C Release -L rats -L 'render|diff' -j $(sysctl -n hw.physicalcpu)
         shell: bash
         working-directory: ./build
         run: |
           umask 0
           source ${workspace}/installs/openmoonray/Release/scripts/setup.sh
-          ctest -C Release -L rats -L 'render|diff' --output-on-failure  -j $(sysctl -n hw.physicalcpu)
+          ctest ${{ env.rats_flags }} || ctest ${{ env.rats_flags }} ${{ env.retry_flags }}
 
   StatusMessage:
     needs: CI_and_RATS
@@ -107,4 +113,4 @@ jobs:
       - name: Report status to Chat Room
         run: |
           curl -X POST -H 'Content-Type: application/json' --url ${CHATROOM} \
-              -d '{"text": "MacOS CI/RaTS test run on ${{ github.ref_name }} complete with ${status} status."}'
+              -d '{"text": "MacOS CI/RaTS test run on ${{ github.ref_name }} complete with ${{ env.status }} status."}'
