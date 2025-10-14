@@ -102,6 +102,16 @@ variants = [
     [   # variant 7
         'os-rocky-9',
         'opt_level-optdebug',
+        'refplat-houdini21.0',
+        'usd_core-0.25.5.1.x',
+        'openimageio-3.0',
+        'gcc-11.x',
+        'openvdb-12',
+        'zlib-1.2.11.x'
+    ],
+    [   # variant 8
+        'os-rocky-9',
+        'opt_level-optdebug',
         'refplat-vfx2022.0',
         'usd_core-0.22.5.x',
         'openimageio-2.3.20.0.x',
