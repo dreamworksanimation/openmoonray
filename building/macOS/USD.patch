@@ -1,0 +1,13 @@
+diff --git a/pxr/base/gf/half.h b/pxr/base/gf/half.h
+index a7214e466..8194de619 100644
+--- a/pxr/base/gf/half.h
++++ b/pxr/base/gf/half.h
+@@ -46,7 +46,7 @@ namespace pxr_half {
+     /// Overload hash_value for half.
+     template<typename Half>
+     inline
+-    typename std::enable_if<std::is_same<Half, half>::value, size_t>::type
++    typename std::enable_if<std::is_same<Half, half>::value, std::size_t>::type
+     hash_value(const Half& h) { return h.bits(); }
+ }
+ 

@@ -28,7 +28,7 @@ set(PythonRoot /usr CACHE FILEPATH "Location of Python install")
 
 ExternalProject_Add(Blosc
     GIT_REPOSITORY https://github.com/Blosc/c-blosc
-    GIT_TAG a44e961498cdca2eb893fa897cd15dd007fad496 # 1.20.1
+    GIT_TAG 616f4b7 # 1.21.6 # macOS 26 Tahoe
     BUILD_COMMAND make ${JOBS_ARG}
     CMAKE_ARGS
         -DCMAKE_PREFIX_PATH:PATH=${InstallRoot}
@@ -42,6 +42,7 @@ ExternalProject_Add(Boost
     URL https://sourceforge.net/projects/boost/files/boost/1.78.0/boost_1_78_0.tar.gz
     UPDATE_COMMAND ./bootstrap.sh --prefix=${InstallRoot}  --with-toolset=clang linkflags="-arch ${BOOST_ARCH}"
     CONFIGURE_COMMAND ""
+    PATCH_COMMAND patch -p3 -N < ${THIS_DIR}/Boost.patch 
     BUILD_COMMAND ./b2 install ${JOBS_ARG} --user-config=${THIS_DIR}/user-config.jam  --with_python variant=release link=shared threading=multi define=BOOST_UNORDERED_HAVE_PIECEWISE_CONSTRUCT=0
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND ""
@@ -64,7 +65,7 @@ ExternalProject_Add(JsonCpp
 set(CHAIN JsonCpp)
 
 ExternalProject_Add(Lua
-    URL https://www.lua.org/ftp/lua-5.3.5.tar.gz
+    URL https://www.lua.org/ftp/lua-5.4.4.tar.gz
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
     BUILD_COMMAND make ${JOBS_ARG} generic MYCFLAGS=-fPIC MYLIBS=-ldl
@@ -76,7 +77,7 @@ ExternalProject_Add(Lua
 set(CHAIN Lua)
 
 ExternalProject_Add(MicroHttpd
-    URL https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.71.tar.gz
+    URL https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.72.tar.gz
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ./configure --prefix ${InstallRoot}
     BUILD_COMMAND make ${JOBS_ARG}
@@ -117,7 +118,7 @@ ExternalProject_Add(OpenEXR
 set(CHAIN OpenEXR)
 
 ExternalProject_Add(TBB
-    URL https://github.com/oneapi-src/oneTBB/archive/2020_U2.tar.gz
+    URL https://github.com/oneapi-src/oneTBB/archive/2020_U3.tar.gz
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
     BUILD_COMMAND make ${JOBS_ARG} arch=arm64
@@ -129,7 +130,8 @@ set(CHAIN TBB)
 
 ExternalProject_Add(OpenVDB
     GIT_REPOSITORY https://github.com/AcademySoftwareFoundation/openvdb
-    GIT_TAG 88ae51a34ca70a23442dc60bba83894f35f7f728 # v8.2.0
+    GIT_TAG ab935574cdb25c3df66b068fce2a3b0a74281c54 # v9.1.0
+    PATCH_COMMAND patch -p1 -N < ${THIS_DIR}/OpenVDB.patch || true
     BUILD_COMMAND make ${JOBS_ARG}
     CMAKE_ARGS
         -DCMAKE_PREFIX_PATH:PATH=${InstallRoot}
@@ -145,7 +147,7 @@ set(CHAIN OpenVDB)
 
 ExternalProject_Add(Log4CPlus
     GIT_REPOSITORY https://github.com/log4cplus/log4cplus
-    GIT_TAG REL_2_0_0
+    GIT_TAG REL_2_0_5
     PATCH_COMMAND patch -p1 -N < ${THIS_DIR}/log4plus-limit-threads.patch || true
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ./configure --prefix ${InstallRoot}
@@ -189,6 +191,7 @@ set(CHAIN ISPC)
 ExternalProject_Add(embree
     GIT_REPOSITORY https://github.com/embree/embree
     GIT_TAG 341ef8c45d1ae072ead1ab65cd76e88b03d9302c # v4.2.0
+    PATCH_COMMAND patch -p1 -N < ${THIS_DIR}/Embree.patch || true
     BUILD_IN_SOURCE 1
     BUILD_COMMAND make ${JOBS_ARG}
     CMAKE_ARGS
@@ -305,8 +308,8 @@ ExternalProject_Add(qt5
     GIT_SHALLOW true
     GIT_TAG 5bd237e89469a032ac9d4d33fcd3896897d6d245 # 5.12.12
     GIT_SUBMODULES qtbase qtscript
-    PATCH_COMMAND patch -Ni ${THIS_DIR}/qt_missing_cginclude.patch || true
-    CONFIGURE_COMMAND ./configure -prefix ${InstallRoot} -confirm-license -opensource -nomake examples -nomake tests QMAKE_APPLE_DEVICE_ARCHS=arm64 
+    PATCH_COMMAND patch -Ni ${THIS_DIR}/Qt5.patch || true
+    CONFIGURE_COMMAND ./configure -prefix ${InstallRoot} -confirm-license -opensource -no-egl -nomake examples -nomake tests QMAKE_APPLE_DEVICE_ARCHS=arm64 
     BUILD_COMMAND make ${JOBS_ARG}
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND make install
@@ -318,6 +321,7 @@ if(NOT NO_USD)
     ExternalProject_Add(USD
         GIT_REPOSITORY https://github.com/PixarAnimationStudios/USD
         GIT_TAG 0c7b9a95f155c221ff7df9270a39a52e3b23af8b # v22.11
+        PATCH_COMMAND pwd && patch -Ni ${THIS_DIR}/USD.patch || true
         BUILD_COMMAND make ${JOBS_ARG}
         CMAKE_ARGS
             -DCMAKE_PREFIX_PATH:PATH=${InstallRoot}

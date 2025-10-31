@@ -1,0 +1,22 @@
+Only in Boost-prefix-mod/src/Boost: b2
+Only in Boost-prefix-mod/src/Boost: bin.v2
+diff -ru Boost-prefix/src/Boost/boost/mpl/aux_/integral_wrapper.hpp Boost-prefix-mod/src/Boost/boost/mpl/aux_/integral_wrapper.hpp
+--- Boost-prefix/src/Boost/boost/mpl/aux_/integral_wrapper.hpp	2025-10-19 16:45:55
++++ Boost-prefix-mod/src/Boost/boost/mpl/aux_/integral_wrapper.hpp	2025-10-19 16:37:32
+@@ -13,6 +13,11 @@
+ 
+ // NO INCLUDE GUARDS, THE HEADER IS INTENDED FOR MULTIPLE INCLUSION!
+ 
++#if defined(__clang__)
++#pragma clang diagnostic push
++#pragma clang diagnostic ignored "-Wenum-constexpr-conversion"
++#endif
++
+ #include <boost/mpl/integral_c_tag.hpp>
+ #include <boost/mpl/aux_/static_cast.hpp>
+ #include <boost/mpl/aux_/nttp_decl.hpp>
+Only in Boost-prefix-mod/src/Boost: project-config.jam
+Only in Boost-prefix-mod/src/Boost/tools/build/src/engine: b2
+Only in Boost-prefix-mod/src/Boost/tools/build/src/engine: bjam
+Only in Boost-prefix-mod/src/Boost-stamp: Boost-configure
+Only in Boost-prefix-mod/src/Boost-stamp: Boost-patch

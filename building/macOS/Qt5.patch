@@ -1,0 +1,97 @@
+diff --git a/mkspecs/common/mac.conf b/mkspecs/common/mac.conf
+index b77494ec9b2..2d43c796dbe 100644
+--- a/qtbase/mkspecs/common/mac.conf
++++ b/qtbase/mkspecs/common/mac.conf
+@@ -19,8 +19,7 @@ QMAKE_LIBDIR            =
+ 
+ # sdk.prf will prefix the proper SDK sysroot
+ QMAKE_INCDIR_OPENGL     = \
+-    /System/Library/Frameworks/OpenGL.framework/Headers \
+-    /System/Library/Frameworks/AGL.framework/Headers/
++    /System/Library/Frameworks/OpenGL.framework/Headers 
+ 
+ QMAKE_FIX_RPATH         = install_name_tool -id
+ 
+@@ -31,7 +30,7 @@ QMAKE_LFLAGS_REL_RPATH  =
+ QMAKE_REL_RPATH_BASE    = @loader_path
+ 
+ QMAKE_LIBS_DYNLOAD      =
+-QMAKE_LIBS_OPENGL       = -framework OpenGL -framework AGL
++QMAKE_LIBS_OPENGL       = -framework OpenGL 
+ QMAKE_LIBS_THREAD       =
+ 
+ QMAKE_INCDIR_WAYLAND    =
+diff --git a/mkspecs/features/toolchain.prf b/mkspecs/features/toolchain.prf
+index 5003679bd03..088c7f7d861 100644
+--- a/qtbase/mkspecs/features/toolchain.prf
++++ b/qtbase/mkspecs/features/toolchain.prf
+@@ -283,9 +283,9 @@ isEmpty($${target_prefix}.INCDIRS) {
+                 }
+             }
+         }
+-        isEmpty(QMAKE_DEFAULT_LIBDIRS)|isEmpty(QMAKE_DEFAULT_INCDIRS): \
+-            !integrity: \
+-                error("failed to parse default search paths from compiler output")
++#        isEmpty(QMAKE_DEFAULT_LIBDIRS)|isEmpty(QMAKE_DEFAULT_INCDIRS): \
++#            !integrity: \
++#                error("failed to parse default search paths from compiler output")
+         QMAKE_DEFAULT_LIBDIRS = $$unique(QMAKE_DEFAULT_LIBDIRS)
+     } else: ghs {
+         cmd = $$QMAKE_CXX $$QMAKE_CXXFLAGS -$${LITERAL_HASH} -o /tmp/fake_output /tmp/fake_input.cpp
+diff --git a/src/3rdparty/libpng/pngpriv.h b/src/3rdparty/libpng/pngpriv.h
+index 2ab9b70d736..f9fd4feb1ab 100644
+--- a/qtbase/src/3rdparty/libpng/pngpriv.h
++++ b/qtbase/src/3rdparty/libpng/pngpriv.h
+@@ -528,18 +528,8 @@
+     */
+ #  include <float.h>
+ 
+-#  if (defined(__MWERKS__) && defined(macintosh)) || defined(applec) || \
+-    defined(THINK_C) || defined(__SC__) || defined(TARGET_OS_MAC)
+-   /* We need to check that <math.h> hasn't already been included earlier
+-    * as it seems it doesn't agree with <fp.h>, yet we should really use
+-    * <fp.h> if possible.
+-    */
+-#    if !defined(__MATH_H__) && !defined(__MATH_H) && !defined(__cmath__)
+-#      include <fp.h>
+-#    endif
+-#  else
+-#    include <math.h>
+-#  endif
++#include <math.h>
++
+ #  if defined(_AMIGA) && defined(__SASC) && defined(_M68881)
+    /* Amiga SAS/C: We must include builtin FPU functions when compiling using
+     * MATH=68881
+diff --git a/src/plugins/platforms/cocoa/qcocoascreen.mm b/src/plugins/platforms/cocoa/qcocoascreen.mm
+index 6a5b0e6e3e7..c67bff2ee63 100644
+--- a/qtbase/src/plugins/platforms/cocoa/qcocoascreen.mm
++++ b/qtbase/src/plugins/platforms/cocoa/qcocoascreen.mm
+@@ -463,6 +463,7 @@ void flushOutput() {
+     // Grab images from each display
+     QVector<QImage> images;
+     QVector<QRect> destinations;
++#if 0
+     for (uint i = 0; i < displayCount; ++i) {
+         auto display = displays[i];
+         QRect displayBounds = QRectF::fromCGRect(CGDisplayBounds(display)).toRect();
+@@ -476,6 +477,7 @@ void flushOutput() {
+         qCDebug(lcQpaScreen) << "grab display" << i << "global" << grabBounds << "local" << displayLocalGrabBounds
+                              << "grab image size" << displayImage.size() << "devicePixelRatio" << displayImage.devicePixelRatio();
+     }
++#endif
+ 
+     // Determine the highest dpr, which becomes the dpr for the returned pixmap.
+     qreal dpr = 1.0;
+diff --git a/src/plugins/platforms/cocoa/qiosurfacegraphicsbuffer.h b/src/plugins/platforms/cocoa/qiosurfacegraphicsbuffer.h
+index e070ba977d5..07c75b04bc5 100644
+--- a/qtbase/src/plugins/platforms/cocoa/qiosurfacegraphicsbuffer.h
++++ b/qtbase/src/plugins/platforms/cocoa/qiosurfacegraphicsbuffer.h
+@@ -40,6 +40,7 @@
+ #ifndef QIOSURFACEGRAPHICSBUFFER_H
+ #define QIOSURFACEGRAPHICSBUFFER_H
+ 
++#include <CoreGraphics/CGColorSpace.h>
+ #include <qpa/qplatformgraphicsbuffer.h>
+ #include <private/qcore_mac_p.h>
+ 
