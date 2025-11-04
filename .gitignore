@@ -62,3 +62,6 @@ boot
 # Non-OpenMoonRay repos
 moonray/moonshine_dwa
 moonray/moonray_tools
+
+# gha created files
+.ci_githooks

@@ -1,0 +1,46 @@
+name: After Merge
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Target branch for merge operations (defaults to main)"
+        required: false
+        type: string
+        default: "main"
+
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - 'flowpipeline.yaml'
+      - 'LICENSE'
+      - 'tsc/**'
+
+concurrency:
+  group: OnMergeUpdate-supersuper${{ github.event.inputs.branch || github.ref }}
+  cancel-in-progress: true
+
+env:
+  CHATROOM: ${{ secrets.TRIGGER_RATS_CHATROOM }}
+
+jobs:
+  MergeMessage:
+    # Restrict to run on only those EL9 hosts that are rez hosts as well.
+    runs-on: [EL9, rez]
+    env:
+      MESSAGE: "A push to the ${{ github.event.inputs.branch || github.ref_name }} branch of the ${{ github.event.repository.name }} repo. A CI/RaTS test run should start in the next 5 minutes."
+    steps:
+      - name: Report to Chat Room
+        run: |
+          curl -X POST -H 'Content-Type: application/json' --url ${CHATROOM} \
+              -d '{"text": "'"${MESSAGE}"'"}'
+
+  MergeAction:
+    uses: dwanim/openmoonray_dwa/.github/workflows/SubmoduleUpdate.yml@main
+    with:
+      repo: "openmoonray_dwa"
+      branch: ${{ github.event.inputs.branch || github.ref_name }}
+    secrets: inherit

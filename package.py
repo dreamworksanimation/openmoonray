@@ -151,16 +151,6 @@ requires = [
     'uuid-1.0.0',
 ]
 
-dwa_extras = [
-    'amorphous',
-    'alembic_utilities-10',
-    'cfx_fur-10',
-    'geometry',
-    'gtypes',
-    'oceanlib-10',
-    'willow-10.2.0.x.4.34',
-]
-
 private_build_requires = [
     'alembic',
     'cmake',
@@ -168,93 +158,6 @@ private_build_requires = [
     'ispc-1.20.0.x',
     'python',
 ]
-
-# If moonshine_dwa is available add the extra rez packages that it needs into the requires.
-if os.path.exists('moonray/moonshine_dwa/CMakeLists.txt'):
-    requires.extend(dwa_extras)
-
-# Create dictionary of tests for the rez-test command
-# First, add unit tests entry for each variant
-commandstr = lambda i: "cd build/"+os.path.join(*variants[i])+"; ctest --no-tests=error -j $(nproc) -L 'unit' --output-on-failure"
-testentry = lambda i: ("variant%d" % i,
-                       { "command": commandstr(i),
-                         "requires": ["cmake"],
-                         "on_variants": {
-                             "type": "requires",
-                             "value": [".openmoonray_variant-%d" % i]
-                         },
-                         "run_on": "explicit",
-                     })
-testlist = [testentry(i) for i in range(len(variants))]
-
-# Second, add a retry unit tests entry for each variant
-retrycommandstr = lambda i: "cd build/"+os.path.join(*variants[i])+"; ctest --no-tests=error -j $(nproc) -L 'unit' --rerun-failed --output-on-failure"
-retrytestentry = lambda i: ("retry_variant%d" % i,
-                            { "command": retrycommandstr(i),
-                              "requires": ["cmake"],
-                              "on_variants": {
-                                  "type": "requires",
-                                  "value": [".openmoonray_variant-%d" % i]
-                              },
-                              "run_on": "explicit",
-                          })
-
-testlist.extend([retrytestentry(i) for i in range(len(variants))])
-
-# Next, add rats tests entry
-rats_variant = 0
-rats_cmd = "cd build/"+os.path.join(*variants[rats_variant])+"; ctest --no-tests=error -j 16 -L 'rats' -L 'render|diff' --output-on-failure"
-rats_testentry = { "command": rats_cmd,
-                         "requires": ["cmake"],
-                         "on_variants": {
-                             "type": "requires",
-                             "value": [".openmoonray_variant-%d" % rats_variant]
-                         },
-                         "run_on": "explicit",
-                     }
-testlist.append(("rats", rats_testentry))
-
-# Next, add retry rats tests entry
-rats_variant = 0
-retry_rats_cmd = "cd build/"+os.path.join(*variants[rats_variant])+"; ctest --no-tests=error -j 16 -L 'rats' -L 'render|diff' --rerun-failed --output-on-failure"
-retry_rats_testentry = { "command": retry_rats_cmd,
-                         "requires": ["cmake"],
-                         "on_variants": {
-                             "type": "requires",
-                             "value": [".openmoonray_variant-%d" % rats_variant]
-                         },
-                         "run_on": "explicit",
-                     }
-testlist.append(("retry_rats", retry_rats_testentry))
-
-# Next, add rats_debug tests entry
-rats_debug_variant = 1
-rats_debug_cmd = "cd build/"+os.path.join(*variants[rats_debug_variant])+"; ctest --no-tests=error -j 16 -L 'rats' -L 'render' --output-on-failure"
-rats_debug_testentry = { "command": rats_debug_cmd,
-                         "requires": ["cmake"],
-                         "on_variants": {
-                             "type": "requires",
-                             "value": [".openmoonray_variant-%d" % rats_debug_variant]
-                         },
-                         "run_on": "explicit",
-                     }
-testlist.append(("rats-debug", rats_debug_testentry))
-
-# Next, add retry_rats_debug tests entry
-rats_debug_variant = 1
-retry_rats_debug_cmd = "cd build/"+os.path.join(*variants[rats_debug_variant])+"; ctest --no-tests=error -j 16 -L 'rats' -L 'render' --rerun-failed --output-on-failure"
-retry_rats_debug_testentry = { "command": retry_rats_debug_cmd,
-                               "requires": ["cmake"],
-                               "on_variants": {
-                                   "type": "requires",
-                                   "value": [".openmoonray_variant-%d" % rats_debug_variant]
-                               },
-                               "run_on": "explicit",
-                           }
-testlist.append(("retry_rats-debug", retry_rats_debug_testentry))
-
-# Build final dictionary for rez-test command
-tests = dict(testlist)
 
 def commands():
     prependenv('ARRAS_SESSION_PATH', '{root}/sessions')
