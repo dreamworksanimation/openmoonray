@@ -39,7 +39,7 @@ jobs:
               -d '{"text": "'"${MESSAGE}"'"}'
 
   MergeAction:
-    uses: dwanim/openmoonray_dwa/.github/workflows/SubmoduleUpdate.yml@main
+    uses: dwanim/openmoonray/.github/workflows/SubmoduleUpdate.yml@main
     with:
       repo: "openmoonray_dwa"
       branch: ${{ github.event.inputs.branch || github.ref_name }}
