@@ -27,6 +27,9 @@ esac
 done
 
 
+dnf install -y git
+dnf install -y git-lfs
+
 dnf install -y epel-release
 dnf config-manager --enable crb
 

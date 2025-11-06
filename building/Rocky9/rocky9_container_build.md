@@ -63,13 +63,10 @@ The option "-j $(nproc)" tells CMake to use all available cores on your machine 
 The main CMake project in *openmoonray* builds MoonRay itself, and installs it to a specified location.
 
 ```bash
-> cd /build
-> rm -rf *
-> cmake /source -DPYTHON_EXECUTABLE=python3 -DBOOST_PYTHON_COMPONENT_NAME=python39 -DABI_VERSION=0 -DMOONRAY_USE_OPTIX=NO
-> cmake --build . -j $(nproc)
-
-> mkdir /installs/openmoonray
-> cmake --install /build --prefix /installs/openmoonray
+> rm -rf /build/*
+> cd /source
+> cmake --preset rocky9-release -DMOONRAY_USE_OPTIX=NO
+> cmake --build --preset rocky9-release -- -j $(nproc)
 ```
 
 Set up the install and test moonray:
