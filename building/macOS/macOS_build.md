@@ -5,8 +5,11 @@ Start with reading the [general build instructions](../general_build).
 ---
 ## Base Requirements
 - Apple M-series hardware
-- macOS Sonoma (macOS 14, but also tested with macOS 15.1 Sequoia)
-- Install Xcode (tested with 15.2 and 16.1)
+- macOS 14.6 Sonoma / Xcode 15.4
+- macOS 15.6 Sequoia / Xcode 16.4
+- macOS 26.0.Tahoe / Xcode 26.0
+- Install Xcode
+- Tahoe requires an additional component:  xcodebuild -downloadComponent MetalToolchain
 - Git and [Git LFS](https://git-lfs.com/)
 - Download and install CMake 3.26.5 (or greater):
     https://github.com/Kitware/CMake/releases/download/v3.26.5/cmake-3.26.5-macos-universal.dmg
