@@ -17,7 +17,7 @@
                 "LUA_DIR"                       : "$env{DEPS_ROOT}",
                 "OpenSubDiv_ROOT"               : "$env{DEPS_ROOT}",
                 "OpenVDB_ROOT"                  : "$env{DEPS_ROOT}",
-                "OPTIX_ROOT"                    : "$env{DEPS_ROOT}/optix",
+                "OPTIX_ROOT"                    : "$env{DEPS_ROOT}/optixheaders-src/",
                 "PXR_USD_LOCATION"              : "$env{DEPS_ROOT}",
                 "PXR_INCLUDE_DIRS"              : "$env{DEPS_ROOT}/include",
                 "Random123_ROOT"                : "$env{DEPS_ROOT}",

@@ -6,11 +6,6 @@ Start with reading the [general build instructions](../general_build).
 ## Base Requirements
 * CMake 3.23.1 (or greater)
 
-* If you want to include MoonRay GPU support (XPU mode), you will also need to download the NVIDIA Optix headers
-    (from [here](https://developer.nvidia.com/designworks/optix/downloads/legacy)), which require an EULA.
-    Be sure to download version 7.6, as MoonRay is not yet compatible with their more recent releases.
-    Once you have extracted the downloaded contents, note the location of the header files (under *include*): these will be copied to */usr/local/include* in step 3 below.
-
 ---
 ### Step 1. Create the folders
 Create a clean root folder for moonray.  Attempting to build atop a previous installation may cause issues.
@@ -41,11 +36,6 @@ sudo source openmoonray/building/Rocky9/install_packages.sh
 sudo dnf install -y cuda-toolkit
 ```
 You can add arguments `--nocuda` and `--noqt` to skip GPU and GUI support respectively.
-If you are building with GPU support, copy the Optix headers that you downloaded and extracted into */usr/local*
-
-```bash
-cp -r /tmp/optix/include/* /usr/local/include
-```
 
 ---
 ### Step 4. Build the remaining dependencies from source

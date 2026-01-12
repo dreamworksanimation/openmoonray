@@ -10,8 +10,10 @@ cmake_minimum_required (VERSION 3.23.1)
 project(openmoonray_third_party)
 
 include(ExternalProject)
+include(FetchContent)
 
 set(InstallRoot /opt/MoonRay/installs CACHE FILEPATH "Install root for dependencies")
+set(FETCHCONTENT_BASE_DIR "${InstallRoot}" CACHE PATH "Base directory for FetchContent dependencies")
 
 ExternalProject_Add(JsonCpp
     GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp.git
@@ -192,4 +194,11 @@ ExternalProject_Add(GLFW
     DEPENDS ${CHAIN}
 )
 set(CHAIN GLFW)
+
+FetchContent_Declare(
+    OptiXHeaders
+    GIT_REPOSITORY https://github.com/NVIDIA/optix-dev
+    GIT_TAG v7.6.0
+)
+FetchContent_MakeAvailable(OptiXHeaders)
 
