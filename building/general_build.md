@@ -106,14 +106,6 @@ cmake --build . -- -j $(nproc)
 
 If you do this, you will also have to configure the main CMake build of MoonRay to find the dependencies in their alternate location. The default value of *InstallRoot* is */usr/local* : this corresponds to the default location that CMake looks at to find dependencies, and so with the default setting, the main MoonRay CMake will find the dependencies without further hints. The is discussed further below. 
 
-### 3. Optix
-
-MoonRay GPU support requires the NVIDIA Optix headers to build. These require an EULA, and can be downloaded from [here](https://developer.nvidia.com/designworks/optix/downloads/legacy). Be sure to download version 7.6, as MoonRay is not yet compatible with their more recent releases.
-
-Only the header files are needed, and the MoonRay build expects to find them in */usr/local/include* by default. You can change this by setting *OPTIX_ROOT*. You may need to unpack the Optix SDK to a temporary location and copy the headers across.
-
-Optix is not needed if you are building MoonRay without GPU support.
-
 ---
 ## Building MoonRay
 ---
@@ -274,8 +266,6 @@ You can clone the Open MoonRay source on the host machine and mount it into the 
 ```bash
 docker run --security-opt seccomp=unconfined -v <openmoonray source>:/source -v /tmp:/tmp --network=host --rm -it rockylinux:9
 ```
-
-You can also transfer Optix headers from the host through a mount. However you may find that you cannot access GPU devices on the host from inside the container, and that it makes more sense to do a build with GPU support disabled.
 
 You can save the current state of the container at any time using the docker commit command. However, note that this will not save the current shell environment : when you run the saved container it will start a new *bash* shell.
 
