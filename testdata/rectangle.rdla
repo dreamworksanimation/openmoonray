@@ -23,11 +23,11 @@ GeometrySet("geometrySet") {
 }
 
 Layer("defaultLayer") {
-    {RdlMeshGeometry("rectangle"), "", BaseMaterial("material"), LightSet("lightSet"), undef(), undef(), undef(), undef()},
+    {RdlMeshGeometry("rectangle"), "", DwaBaseMaterial("material"), LightSet("lightSet"), undef(), undef(), undef(), undef()},
 }
 
-BaseMaterial("material") {
-    ["diffuse_color"] = bind(AttributeMap("displayColor")),
+DwaBaseMaterial("material") {
+    ["albedo"] = bind(AttributeMap("displayColor")),
 }
 
 EnvLight("light") {

@@ -51,6 +51,9 @@ dnf install -y bison flex wget python3 python3-devel pybind11-devel patch \
 
 dnf install -y lsb_release
 
+dnf install -y wayland-devel libxkbcommon-devel wayland-protocols-devel \
+               extra-cmake-modules libXrandr-devel libXinerama-devel libXcursor-devel libXi-devel
+
 mkdir -p /installs/{bin,lib,include}
 cd /installs
 

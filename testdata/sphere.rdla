@@ -15,8 +15,8 @@ GeometrySet("geometryset") {
     sphere,
 }
 
-mat = BaseMaterial("mat") {
-    ["diffuse color"] = Rgb(1, 1, 0),
+mat = DwaBaseMaterial("mat") {
+    ["albedo"] = Rgb(1, 1, 0),
 }
 
 env = EnvLight("env") {
